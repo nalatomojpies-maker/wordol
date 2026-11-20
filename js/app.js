@@ -69,6 +69,21 @@ const actions = {
 
   // ----- sessions -----
   startMode: (element) => { workout = null; startSession(element.dataset.mode); },
+  startDaily: () => startDailyTask(),
+  startExtra: () => { workout = null; startWorkout(); },
+  openShop: () => { session = null; workout = null; view = "shop"; render(); },
+  openJokes: () => { view = "jokes"; render(); },
+  openCalendar: () => { calendarMonth = null; view = "calendar"; render(); },
+  buyJoke: (element) => buyJoke(element.dataset.id),
+  revealJoke: (element) => { revealedJokes.add(element.dataset.id); render(); },
+  jokeLang: (element) => { const id = element.dataset.id; if (jokeOtherLanguage.has(id)) jokeOtherLanguage.delete(id); else jokeOtherLanguage.add(id); render(); },
+  speakJoke: (element) => speakJoke(element.dataset.id),
+  calMonth: (element) => {
+    const next = new Date(calendarMonth.year, calendarMonth.month + Number(element.dataset.dir), 1);
+    calendarMonth = { year: next.getFullYear(), month: next.getMonth() };
+    render();
+  },
+  calToday: () => { calendarMonth = null; render(); },
   startWorkout: () => startWorkout(),
   nextWorkout: () => startNextWorkoutBlock(),
   again: () => {
@@ -123,6 +138,7 @@ const actions = {
   toggleLab: () => { labOpen = !labOpen; if (!labOpen) labUnlocked = false; rerenderAdd(); },
   lockLab: () => { labUnlocked = false; labOpen = false; rerenderAdd(); },
   acceptTerms: () => acceptTerms(),
+  openSupport: () => openSupportModal(true),
   showBlik: () => showBlik(),
   copyBlik: () => copyBlik(),
   supportDonated: () => { writeSupportStatus("donated"); closeModal("supportModal"); toast("Dziękuję! ☕ Ta prośba już się nie pojawi."); },
@@ -181,6 +197,11 @@ function handleSettingChange(element) {
     applyMusicGain(true);
     const label = $("#volumeLabel");
     if (label) label.textContent = `${Math.round(state.settings.musicVolume * 100)}%`;
+  }
+  if (key === "noSound") {
+    if (state.settings.noSound) stopMusic();
+    else startMusic(); // a fresh random track
+    updateMusicButton();
   }
   if (key === "sound" && state.settings.sound) sfx("ok");
   if (element.dataset.rerender) render();

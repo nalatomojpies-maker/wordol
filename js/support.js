@@ -4,8 +4,8 @@
  * "Buy me a coffee" prompt, footer and legal information.
  *
  * The prompt appears in menus only (never during an exercise) when the first of these happens:
- *  - 10 minutes of real use, 60 minutes of real use, or 30% of the class path completed.
- * Each trigger fires once. The user's answer ("already donated" / "no") is kept under its own key,
+ *  - 10 minutes of real use or 30% of the class path completed; afterwards again after every further hour of use.
+ * The first two triggers fire once. The user's answer ("already donated" / "no") is kept under its own key,
  * so "Wyczyść profil" does not remove it. The phone number is stored encoded and is drawn on a canvas
  * only after a click, so simple scrapers cannot read it (a person can still copy it, obviously).
  */
@@ -126,20 +126,22 @@ const closeModal = (id) => {
   if (modal) modal.remove();
 };
 
-function openSupportModal() {
+function openSupportModal(manual = false) {
   if ($("#supportModal")) return;
+  const actions = manual
+    ? `<button class="btn primary" data-action="supportDonated">☕ Już postawiłem – dziękuję!</button>
+       <button class="btn" data-action="supportLater">Zamknij</button>`
+    : `<button class="btn primary" data-action="supportDonated">☕ Już postawiłem – dziękuję!</button>
+       <button class="btn" data-action="supportLater">🙂 Może później</button>
+       <button class="btn ghost" data-action="supportDeclined">Nie, słabo to widzę.</button>`;
   document.body.insertAdjacentHTML("beforeend", `
     <div class="modal-backdrop" id="supportModal" role="dialog" aria-modal="true" aria-labelledby="supportTitle">
       <div class="modal">
         <div class="modal-rychu">${rychuSvg("cheer", 76)}</div>
         <h2 id="supportTitle">Aplikacja jest w pełni darmowa ☕</h2>
-        <p>WORDOL jest i zawsze będzie w całości <b>darmowy</b>. Jeśli Ci się podoba i chcesz mnie wesprzeć, możesz <b>postawić mi kawę BLIKIEM na numer telefonu</b>. To zupełnie dobrowolne.</p>
+        <p>WORD4ALL jest i zawsze będzie w całości <b>darmowy</b>. Jeśli Ci się podoba i chcesz mnie wesprzeć, możesz <b>postawić mi kawę BLIKIEM na numer telefonu</b>. To zupełnie dobrowolne.</p>
         <div id="blikBox" class="blik-box"><button class="btn" data-action="showBlik">📱 Pokaż numer BLIK</button></div>
-        <div class="modal-actions">
-          <button class="btn primary" data-action="supportDonated">☕ Już postawiłem – dziękuję!</button>
-          <button class="btn" data-action="supportLater">🙂 Może później</button>
-          <button class="btn ghost" data-action="supportDeclined">Nie, słabo to widzę.</button>
-        </div>
+        <div class="modal-actions">${actions}</div>
         <p class="small muted center-text">– Bartek SP5EOE</p>
       </div>
     </div>`);
@@ -165,7 +167,7 @@ function openLegalModal() {
       <div class="modal legal">
         <h2 id="legalTitle">Regulamin, licencja i prywatność</h2>
         <h3>Autor i licencja</h3>
-        <p>WORDOL – Rychu personal trainer. © ${COPYRIGHT_YEAR} ${AUTHOR_LINE}. <b>Wszelkie prawa zastrzeżone.</b> Aplikacja (kod, teksty, ilustracje, maskotka Rychu, dźwięki) jest <b>darmowa do użytku niekomercyjnego</b> – domowego i edukacyjnego. Bez zgody autora nie wolno jej sprzedawać, wykorzystywać komercyjnie ani rozpowszechniać zmienionych kopii.</p>
+        <p>WORD4ALL. © ${COPYRIGHT_YEAR} ${AUTHOR_LINE}. <b>Wszelkie prawa zastrzeżone.</b> Aplikacja (kod, teksty, ilustracje, maskotka Rychu, dźwięki) jest <b>darmowa do użytku niekomercyjnego</b> – domowego i edukacyjnego. Bez zgody autora nie wolno jej sprzedawać, wykorzystywać komercyjnie ani rozpowszechniać zmienionych kopii.</p>
         <h3>Ciasteczka i dane na urządzeniu</h3>
         <p>Aplikacja <b>nie używa ciasteczek (cookies)</b>, analityki, reklam, śledzenia ani profilowania. Imię, klasa, postępy i ustawienia są zapisywane wyłącznie w pamięci przeglądarki (localStorage) na Twoim urządzeniu. Są potrzebne do działania aplikacji i nie są nigdzie wysyłane. Usuniesz je w Profil → „Wyczyść profil” albo czyszcząc dane strony w przeglądarce. Wybór dotyczący prośby o wsparcie jest zapisany osobno i znika tylko po wyczyszczeniu danych strony.</p>
         <h3>Dane osobowe</h3>
@@ -197,6 +199,7 @@ function openLegalModal() {
 
 /** Very small, always visible licence line (appended below every screen except exercises). */
 const footerHtml = () => `
+  <div class="coffee-bar"><button class="coffee-link" data-action="openSupport">☕ Postaw kawę · BLIK · program jest w pełni darmowy</button></div>
   <footer class="site-footer">
     © ${COPYRIGHT_YEAR} ${AUTHOR_LINE} · Darmowe do użytku niekomercyjnego · Wszelkie prawa zastrzeżone ·
     <button class="link" data-action="openLegal">Regulamin, licencja i prywatność</button> · Bez ciasteczek
@@ -212,17 +215,19 @@ function classPathProgress() {
   return steps > 0 ? passed / steps : 0;
 }
 
+const SUPPORT_REPEAT_S = 3600;
 const SUPPORT_TRIGGERS = [
   { id: "t10", test: () => state.support.seconds >= 600 },
-  { id: "t60", test: () => state.support.seconds >= 3600 },
   { id: "p30", test: () => classPathProgress() >= 0.3 },
 ];
 
 function maybeShowSupport() {
   if (supportStatus() || $("#supportModal") || $("#legalModal") || $("#introModal") || SUPPORT_QUIET_VIEWS.includes(view)) return;
   const due = SUPPORT_TRIGGERS.filter((trigger) => !state.support.fired[trigger.id] && trigger.test());
-  if (due.length === 0) return;
+  const repeatDue = state.support.nextHourAt > 0 && state.support.seconds >= state.support.nextHourAt;
+  if (due.length === 0 && !repeatDue) return;
   due.forEach((trigger) => { state.support.fired[trigger.id] = Date.now(); });
+  state.support.nextHourAt = state.support.seconds + SUPPORT_REPEAT_S; // the next reminder: after another hour of use
   saveState();
   openSupportModal();
 }
@@ -270,14 +275,14 @@ function openIntroModal() {
         <div class="modal-rychu">${rychuSvg("cheer", 76)}</div>
         <h2 id="introTitle">Zanim zaczniesz 👋</h2>
         <ul class="intro-list">
-          <li>💚 <b>Całkowicie darmowy.</b> WORDOL jest w pełni darmowy i powstał na własne potrzeby, żeby ułatwić naukę angielskiego. Nie ma reklam, kont ani ukrytych opłat.</li>
+          <li>💚 <b>Całkowicie darmowy.</b> WORD4ALL jest w pełni darmowy i powstał na własne potrzeby, żeby ułatwić naukę angielskiego. Nie ma reklam, kont ani ukrytych opłat.</li>
           <li>📜 <b>Licencja.</b> © ${COPYRIGHT_YEAR} ${AUTHOR_LINE}. Darmowy do użytku niekomercyjnego (domowego i edukacyjnego), wszelkie prawa zastrzeżone. Bez zgody autora nie wolno go sprzedawać, wykorzystywać komercyjnie ani rozpowszechniać zmienionych kopii.</li>
           <li>🔧 <b>Z czego korzysta:</b>
             <ul>
               <li><b>Głos (lektor)</b> – wbudowany syntezator mowy Twojej przeglądarki lub urządzenia. Aplikacja nie ma własnych nagrań, a jakość zależy od zainstalowanych głosów (niektóre, np. w Chrome, działają przez internet).</li>
               <li><b>Muzyka i dźwięki</b> – generowane w przeglądarce.</li>
               <li><b>Tłumaczenie własnych słów</b> – usługa MyMemory (translated.net), do której trafiają wpisane słowa.</li>
-              <li><b>Hosting</b> – GitHub Pages. Funkcja eksperymentalna (OCR) pobiera moduł Tesseract.js z jsDelivr.</li>
+             <li><b>Hosting</b> – GitHub Pages.</li>
               <li><b>Bez ciasteczek, reklam i śledzenia.</b> Imię, klasa i postępy zostają tylko na Twoim urządzeniu.</li>
             </ul>
           </li>

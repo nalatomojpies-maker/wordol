@@ -54,6 +54,7 @@ function unlockLab() {
 
 function renderAdd() {
   app.innerHTML = `
+    <button class="btn ghost" data-action="nav" data-view="settings">← Profil</button>
     <section class="card">
       <h2>Wklej lub wpisz słowa</h2>
       <p class="muted">Jedno słowo w wierszu. Możesz podać parę: <code>apple - jabłko</code>. Bez tłumaczenia sprawdzę je w bazie, a potem w słowniku online.</p>

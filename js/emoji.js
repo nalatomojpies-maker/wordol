@@ -11,7 +11,7 @@ const WORD_EMOJI = {
   "colours:red": "🔴", "colours:blue": "🔵", "colours:green": "🟢", "colours:yellow": "🟡", "colours:black": "⚫",
   "colours:white": "⚪", "colours:pink": "💗", "colours:brown": "🟤", "colours:purple": "🟣", "colours:orange": "🟠",
   "numbers:one": "1️⃣", "numbers:two": "2️⃣", "numbers:three": "3️⃣", "numbers:four": "4️⃣", "numbers:five": "5️⃣",
-  "numbers:six": "6️⃣", "numbers:seven": "7️⃣", "numbers:eight": "8️⃣", "numbers:nine": "9️⃣", "numbers:ten": "🔟", hundred: "💯",
+  "numbers:six": "6️⃣", "numbers:seven": "7️⃣", "numbers:eight": "8️⃣", "numbers:nine": "9️⃣", "numbers:ten": "🔟", "one hundred": "💯",
   // family
   head: "🗣️", mum: "👩", dad: "👨", baby: "👶", grandma: "👵", grandpa: "👴", boy: "👦", girl: "👧", family: "👨‍👩‍👧",
   // body

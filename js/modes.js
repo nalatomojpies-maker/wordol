@@ -124,7 +124,7 @@ function startWorkout() {
 
 function startNextWorkoutBlock() {
   const modeId = workout.queue.shift();
-  const length = Math.max(4, Math.round(sessionLength() * 0.7));
+  const length = workout.daily ? DAILY_QUESTIONS : Math.max(4, Math.round(sessionLength() * 0.7));
   if (!startSession(modeId, { length })) workout = null;
 }
 
@@ -159,7 +159,8 @@ function renderSessionFrame() {
     <div class="session-head">
       <button class="btn ghost round" data-action="quit" aria-label="Zakończ ćwiczenie">✕</button>
       <div class="progress"><div id="bar"></div></div>
-      <b class="session-icon">${mode.icon}</b>
+      <span class="session-count" id="sessionCount" aria-live="polite"></span>
+      <b class="session-icon" title="${esc(mode.name)}">${mode.icon}</b>
     </div>
     <div class="stage" id="stage"></div>`;
   updateProgressBar();
@@ -195,6 +196,8 @@ function advance(step = 1) {
 function updateProgressBar() {
   const bar = $("#bar");
   if (bar) bar.style.width = `${(session.done / session.items.length) * 100}%`;
+  const counter = $("#sessionCount");
+  if (counter) counter.textContent = `${Math.min(session.done, session.items.length)}/${session.items.length}`;
 }
 
 function record(item, isCorrect) {
@@ -755,6 +758,10 @@ function finishSession() {
   session.earned = checkBadges({ perfect: percent === 100 && total >= 4 });
   session.percent = percent;
   session.mark = mark;
+  if (workout && workout.daily) {
+    if (session.done < session.items.length) workout = null; // left early: no reward
+    else recordDailyResult(session);
+  }
   if (workout) workout.results.push({ mode: session.mode, correct: session.correct, done: total });
   saveState();
   view = "result";

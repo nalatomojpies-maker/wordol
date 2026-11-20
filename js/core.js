@@ -33,9 +33,9 @@ const GRADE_INFO = [
   { id: 8, label: "Klasa 8", age: "14 lat", emoji: "🏆" },
 ];
 const DIFFICULTIES = [
-  { id: "easy", name: "Łatwy", icon: "🌱", hint: "Podpowiedzi, mniej opcji" },
-  { id: "medium", name: "Średni", icon: "🔥", hint: "Standardowo" },
-  { id: "hard", name: "Trudny", icon: "🚀", hint: "Bez podpowiedzi, więcej opcji" },
+  { id: "easy", name: "Łatwy", icon: "🌱", hint: "3 odpowiedzi do wyboru, obrazki przy słowach, pierwsza litera i pierwsze słowo podpowiedziane, 3 pary w Memory." },
+  { id: "medium", name: "Średni", icon: "🔥", hint: "4 odpowiedzi do wyboru, podpowiedź liter przy wpisywaniu, 4 pary w Memory." },
+  { id: "hard", name: "Trudny", icon: "🚀", hint: "5 odpowiedzi do wyboru, wpisywanie bez podpowiedzi, dodatkowe litery-pułapki, 6 par w Memory." },
 ];
 const STATUS_FILTERS = [
   { id: "all", name: "Wszystkie słowa" }, { id: "new", name: "Nowe" }, { id: "learning", name: "Uczę się" },
@@ -92,6 +92,30 @@ function shuffle(list) {
   }
   return copy;
 }
+
+/** Local date as YYYY-MM-DD (used for the daily task and the reward calendar). */
+const todayIso = (date = new Date()) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
+/** Deterministic pseudo-random numbers from a text seed (the same day gives the same daily task). */
+function seededRandom(seedText) {
+  let hash = 1779033703 ^ seedText.length;
+  for (let i = 0; i < seedText.length; i++) {
+    hash = Math.imul(hash ^ seedText.charCodeAt(i), 3432918353);
+    hash = (hash << 13) | (hash >>> 19);
+  }
+  let state32 = hash >>> 0;
+  return () => {
+    state32 = (state32 + 0x6d2b79f5) >>> 0;
+    let t = state32;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const seededShuffle = (list, seedText) => {
+  const random = seededRandom(seedText);
+  return list.map((item) => ({ item, key: random() })).sort((a, b) => a.key - b.key).map((entry) => entry.item);
+};
 
 const hasPolishChars = (text) => /[ąćęłńóśźż]/i.test(text);
 const dayKey = (date) => `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -161,7 +185,12 @@ function defaultState() {
     },
     custom: [],
     cache: {},
-    support: { seconds: 0, fired: {} },
+    support: { seconds: 0, fired: {}, nextHourAt: 0 },
+    gems: 0,
+    daily: { day: "", grade: -1, modes: [], results: [], done: false },
+    calendar: {},
+    jokes: { owned: [] },
+    shop: { day: "", ids: [] },
     path: {},
     stats: { words: {}, sessions: [], lastDay: "", streak: 0, xp: 0, correctTotal: 0, daily: { day: "", count: 0 }, badges: {} },
   };
@@ -179,6 +208,11 @@ function loadState() {
       cache: isObject(parsed.cache) ? parsed.cache : {},
       path: isObject(parsed.path) ? parsed.path : {},
       support: { ...defaults.support, ...(isObject(parsed.support) ? parsed.support : {}) },
+      gems: Number.isFinite(parsed.gems) ? Math.max(0, Math.floor(parsed.gems)) : 0,
+      daily: { ...defaults.daily, ...(isObject(parsed.daily) ? parsed.daily : {}) },
+      calendar: isObject(parsed.calendar) ? parsed.calendar : {},
+      jokes: { owned: isObject(parsed.jokes) && Array.isArray(parsed.jokes.owned) ? parsed.jokes.owned : [] },
+      shop: { ...defaults.shop, ...(isObject(parsed.shop) ? parsed.shop : {}) },
       stats: { ...defaults.stats, ...(isObject(parsed.stats) ? parsed.stats : {}) },
     };
   } catch {
@@ -223,9 +257,10 @@ const topicById = (id) => (id === CUSTOM_TOPIC.id ? CUSTOM_TOPIC : WORDOL_TOPICS
  * Picture for a word: our own SVG illustration when there is one, otherwise an emoji.
  * The topic matters for words like colours ("colours:red").
  */
-const artFor = (en, topic = "") => WORD_ART[`${topic}:${en.toLowerCase()}`] || WORD_ART[en.toLowerCase()] || "";
+const pictureKey = (en) => en.toLowerCase().replace(/[!?.,]+$/, "");
+const artFor = (en, topic = "") => WORD_ART[`${topic}:${pictureKey(en)}`] || WORD_ART[pictureKey(en)] || "";
 const emojiByEn = (en, topic = "") =>
-  artFor(en, topic) || WORD_EMOJI[`${topic}:${en.toLowerCase()}`] || WORD_EMOJI[en.toLowerCase()] || "";
+  artFor(en, topic) || WORD_EMOJI[`${topic}:${pictureKey(en)}`] || WORD_EMOJI[pictureKey(en)] || "";
 const emojiFor = (word) => emojiByEn(word.en, word.topic);
 const hasArt = (word) => Boolean(artFor(word.en, word.topic));
 
