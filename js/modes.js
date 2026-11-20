@@ -239,7 +239,7 @@ function mountPicChoice(word, answer, options, promptHtml, hint, speakAfter = tr
     ${promptHtml}
     <p class="hint">${hint}</p>
     <div class="options pics">
-      ${options.map((option) => `<button class="option pic" data-action="answerQuiz" data-value="${esc(option.value)}"><span class="pic-emoji">${option.emoji}</span><span class="lbl">${esc(option.value)}</span></button>`).join("")}
+      ${options.map((option) => `<button class="option pic" data-action="answerQuiz" data-value="${esc(option.value)}"><span class="pic-emoji">${option.emoji}</span></button>`).join("")}
     </div>`;
 }
 

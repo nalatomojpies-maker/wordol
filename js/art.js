@@ -50,7 +50,6 @@ const WORD_ART = {};
     elli(50, 54, 36, 40, hair) + path("M16 100 Q50 68 84 100Z", "#f06595") + circ(50, 52, 25, SKIN) +
     path("M25 50 Q28 22 50 22 Q72 22 75 50 Q62 36 50 35 Q38 36 25 50Z", hair) + eyes(54, 10, 3.6) + smile(63, 8) + blush(61, 17);
   add("mum", A(woman("#6d3b1f")));
-  add("hair", A(woman("#e8590c")));
   add("dad", A(
     path("M14 100 Q50 70 86 100Z", "#339af0") + circ(50, 52, 26, SKIN) + path("M24 48 Q24 20 50 20 Q76 20 76 48 Q64 33 50 35 Q36 33 24 48Z", "#3b2a1a") +
     eyes(52, 10, 3.6) + path("M38 63 Q50 56 62 63 Q50 68 38 63Z", "#3b2a1a") + smile(70, 6)));
@@ -74,15 +73,10 @@ const WORD_ART = {};
     path("M26 46 Q28 22 50 22 Q72 22 74 46 Q60 38 50 36 Q40 38 26 46Z", "#8d5524") + eyes(52, 10, 3.6) + smile(61, 8) + blush(59, 16)));
 
   // ---------------- body ----------------
-  add("head", A(
-    path("M36 90 L36 74 L64 74 L64 90Z", SKIN) + circ(50, 46, 28, SKIN) + path("M22 44 Q22 14 50 16 Q78 14 78 44 Q66 28 50 30 Q34 28 22 44Z", "#6d3b1f") +
-    circ(22, 50, 5, "#f4b183") + circ(78, 50, 5, "#f4b183") + eyes(48, 11, 3.6) + smile(60, 8) + circ(50, 18, 36, "none", 'stroke="#5b6cff" stroke-width="2.5" stroke-dasharray="5 4" transform="translate(0 28)"')));
   add("face", A(circ(50, 52, 38, SKIN) + eyes(46, 14, 5) + blush(60, 24) + line("M30 62 Q50 86 70 62", "#7a2e2e", 3.5) + path("M46 54 Q50 60 54 54Z", "#f4b183")));
   add("eye", A(
     path("M8 50 Q50 14 92 50 Q50 86 8 50Z", "#fff", 'stroke="#868e96" stroke-width="3"') + circ(50, 50, 19, "#339af0") + circ(50, 50, 9, "#111") + circ(56, 44, 5, "#fff") +
     line("M20 36 L14 26 M36 26 L33 15 M64 26 L67 15 M80 36 L86 26", "#212529", 3)));
-  add("nose", A(
-    circ(50, 50, 40, SKIN) + path("M44 24 Q40 52 28 66 Q34 80 50 78 Q66 80 72 66 Q60 52 56 24Z", "#f4b183") + elli(40, 70, 4, 3, "#a0522d") + elli(60, 70, 4, 3, "#a0522d") + elli(52, 40, 3, 9, "#fff", 'opacity=".35"')));
   add("mouth", A(
     path("M12 52 Q32 30 50 42 Q68 30 88 52 Q70 82 50 82 Q30 82 12 52Z", "#e03131") + line("M12 52 Q50 64 88 52", "#7a1f1f", 3.5) + elli(38, 44, 9, 3.5, "#fff", 'opacity=".35"')));
   add("ear", A(
@@ -91,12 +85,6 @@ const WORD_ART = {};
   add("hand", A(
     rect(30, 48, 42, 40, SKIN, 14) + [32, 44, 56, 68].map((x, i) => rect(x - 1, i === 1 || i === 2 ? 8 : 16, 11, 46, SKIN, 5.5)).join("") +
     elli(24, 66, 8, 15, SKIN, 'transform="rotate(-35 24 66)"') + line("M38 60 L38 70 M50 56 L50 68 M62 60 L62 70", "#e8a07a", 2)));
-  add("finger", A(
-    rect(28, 52, 46, 38, SKIN, 14) + rect(46, 10, 13, 52, SKIN, 6.5) + elli(26, 64, 7, 12, SKIN, 'transform="rotate(-25 26 64)"') + line("M42 62 L68 62", "#e8a07a", 2)));
-  add("arm", A(
-    line("M16 82 Q22 30 56 34 Q76 36 76 54", SKIN, 20) + circ(74, 62, 13, SKIN) + line("M70 56 L82 56", "#e8a07a", 2) + path("M10 76 L30 86 L26 100 L6 90Z", "#339af0")));
-  add("leg", A(
-    rect(40, 4, 22, 66, SKIN, 9) + circ(51, 58, 3, "#e8a07a") + path("M38 66 L62 66 L78 90 L34 90Q32 74 38 66Z", "#495057")));
   add("foot", A(
     path("M26 14 L56 14 L58 58 Q86 62 90 82 L24 82 Q22 40 26 14Z", SKIN) + [58, 68, 77, 85].map((x, i) => circ(x, 66 + i * 3.5, 4.5, "#ffc9a3")).join("")));
 
@@ -180,8 +168,6 @@ const WORD_ART = {};
   add("milk", A(
     path("M28 34 L72 34 L72 92 L28 92Z", "#fff", 'stroke="#ced4da" stroke-width="2.5"') + path("M28 34 L50 12 L72 34Z", "#e9ecef", 'stroke="#ced4da" stroke-width="2.5"') + rect(28, 50, 44, 24, "#4dabf7") +
     circ(42, 62, 6, "#fff") + circ(58, 60, 4, "#fff") + circ(52, 68, 3, "#fff")));
-  add("water", A(
-    path("M26 18 L74 18 L68 90 L32 90Z", "#e7f5ff", 'stroke="#74c0fc" stroke-width="3"') + path("M29 42 L71 42 L68 90 L32 90Z", "#74c0fc") + path("M36 52 Q44 56 52 52", "none", 'stroke="#fff" stroke-width="3" opacity=".7"') + path("M60 6 L56 36", "none", 'stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"')));
   add("bread", A(
     path("M12 62 Q8 30 34 28 Q50 20 66 28 Q92 30 88 62 L88 78 Q88 88 78 88 L22 88 Q12 88 12 78Z", "#e0a458") + line("M32 36 L40 52 M50 32 L58 50 M68 36 L74 52", "#b8741a", 4) + elli(34, 42, 10, 4, "#f7d29a", 'opacity=".6"')));
   add("egg", A(elli(50, 56, 25, 32, "#fff8e1", 'stroke="#e0c9a6" stroke-width="3"') + elli(40, 42, 6, 11, "#fff", 'opacity=".7" transform="rotate(20 40 42)"') + path("M30 82 Q50 96 70 82", "none", 'stroke="#d9a066" stroke-width="3" opacity=".4"')));
@@ -261,9 +247,6 @@ const WORD_ART = {};
     path(cloudPath, "#ced4da", 'transform="translate(0 -8)"') + [[26, 82], [50, 88], [74, 82]].map(([x, y]) => line(`M${x - 7} ${y} L${x + 7} ${y} M${x} ${y - 7} L${x} ${y + 7} M${x - 5} ${y - 5} L${x + 5} ${y + 5} M${x + 5} ${y - 5} L${x - 5} ${y + 5}`, "#74c0fc", 2.5)).join("")));
 
   // ---------------- phrases ----------------
-  add("hello", A(
-    rect(30, 40, 40, 40, SKIN, 14) + [32, 44, 56, 68].map((x, i) => rect(x - 1, i === 1 || i === 2 ? 10 : 18, 11, 46, SKIN, 5.5)).join("") + elli(24, 60, 8, 14, SKIN, 'transform="rotate(-35 24 60)"') +
-    line("M82 20 Q92 30 82 40 M90 14 Q104 30 90 46", "#fcc419", 3.5) + line("M10 20 Q2 30 10 40", "#fcc419", 3.5)));
   add("yes", A(circ(50, 50, 40, "#40c057") + line("M28 52 L44 68 L74 34", "#fff", 10)));
   add("no", A(circ(50, 50, 40, "#fa5252") + line("M32 32 L68 68 M68 32 L32 68", "#fff", 10)));
   add("thank you", A(
@@ -392,4 +375,59 @@ const WORD_ART = {};
     path("M30 12 L6 30 L12 64 L28 60 L28 90 L72 90 L72 60 L88 64 L94 30 L70 12 Q50 24 30 12Z", "#ff8787") + rect(28, 80, 44, 10, "#fa5252") + rect(28, 44, 44, 6, "#fff", 0, 'opacity=".8"') + rect(28, 58, 44, 6, "#fff", 0, 'opacity=".8"') + path("M36 12 Q50 26 64 12", "none", 'stroke="#fa5252" stroke-width="4"')));
   add("tooth", A(
     path("M26 18 Q50 6 74 18 Q86 36 72 60 Q70 92 60 92 Q52 92 50 70 Q48 92 40 92 Q30 92 28 60 Q14 36 26 18Z", "#fff", 'stroke="#ced4da" stroke-width="3" stroke-linejoin="round"') + elli(38, 30, 6, 10, "#e7f5ff", 'transform="rotate(20 38 30)"')));
+
+  // ---------------- redrawn / added to remove ambiguity ----------------
+  add("hair", A(
+    path("M50 8 Q16 12 18 46 Q20 72 10 90 Q34 88 40 68 Q44 54 50 54 Q56 54 60 68 Q66 88 90 90 Q80 72 82 46 Q84 12 50 8Z", "#6d3b1f") +
+    line("M50 14 Q28 18 28 46 Q28 60 24 78", "#8d5a33", 4) + line("M50 14 Q72 18 72 46 Q72 60 76 78", "#8d5a33", 4) +
+    rect(30, 76, 44, 9, "#339af0", 3, 'transform="rotate(-8 52 80)"') + [34, 40, 46, 52, 58, 64].map((x) => line(`M${x} 84 L${x - 1} 93`, "#1c7ed6", 2.5)).join("")));
+  add("hello", A(
+    path("M6 100 Q34 74 62 100Z", "#4dabf7") + circ(34, 58, 22, SKIN) + path("M12 54 Q14 32 34 32 Q54 32 56 54 Q46 42 34 44 Q22 42 12 54Z", "#6d3b1f") +
+    circ(27, 60, 3.4, "#222") + circ(41, 60, 3.4, "#222") + line("M26 68 Q34 76 42 68", "#7a2e2e", 2.5) + elli(20, 66, 4, 2.6, "#ff8fa3", 'opacity=".55"') + elli(48, 66, 4, 2.6, "#ff8fa3", 'opacity=".55"') +
+    rect(68, 42, 20, 24, SKIN, 9) + [68, 73.5, 79, 84.5].map((x, i) => rect(x, i === 1 || i === 2 ? 20 : 24, 4.6, 30, SKIN, 2.3)).join("") + elli(66, 58, 5, 9, SKIN, 'transform="rotate(-30 66 58)"') +
+    line("M93 26 Q99 36 93 46", "#fcc419", 3.5) + line("M62 26 Q57 34 62 42", "#fcc419", 3.5)));
+  const figure = (highlight) => {
+    const fill = (name) => (highlight === name ? "#ff922b" : "#ced4da");
+    const outline = (name) => (highlight === name ? 'stroke="#e8590c" stroke-width="2.5"' : 'stroke="#fff" stroke-width="2"');
+    return A(
+      rect(32, 60, 15, 32, fill("leg"), 7, outline("leg")) + rect(53, 60, 15, 32, fill("leg"), 7, outline("leg")) + rect(30, 28, 40, 38, "#adb5bd", 12, 'stroke="#fff" stroke-width="2"') +
+      rect(15, 30, 12, 38, fill("arm"), 6, outline("arm")) + rect(73, 30, 12, 38, fill("arm"), 6, outline("arm")) +
+      circ(50, 15, 13, fill("head"), outline("head")) + circ(45, 14, 1.8, "#212529") + circ(55, 14, 1.8, "#212529") + line("M46 20 Q50 23 54 20", "#212529", 1.6));
+  };
+  add("head", figure("head"));
+  add("arm", figure("arm"));
+  add("leg", figure("leg"));
+  add("finger", A(
+    rect(30, 48, 42, 40, SKIN, 14) + [32, 44, 56, 68].map((x, i) => rect(x - 1, i === 1 || i === 2 ? 8 : 16, 11, 46, i === 1 ? "#ff922b" : SKIN, 5.5, i === 1 ? 'stroke="#e8590c" stroke-width="2.5"' : "")).join("") +
+    elli(24, 66, 8, 15, SKIN, 'transform="rotate(-35 24 66)"') + line("M38 60 L38 70 M50 56 L50 68 M62 60 L62 70", "#e8a07a", 2)));
+  add("nose", A(
+    circ(50, 50, 42, SKIN) + circ(36, 34, 4.5, "#222") + circ(64, 34, 4.5, "#222") + circ(37.5, 32.5, 1.5, "#fff") + circ(65.5, 32.5, 1.5, "#fff") + line("M34 76 Q50 86 66 76", "#7a2e2e", 3) +
+    path("M50 40 Q42 58 36 64 Q40 72 50 68 Q60 72 64 64 Q58 58 50 40Z", "#ff922b", 'stroke="#e8590c" stroke-width="2.5" stroke-linejoin="round"') + circ(44, 66, 2, "#a0522d") + circ(56, 66, 2, "#a0522d")));
+  add("water", A(
+    rect(40, 4, 20, 10, "#4dabf7", 3) + path("M38 16 L62 16 Q64 28 70 36 L70 88 Q70 94 64 94 L36 94 Q30 94 30 88 L30 36 Q36 28 38 16Z", "#e7f5ff", 'stroke="#74c0fc" stroke-width="3"') +
+    path("M32 54 Q41 50 50 54 T68 54 L68 88 Q68 92 64 92 L36 92 Q32 92 32 88Z", "#74c0fc") + path("M50 64 Q44 74 50 80 Q56 74 50 64Z", "#fff", 'opacity=".75"')));
+  add("tower", A(
+    rect(28, 30, 44, 62, "#adb5bd", 3) + [28, 44, 60].map((x) => rect(x, 18, 12, 14, "#868e96", 2)).join("") + rect(26, 28, 48, 6, "#868e96", 2) +
+    line("M28 48 L72 48 M28 64 L72 64 M28 80 L72 80 M40 34 L40 48 M58 48 L58 64 M40 64 L40 80 M58 80 L58 92", "#868e96", 2) +
+    path("M42 62 L42 54 Q50 46 58 54 L58 62Z", "#495057") + path("M42 92 L42 76 Q50 68 58 76 L58 92Z", "#8d5524") + line("M50 18 L50 4", "#495057", 2.5) + path("M50 4 L66 9 L50 14Z", "#fa5252")));
+  add("church", A(
+    rect(20, 58, 60, 34, "#f1e4c3", 2) + path("M14 60 L50 44 L86 60Z", "#c92a2a") + rect(40, 32, 20, 30, "#f1e4c3", 2) + path("M38 34 L50 14 L62 34Z", "#c92a2a") + line("M50 14 L50 2 M45 7 L55 7", "#ffd43b", 3) +
+    path("M43 92 L43 78 Q50 68 57 78 L57 92Z", "#6d4c1f") + circ(30, 76, 5, "#74c0fc") + circ(70, 76, 5, "#74c0fc") + circ(50, 46, 4, "#74c0fc")));
+  add("castle", A(
+    rect(10, 36, 22, 56, "#adb5bd", 2) + rect(68, 36, 22, 56, "#adb5bd", 2) + rect(28, 54, 44, 38, "#ced4da", 2) +
+    [10, 18, 26].map((x) => rect(x, 28, 7, 9, "#868e96", 1)).join("") + [68, 76, 84].map((x) => rect(x, 28, 7, 9, "#868e96", 1)).join("") + [32, 41, 50, 59].map((x) => rect(x, 46, 8, 9, "#868e96", 1)).join("") +
+    path("M42 92 L42 72 Q50 60 58 72 L58 92Z", "#6d4c1f") + line("M18 12 L18 28 M82 12 L82 28", "#495057", 2.5) + path("M18 12 L32 17 L18 22Z", "#fa5252") + path("M82 12 L96 17 L82 22Z", "#339af0") + rect(17, 50, 6, 12, "#495057", 3) + rect(77, 50, 6, 12, "#495057", 3)));
+  add("museum", A(
+    path("M6 38 L50 10 L94 38Z", "#ced4da", 'stroke="#868e96" stroke-width="2"') + circ(50, 28, 5, "#868e96") + rect(10, 38, 80, 8, "#adb5bd", 1) +
+    [16, 32, 48, 64, 80].map((x) => rect(x, 46, 8, 34, "#f1f3f5", 2, 'stroke="#ced4da" stroke-width="1.5"')).join("") + rect(6, 80, 88, 6, "#adb5bd", 1) + rect(2, 86, 96, 8, "#868e96", 1)));
+  add("fountain", A(
+    path("M6 74 Q50 100 94 74 L88 62 Q50 82 12 62Z", "#adb5bd") + elli(50, 62, 40, 9, "#74c0fc") + rect(46, 36, 8, 28, "#ced4da", 2) + elli(50, 36, 18, 5, "#adb5bd") + elli(50, 34, 14, 3.5, "#74c0fc") +
+    line("M50 34 L50 8 M50 28 Q36 10 28 24 M50 28 Q64 10 72 24", "#74c0fc", 3.5) + line("M28 24 Q26 34 30 42 M72 24 Q74 34 70 42", "#74c0fc", 2.5)));
+  add("statue", A(
+    rect(26, 76, 48, 18, "#868e96", 3) + rect(32, 66, 36, 11, "#adb5bd", 2) + circ(50, 20, 11, "#9fb8a8") + path("M36 64 L38 34 Q50 28 62 34 L64 64Z", "#9fb8a8") +
+    rect(28, 34, 9, 30, "#9fb8a8", 4.5) + rect(63, 34, 9, 30, "#9fb8a8", 4.5) + path("M44 48 L56 48 L56 60 L44 60Z", "#ced4da", 'opacity=".7"')));
+  add("bridge", A(
+    rect(2, 46, 96, 36, "#adb5bd", 2) + path("M8 82 Q20 52 32 82Z", "#e7f5ff") + path("M38 82 Q50 52 62 82Z", "#e7f5ff") + path("M68 82 Q80 52 92 82Z", "#e7f5ff") +
+    rect(0, 36, 100, 10, "#868e96", 2) + [8, 22, 36, 50, 64, 78, 92].map((x) => line(`M${x} 22 L${x} 36`, "#495057", 2.5)).join("") + line("M0 22 L100 22", "#495057", 3) +
+    path("M0 84 Q12 76 25 84 T50 84 T75 84 T100 84 L100 100 L0 100Z", "#4dabf7") + path("M0 93 Q12 86 25 93 T50 93 T75 93 T100 93 L100 100 L0 100Z", "#339af0")));
 })();

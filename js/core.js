@@ -106,6 +106,50 @@ function isCorrectAnswer(input, target) {
 
 const markFor = (percent) => MARKS.find((entry) => percent >= entry.min);
 
+/** Minimal SHA-256 (hex). Used only to compare the experimental-features password with a stored salted hash. */
+function sha256Hex(text) {
+  const rotr = (value, bits) => (value >>> bits) | (value << (32 - bits));
+  const bytes = [...new TextEncoder().encode(text)];
+  const bitLength = bytes.length * 8;
+  const k = [];
+  let h = [];
+  const composite = {};
+  for (let candidate = 2, found = 0; found < 64; candidate++) {
+    if (composite[candidate]) continue;
+    for (let multiple = candidate * candidate; multiple < 320; multiple += candidate) composite[multiple] = true;
+    if (found < 8) h[found] = (Math.sqrt(candidate) * 2 ** 32) | 0;
+    k[found++] = (Math.cbrt(candidate) * 2 ** 32) | 0;
+  }
+  bytes.push(0x80);
+  while (bytes.length % 64 !== 56) bytes.push(0);
+  const high = Math.floor(bitLength / 2 ** 32);
+  const low = bitLength >>> 0;
+  [high, low].forEach((part) => bytes.push((part >>> 24) & 255, (part >>> 16) & 255, (part >>> 8) & 255, part & 255));
+  const words = [];
+  for (let i = 0; i < bytes.length; i += 4) words.push((bytes[i] << 24) | (bytes[i + 1] << 16) | (bytes[i + 2] << 8) | bytes[i + 3]);
+  for (let block = 0; block < words.length; block += 16) {
+    const w = words.slice(block, block + 16);
+    for (let i = 16; i < 64; i++) {
+      const s0 = rotr(w[i - 15], 7) ^ rotr(w[i - 15], 18) ^ (w[i - 15] >>> 3);
+      const s1 = rotr(w[i - 2], 17) ^ rotr(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+      w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+    }
+    let [a, b, c, d, e, f, g, hh] = h;
+    for (let i = 0; i < 64; i++) {
+      const t1 = (hh + (rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25)) + ((e & f) ^ (~e & g)) + k[i] + w[i]) | 0;
+      const t2 = ((rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22)) + ((a & b) ^ (a & c) ^ (b & c))) | 0;
+      hh = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;
+    }
+    h = [h[0] + a, h[1] + b, h[2] + c, h[3] + d, h[4] + e, h[5] + f, h[6] + g, h[7] + hh].map((value) => value | 0);
+  }
+  return h.map((value) => (value >>> 0).toString(16).padStart(8, "0")).join("");
+}
+
+const EXPERIMENTAL_SALT = "wordol-lab:";
+const EXPERIMENTAL_HASH = "38abcadd4d2be3bc4d1c5d48189f69c0605a7f1e9dd3a8a608dc1f533e58e86a";
+/** Compares with a salted hash, so the password itself is not stored in the code (a light barrier only). */
+const isExperimentalPassword = (input) => sha256Hex(EXPERIMENTAL_SALT + input) === EXPERIMENTAL_HASH;
+
 // ====================================================================
 // State (persisted in localStorage)
 // ====================================================================

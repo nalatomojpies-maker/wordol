@@ -58,7 +58,7 @@ unit("goingto", 6, "🗓️", "Future: going to", "Plany i zamiary", [
   ]),
   step("goingto.3", "Will czy going to?", card(
     ["**going to** – wcześniej zaplanowane: I'm going to buy a bike (decyzja podjęta wcześniej).", "**will** – decyzja w chwili mówienia: The phone is ringing. I'll answer it."],
-    [["He is going to be a doctor.", "On zostanie lekarzem."], ["What are you going to do?", "Co zamierzasz zrobić?"]]), [
+    [["He is going to be a doctor.", "On zamierza zostać lekarzem."], ["What are you going to do?", "Co zamierzasz zrobić?"]]), [
     choice("I've decided: I ___ buy a new bike.", "am going to", "will"), choice("The phone is ringing. – I ___ answer it.", "will", "am going to"),
     gap("My sister ___ going to be a doctor.", "is"), ord("What are you going to do?", "Co zamierzasz zrobić?"),
   ]),
@@ -80,7 +80,7 @@ unit("comparatives", 6, "📈", "Stopniowanie przymiotników", "taller, the tall
   ]),
   step("comparatives.3", "Nieregularne", card(
     ["Nieregularne: **good → better → the best**, **bad → worse → the worst**.", "Po stopniu wyższym: **than** (niż)."],
-    [["He is better than me at tennis.", "On jest lepszy ode mnie w tenisa."], ["Elephants are the biggest animals on land.", "Słonie są największymi zwierzętami lądowymi."]]), [
+    [["He is better than me at tennis.", "On jest lepszy ode mnie w tenisie."], ["Elephants are the biggest animals on land.", "Słonie są największymi zwierzętami lądowymi."]]), [
     gap("He is ___ (good) than me at tennis.", "better"), choice("The weather is ___ today than yesterday. (bad)", "worse", "worst", "badder"),
     gap("Elephants are the ___ (big) animals on land.", "biggest"), choice("My brother is ___ than me. (old)", "older", "oldest", "more old"),
   ]),
@@ -267,8 +267,8 @@ unit("invitations", 7, "📞", "Zaproszenia i telefon", "Would you like to come?
     choice("Co znaczy „I'd love to”?", "Chętnie", "Nie chcę", "Nie wiem"), ord("Would you like to come?", "Czy chciałbyś przyjść?"),
   ]),
   step("invitations.2", "Rozmowa telefoniczna", card(
-    ["**Hello, this is Anna.** – Cześć, tu Anna.", "**Can I speak to Tom, please?** – Czy mogę rozmawiać z Tomkiem?", "**Hold on, please.** – Proszę poczekać.", "**Can I take a message?** – Czy mogę przekazać wiadomość?"],
-    [["Can I speak to Tom, please?", "Czy mogę rozmawiać z Tomkiem?"], ["Hold on, please.", "Proszę poczekać."]]), [
+    ["**Hello, this is Anna.** – Cześć, tu Anna.", "**Can I speak to Tom, please?** – Czy mogę prosić Tomka?", "**Hold on, please.** – Proszę poczekać.", "**Can I take a message?** – Czy mogę przekazać wiadomość?"],
+    [["Can I speak to Tom, please?", "Czy mogę prosić Tomka?"], ["Hold on, please.", "Proszę poczekać."]]), [
     choice("Dzwonisz i prosisz Toma do telefonu:", "Can I speak to Tom, please?", "Can I have the bill?", "Where is Tom?"), choice("Co znaczy „Hold on, please”?", "Proszę poczekać", "Proszę zadzwonić jutro", "Przepraszam, pomyłka"),
     choice("Przedstawiasz się przez telefon:", "Hello, this is Anna.", "Hello, I am telephone.", "Good night, Anna."), choice("Co znaczy „Can I take a message?”", "Czy mogę przekazać wiadomość?", "Czy mogę usiąść?", "Czy mogę wyjść?"),
   ]),
@@ -360,7 +360,7 @@ unit("ppvsps", 8, "⚔️", "Present Perfect czy Past Simple?", "Doświadczenie 
 unit("deduction", 8, "🕵️", "must, can't, might", "Przypuszczenia", [
   step("deduction.1", "Jak bardzo jesteś pewien?", card(
     ["**must be** – na pewno tak jest (jestem prawie pewien).", "**can't be** – na pewno tak nie jest.", "**might / may / could be** – możliwe (nie jestem pewien)."],
-    [["He must be tired.", "On musi być zmęczony."], ["She can't be at home.", "Jej nie może być w domu."], ["It might rain later.", "Może później padać."]]), [
+    [["He must be tired.", "On musi być zmęczony."], ["She can't be at home.", "Na pewno nie ma jej w domu."], ["It might rain later.", "Może później padać."]]), [
     choice("He has been running all day. He ___ be tired.", "must", "can't", "might not"), choice("She's in Paris. She ___ be at home.", "can't", "must", "might"),
     choice("I'm not sure, but it ___ rain later.", "might", "must", "can't"), choice("The phone is ringing. It ___ be Tom. (nie jestem pewien)", "might", "must", "can't"),
   ]),

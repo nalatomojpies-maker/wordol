@@ -61,7 +61,7 @@ const WORDOL_TOPICS = [
     1: "balloon|balon; puzzle|układanka; block|klocek; robot|robot",
     2: "present|prezent; birthday|urodziny; toy|zabawka",
     3: "Christmas|Boże Narodzenie; Easter|Wielkanoc; card|kartka",
-    4: "holiday party|przyjęcie świąteczne; candle|świeca; gift|upominek",
+    4: "fireworks|fajerwerki; candle|świeca; gift|upominek",
   } },
   { id: "school", name: "Szkoła", icon: "🏫", grades: {
     0: "book|książka; pen|długopis; pencil|ołówek",
@@ -187,7 +187,7 @@ const WORDOL_TOPICS = [
   } },
   { id: "verbs", name: "Czasowniki", icon: "🏃", grades: {
     1: "jump|skakać; run|biegać; sit|siedzieć; stand|stać; clap|klaskać; sing|śpiewać; dance|tańczyć",
-    2: "eat|jeść; drink|pić; sleep|spać; walk|chodzić; swim|pływać; play|grać; draw|rysować; open|otwierać; close|zamykać; look|patrzeć; listen|słuchać",
+    2: "eat|jeść; drink|pić; sleep|spać; walk|chodzić; swim|pływać; play|grać / bawić się; draw|rysować; open|otwierać; close|zamykać; look|patrzeć; listen|słuchać",
     3: "read|czytać; write|pisać; speak|mówić; watch|oglądać; see|widzieć; like|lubić; love|kochać; help|pomagać; wash|myć",
     4: "buy|kupować; sell|sprzedawać; work|pracować; study|uczyć się; ask|pytać; answer|odpowiadać; give|dawać; take|brać; make|robić; have|mieć; want|chcieć; know|wiedzieć; think|myśleć; live|mieszkać; wait|czekać; go|iść",
     5: "come|przychodzić; get up|wstawać; wake up|budzić się; go to bed|iść spać; brush|szczotkować; wear|nosić (ubranie); carry|nosić (w rękach); bring|przynosić; send|wysyłać",
@@ -226,13 +226,13 @@ const WORDOL_TOPICS = [
   { id: "phrases", name: "Zwroty", icon: "💬", grades: {
     0: "hello|cześć; yes|tak; no|nie",
     1: "goodbye|do widzenia; please|proszę; thank you|dziękuję; sorry|przepraszam",
-    2: "good morning|dzień dobry; good night|dobranoc; how are you?|jak się masz?; what's your name?|jak masz na imię?; I'm fine|dobrze się mam",
-    3: "welcome|witaj; see you later|do zobaczenia; I don't know|nie wiem; nice to meet you|miło cię poznać; my name is|mam na imię; I'm hungry|jestem głodny",
-    4: "can I help you?|czy mogę ci pomóc?; how much is it?|ile to kosztuje?; congratulations|gratulacje; excuse me|przepraszam, czy mogę; what time is it?|która jest godzina?; where is…?|gdzie jest…?",
+    2: "good morning|dzień dobry; good night|dobranoc; how are you?|jak się masz?; what's your name?|jak masz na imię?; I'm fine|w porządku",
+    3: "welcome|witaj / witamy; see you later|do zobaczenia; I don't know|nie wiem; nice to meet you|miło cię poznać; my name is|mam na imię; I'm hungry|jestem głodny",
+    4: "can I help you?|czy mogę ci pomóc?; how much is it?|ile to kosztuje?; congratulations|gratulacje; excuse me|przepraszam, że przeszkadzam; what time is it?|która jest godzina?; where is…?|gdzie jest…?",
     5: "I'd like…|chciałbym…; how old are you?|ile masz lat?; what's the matter?|co się stało?; good luck|powodzenia; happy birthday|wszystkiego najlepszego",
-    6: "could you…?|czy mógłbyś…?; would you like…?|czy chciałbyś…?; of course|oczywiście; never mind|nieważne; I agree|zgadzam się; I don't mind|nie mam nic przeciwko",
+    6: "could you…?|czy mógłbyś…?; would you like…?|czy chciałbyś…?; of course|oczywiście; never mind|nie szkodzi / nieważne; I agree|zgadzam się; I don't mind|nie mam nic przeciwko",
     7: "in my opinion|moim zdaniem; I'm afraid|obawiam się; as far as I know|o ile wiem; it depends|to zależy; by the way|à propos; on the other hand|z drugiej strony",
-    8: "to be honest|szczerze mówiąc; as a result|w rezultacie; in conclusion|podsumowując; it's up to you|to zależy od ciebie; what a pity|jaka szkoda; no way|w żadnym wypadku",
+    8: "to be honest|szczerze mówiąc; as a result|w rezultacie; in conclusion|podsumowując; it's up to you|to zależy od ciebie; what a pity|jaka szkoda; no way|nie ma mowy",
   } },
   { id: "health", name: "Zdrowie", icon: "🏥", grades: {
     3: "ill|chory",

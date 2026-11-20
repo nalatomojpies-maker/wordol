@@ -24,6 +24,10 @@ function activeNavFor(currentView) {
 
 function render() {
   applyTheme();
+  if (view !== "add") {
+    labOpen = false;
+    labUnlocked = false;
+  }
   document.body.classList.toggle("no-nav", view === "welcome");
   document.querySelectorAll(".nav button").forEach((button) => {
     button.classList.toggle("active", button.dataset.view === activeNavFor(view));
@@ -207,6 +211,11 @@ function renderSettings() {
       <label class="check" style="margin-top:14px"><input type="checkbox" data-setting="sound" ${settings.sound ? "checked" : ""}> Efekty dźwiękowe (kliknięcia, dobra / zła odpowiedź, nagrody)</label>
       <label class="check" style="margin-top:10px"><input type="checkbox" data-setting="autoSpeak" ${settings.autoSpeak ? "checked" : ""}> Automatycznie czytaj angielskie słowa</label>
       <p class="muted small">Przeglądarki włączają dźwięk dopiero po pierwszym dotknięciu ekranu. Czytane są tylko angielskie słowa.</p>
+    </section>
+    <section class="card danger-zone">
+      <h2>Zacznij od nowa</h2>
+      <p class="muted">Usuwa imię, klasę, postępy, XP, odznaki, własne słowa i ustawienia z tego urządzenia. Nie da się tego cofnąć.</p>
+      <button class="btn danger" data-action="resetProfile">🗑️ Wyczyść profil</button>
     </section>`;
 }
 

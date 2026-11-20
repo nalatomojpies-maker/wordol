@@ -133,7 +133,7 @@ unit("g2-am", 2, "🧍", "I am, you are, he is", "Czasownik „być” – pierw
   ]),
   step("g2-am.3", "We are, they are", card(
     ["**We are** – jesteśmy", "**They are** – oni / one są"],
-    [["We are friends.", "Jesteśmy przyjaciółmi."], ["They are at school.", "Oni są w szkole."]]), [
+    [["We are friends.", "Jesteśmy przyjaciółmi."], ["They are at school.", "Są w szkole."]]), [
     choice("We ___ friends.", "are", "is", "am"), choice("They ___ at school.", "are", "is", "am"),
     choice("Tom and I ___ happy.", "are", "is", "am"), choice("My parents ___ at home.", "are", "is", "am"),
   ]),
@@ -216,15 +216,15 @@ unit("g3-plural", 3, "➕", "Liczba mnoga", "Jeden pies – dwa psy", [
     gap("one child – two ___", "children"), gap("one foot – two ___", "feet"), gap("one tooth – two ___", "teeth"), gap("one mouse – two ___", "mice"),
   ]),
 ]);
-unit("g3-thisis", 3, "👉", "This, that, these, those", "To jest, tamto jest", [
+unit("g3-thisis", 3, "👉", "This, that, these, those", "To jest – tamto", [
   step("g3-thisis.1", "This is, that is", card(
-    ["**This is** – to jest (blisko mnie)", "**That is** – tamto jest (daleko ode mnie)"],
-    [["This is a ball.", "To jest piłka."], ["That is a tree.", "Tamto jest drzewo."]]), [
+    ["**This is** – to jest (blisko mnie)", "**That is** – tamto / to tam (daleko ode mnie)"],
+    [["This is a ball.", "To jest piłka."], ["That is a tree.", "Tamto to drzewo."]]), [
     choice("Trzymasz piłkę w ręce: ___ is a ball.", "This", "That"), choice("Pokazujesz drzewo daleko: ___ is a tree.", "That", "This"),
     choice("___ is my bag. (mam go przy sobie)", "This", "That"), choice("___ is a bird. (na dachu, daleko)", "That", "This"),
   ]),
   step("g3-thisis.2", "These are, those are", card(
-    ["**These are** – to są (blisko)", "**Those are** – tamte są (daleko)"],
+    ["**These are** – to są (blisko)", "**Those are** – tamte / to tamte (daleko)"],
     [["These are my shoes.", "To są moje buty."], ["Those are birds.", "Tamte to ptaki."]]), [
     choice("___ are my shoes. (mam je przy sobie)", "These", "Those"), choice("___ are birds. (daleko, na niebie)", "Those", "These"),
     choice("___ are my books. (na moim biurku)", "These", "Those"), choice("___ are trees. (daleko w parku)", "Those", "These"),

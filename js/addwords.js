@@ -5,6 +5,53 @@
 // ====================================================================
 let addDraft = { text: "", rows: [], busy: false };
 
+// Experimental features (OCR) are hidden behind a password that is asked every time the section is opened.
+let labOpen = false;
+let labUnlocked = false;
+
+function experimentalSection() {
+  const toggle = `<button class="options-toggle" data-action="toggleLab" aria-expanded="${labOpen}"><span>🧪 Funkcje eksperymentalne</span><span>${labOpen ? "▲" : "▼"}</span></button>`;
+  if (!labOpen) return `<section class="card options-card">${toggle}<p class="muted small">Dla zaawansowanych – wymagają hasła.</p></section>`;
+  if (!labUnlocked) {
+    return `<section class="card">${toggle}
+      <form data-form="lab" autocomplete="off">
+        <label class="field" for="labPassword">Hasło</label>
+        <div class="row"><input type="password" id="labPassword" class="grow" autocomplete="off"><button class="btn primary" type="submit">Odblokuj</button></div>
+      </form></section>`;
+  }
+  return `<section class="card">${toggle}
+    <h2>Wczytaj zdjęcie (OCR)</h2>
+    <div class="dropzone">
+      <input type="file" id="imageInput" accept="image/*">
+      <div id="imagePreview"></div>
+      <div class="ocr-bar hidden" id="ocrBar"><div id="ocrProgress"></div></div>
+      <p class="muted" id="ocrStatus">OCR działa w przeglądarce (Tesseract.js). Przy pierwszym użyciu pobiera moduł z internetu.</p>
+    </div>
+    <button class="btn ghost" data-action="lockLab">🔒 Zablokuj</button>
+  </section>`;
+}
+
+/** Re-draws the page without losing the words typed so far. */
+function rerenderAdd() {
+  const area = $("#wordsText");
+  if (area) addDraft.text = area.value;
+  renderAdd();
+}
+
+function unlockLab() {
+  const input = $("#labPassword");
+  const isCorrect = isExperimentalPassword(input.value);
+  input.value = "";
+  if (!isCorrect) {
+    sfx("bad");
+    toast("Nieprawidłowe hasło.");
+    return;
+  }
+  labUnlocked = true;
+  sfx("ok");
+  rerenderAdd();
+}
+
 function renderAdd() {
   app.innerHTML = `
     <section class="card">
@@ -18,15 +65,7 @@ function renderAdd() {
         <option value="pl">Polski</option>
       </select>
     </section>
-    <section class="card">
-      <h2>Albo wczytaj zdjęcie</h2>
-      <div class="dropzone">
-        <input type="file" id="imageInput" accept="image/*">
-        <div id="imagePreview"></div>
-        <div class="ocr-bar hidden" id="ocrBar"><div id="ocrProgress"></div></div>
-        <p class="muted" id="ocrStatus">OCR działa w przeglądarce (Tesseract.js). Przy pierwszym użyciu pobiera moduł z internetu.</p>
-      </div>
-    </section>
+    ${experimentalSection()}
     <button class="btn primary" data-action="prepare" id="prepareButton">Przygotuj listę</button>
     <section id="preview" class="card hidden" style="margin-top:16px"></section>
     ${renderCustomList()}`;

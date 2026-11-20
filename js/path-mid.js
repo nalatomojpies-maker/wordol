@@ -256,7 +256,7 @@ unit("directions", 5, "🧭", "Jak dojść?", "Turn left, go straight on", [
   ]),
   step("directions.2", "Pytamy o drogę", card(
     ["**Excuse me, where is the bank?** – Przepraszam, gdzie jest bank?", "**It's on the left / on the right.** – To jest po lewej / po prawej."],
-    [["Excuse me, where is the bank?", "Przepraszam, gdzie jest bank?"], ["It's on the left.", "To jest po lewej."]]), [
+    [["Excuse me, where is the bank?", "Przepraszam, gdzie jest bank?"], ["It's on the left.", "Jest po lewej stronie."]]), [
     choice("Pytasz o drogę:", "Excuse me, where is the station?", "Excuse me, what time is it?", "Excuse me, how much is it?"),
     choice("Where is the post office? – It's ___.", "on the left", "five pounds", "at seven"),
     ord("Excuse me, where is the bank?", "Przepraszam, gdzie jest bank?"), gap("Excuse me, ___ is the museum?", "where"),

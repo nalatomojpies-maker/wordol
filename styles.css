@@ -100,7 +100,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .btn.wide { width: 100%; margin-top: 14px; }
 .btn.round { width: 44px; height: 44px; padding: 0; border-radius: 50%; }
 .btn:disabled { opacity: .5; cursor: default; }
-input[type="text"], input[type="number"], select, textarea {
+input[type="text"], input[type="number"], input[type="password"], select, textarea {
   width: 100%; padding: 10px 12px; border: 2px solid var(--border); border-radius: 14px; background: var(--bg);
 }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); }
@@ -404,3 +404,31 @@ input[type="range"] { width: 100%; accent-color: var(--primary); }
 }
 .kind-chip .task { color: var(--muted); font-weight: 700; }
 .kind-chip .task::before { content: "·"; margin-right: 8px; }
+
+/* ================= Phone: full screen, safe areas, no accidental zoom / pull-to-refresh ================= */
+html { overscroll-behavior: none; -webkit-text-size-adjust: 100%; }
+body { overscroll-behavior-y: none; touch-action: manipulation; -webkit-touch-callout: none; }
+button, .chip, .topic, .mode, .option, .pair, .tile, .slot { -webkit-user-select: none; user-select: none; }
+input, textarea { -webkit-user-select: text; user-select: text; }
+.topbar {
+  padding-top: calc(6px + env(safe-area-inset-top)); padding-left: calc(14px + env(safe-area-inset-left)); padding-right: calc(14px + env(safe-area-inset-right));
+}
+.app { padding-left: calc(16px + env(safe-area-inset-left)); padding-right: calc(16px + env(safe-area-inset-right)); }
+.nav { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+.topbar .icon-btn + .icon-btn { margin-left: -4px; }
+/* Already installed / full screen: the full-screen button is not needed. */
+@media (display-mode: fullscreen), (display-mode: standalone) { #fsBtn { display: none; } }
+/* Landscape phones: compact layout */
+@media (orientation: landscape) and (max-height: 500px) {
+  .nav button { padding: 3px 2px; font-size: .65rem; }
+  .nav .ico { font-size: 1.1rem; }
+  .emoji-big { font-size: 4rem; }
+  .app { padding-bottom: 70px; }
+}
+.danger-zone { border-color: var(--bad); }
+#fsBtn { margin-left: auto; }
+@media (min-width: 760px) {
+  .nav { order: 1; margin: 0 auto; }
+  #fsBtn { order: 2; margin-left: 0; }
+  #musicBtn { order: 3; }
+}

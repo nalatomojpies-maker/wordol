@@ -120,6 +120,10 @@ const actions = {
     saveState();
     renderAdd();
   },
+  toggleLab: () => { labOpen = !labOpen; if (!labOpen) labUnlocked = false; rerenderAdd(); },
+  lockLab: () => { labUnlocked = false; labOpen = false; rerenderAdd(); },
+  toggleFullscreen: () => toggleFullscreen(),
+  resetProfile: () => resetProfile(),
   resetStats: () => {
     if (!confirm("Na pewno wyzerować wszystkie postępy (statystyki, kroki, XP)?")) return;
     state.stats = defaultState().stats;
@@ -144,6 +148,11 @@ document.addEventListener("click", (event) => {
 document.addEventListener("visibilitychange", pauseAudioWhenHidden);
 
 document.addEventListener("submit", (event) => {
+  if (event.target.dataset.form === "lab") {
+    event.preventDefault();
+    unlockLab();
+    return;
+  }
   if (event.target.dataset.form === "typing") {
     event.preventDefault();
     submitTyping();
@@ -180,3 +189,69 @@ document.addEventListener("input", (event) => {
 const brandMascot = $("#brandMascot");
 if (brandMascot) brandMascot.innerHTML = rychuSvg("happy", 38);
 render();
+
+// ====================================================================
+// Full screen (phones) & profile reset
+// ====================================================================
+const isInstalledApp = () =>
+  window.matchMedia("(display-mode: fullscreen), (display-mode: standalone)").matches || navigator.standalone === true;
+const fullscreenElement = () => document.fullscreenElement || document.webkitFullscreenElement || null;
+
+function updateFullscreenButton() {
+  const button = $("#fsBtn");
+  if (!button) return;
+  button.textContent = fullscreenElement() ? "🗗" : "⛶";
+  button.setAttribute("aria-label", fullscreenElement() ? "Zamknij pełny ekran" : "Pełny ekran");
+}
+
+async function toggleFullscreen() {
+  const root = document.documentElement;
+  const request = root.requestFullscreen || root.webkitRequestFullscreen;
+  if (isInstalledApp()) {
+    toast("Aplikacja już działa na pełnym ekranie.");
+    return;
+  }
+  if (!request) {
+    toast("iPhone / iPad: Udostępnij → „Dodaj do ekranu głównego”, a aplikacja ruszy na pełnym ekranie.");
+    return;
+  }
+  try {
+    if (fullscreenElement()) {
+      await (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    } else {
+      await request.call(root, { navigationUI: "hide" });
+      if (screen.orientation && screen.orientation.lock) screen.orientation.lock("portrait").catch(() => {});
+    }
+  } catch {
+    toast("Nie udało się włączyć pełnego ekranu.");
+  }
+}
+
+["fullscreenchange", "webkitfullscreenchange"].forEach((type) =>
+  document.addEventListener(type, () => {
+    updateFullscreenButton();
+    if (!fullscreenElement() && screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+  }));
+updateFullscreenButton();
+
+/** Wipes everything stored on this device (profile, progress, own words, settings) and starts from the welcome screen. */
+function resetProfile() {
+  const message = "Wyczyścić cały profil?\n\nZostanie usunięte: imię, klasa, postępy, XP, odznaki, własne słowa i ustawienia.\nTego nie da się cofnąć.";
+  if (!confirm(message)) return;
+  try {
+    localStorage.removeItem(STORE_KEY);
+  } catch {
+    /* storage blocked – the in-memory reset below still works */
+  }
+  Object.assign(state, defaultState());
+  session = null;
+  workout = null;
+  learnGrade = null;
+  greetingText = null;
+  showTrainingOptions = false;
+  welcomeDraft = { grade: state.settings.grade };
+  startMusic();
+  view = "welcome";
+  render();
+  toast("Profil wyczyszczony – zaczynamy od nowa!");
+}
