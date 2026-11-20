@@ -1,0 +1,14 @@
+{
+  "name": "WORDOL – Rychu personal trainer",
+  "short_name": "WORDOL",
+  "description": "Nauka angielskich słówek i gramatyki dla klas 0–8 z trenerem Rychu",
+  "lang": "pl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f1f4ff",
+  "theme_color": "#5b6cff",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
