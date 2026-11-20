@@ -8,8 +8,8 @@ let currentUnitId = null;
 let currentStepId = null;
 
 function startReview(grade) {
-  const exercises = unitsForGrade(grade).flatMap((unit) =>
-    unit.steps.flatMap((stepData) => stepData.exercises.map((exercise, index) => buildPathItem(`review:${stepData.id}`, exercise, index))));
+  const exercises = availableUnitsForGrade(grade).flatMap((unit) =>
+    unit.steps.flatMap((stepData) => stepExercisesFor(stepData).map((exercise, index) => buildPathItem(`review:${stepData.id}`, exercise, index))));
   if (exercises.length < 4) {
     toast("Za mało ćwiczeń do powtórki w tej klasie.");
     return;
@@ -19,7 +19,7 @@ function startReview(grade) {
 
 function renderLearn() {
   const grade = learnGrade ?? currentGrade();
-  const units = unitsForGrade(grade);
+  const units = availableUnitsForGrade(grade);
   const totalSteps = units.reduce((sum, unit) => sum + unit.steps.length, 0);
   const passedSteps = units.reduce((sum, unit) => sum + unitPassedCount(unit), 0);
   const info = GRADE_INFO[grade];
@@ -32,6 +32,7 @@ function renderLearn() {
       ${GRADE_INFO.map((entry) => `<button class="chip ${entry.id === grade ? "active" : ""}" data-action="learnGrade" data-grade="${entry.id}">${entry.emoji} ${entry.id === 0 ? "0" : entry.id}${entry.id === currentGrade() ? " ★" : ""}</button>`).join("")}
     </div>
     <p class="muted center-text">${info.label} · zaliczone kroki: <b>${passedSteps}/${totalSteps}</b></p>
+    ${units.length === 0 && state.settings.noSound ? `<section class="card"><p>🔇 Tryb „Brak dźwięku” jest włączony. Zadania tej klasy wymagają słuchania, więc są ukryte. Możesz wyłączyć tryb w Profilu.</p></section>` : ""}
     <section class="grid lessons">
       ${units.map((unit) => {
         const passed = unitPassedCount(unit);
@@ -105,5 +106,5 @@ function renderStepCard() {
     <div class="row center">
       <button class="btn primary big" data-action="startStep" data-id="${stepData.id}">Ćwiczymy! →</button>
     </div>
-    <p class="muted center-text small">Aby zaliczyć krok, odpowiedz poprawnie na ${passThreshold(stepData.exercises.length)} z ${stepData.exercises.length} pytań.</p>`;
+    <p class="muted center-text small">Aby zaliczyć krok, odpowiedz poprawnie na ${passThreshold(stepExercisesFor(stepData).length)} z ${stepExercisesFor(stepData).length} pytań.</p>`;
 }

@@ -37,6 +37,8 @@ function render() {
     stats: renderStats, settings: renderSettings, session: renderSessionFrame, result: renderResult,
   };
   renderers[view]();
+  if (view !== "session") app.insertAdjacentHTML("beforeend", footerHtml());
+  scheduleSupportCheck();
   setMusicForView(view);
   updateMusicButton();
   window.scrollTo(0, 0);
@@ -208,7 +210,8 @@ function renderSettings() {
       <label class="check"><input type="checkbox" data-setting="music" ${settings.music ? "checked" : ""}> Cicha muzyka w menu 🎵</label>
       <label class="field" for="volumeRange">Głośność muzyki: <b id="volumeLabel">${Math.round(settings.musicVolume * 100)}%</b></label>
       <input type="range" id="volumeRange" data-setting="musicVolume" min="0" max="100" step="5" value="${Math.round(settings.musicVolume * 100)}">
-      <label class="check" style="margin-top:14px"><input type="checkbox" data-setting="sound" ${settings.sound ? "checked" : ""}> Efekty dźwiękowe (kliknięcia, dobra / zła odpowiedź, nagrody)</label>
+      <label class="check" style="margin-top:14px"><input type="checkbox" data-setting="noSound" ${settings.noSound ? "checked" : ""}> 🔇 Brak dźwięku – ukryj ćwiczenia ze słuchaniem (Wskaż obrazek, Dyktando i zadania „posłuchaj”)</label>
+      <label class="check" style="margin-top:10px"><input type="checkbox" data-setting="sound" ${settings.sound ? "checked" : ""}> Efekty dźwiękowe (kliknięcia, dobra / zła odpowiedź, nagrody)</label>
       <label class="check" style="margin-top:10px"><input type="checkbox" data-setting="autoSpeak" ${settings.autoSpeak ? "checked" : ""}> Automatycznie czytaj angielskie słowa</label>
       <p class="muted small">Przeglądarki włączają dźwięk dopiero po pierwszym dotknięciu ekranu. Czytane są tylko angielskie słowa.</p>
     </section>

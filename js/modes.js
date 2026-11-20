@@ -6,7 +6,8 @@ let session = null;
 let workout = null;
 
 const modeById = (id) => MODES.find((entry) => entry.id === id);
-const modesForGrade = () => MODES.filter((mode) => mode.home !== false && mode.minGrade <= currentGrade());
+const modesForGrade = () =>
+  MODES.filter((mode) => mode.home !== false && mode.minGrade <= currentGrade() && !(state.settings.noSound && mode.needsAudio));
 const emojiBig = (emoji) => `<div class="emoji-big" role="img" aria-label="obrazek">${emoji}</div>`;
 
 /** Small label above a question: what kind of thing it is and what to do ("🎨 Kolor · znaczenie po polsku"). */
@@ -85,6 +86,10 @@ function openSession(modeId, items, extra = {}) {
 
 function startSession(modeId, options = {}) {
   const mode = modeById(modeId);
+  if (state.settings.noSound && mode.needsAudio) {
+    toast("To ćwiczenie wymaga słuchania – wyłącz „Brak dźwięku” w Profilu.");
+    return false;
+  }
   const needsSpeech = modeId === "listen" || modeId === "listenpick";
   if (needsSpeech && !speechAvailable()) {
     toast("Ta przeglądarka nie obsługuje czytania na głos.");
@@ -126,7 +131,12 @@ function startNextWorkoutBlock() {
 /** Starts the confirming exercises of one learning-path step. */
 function startStep(stepId) {
   const stepData = stepById(stepId);
-  const items = stepData.exercises.map((exercise, index) => buildPathItem(stepId, exercise, index));
+  const exercises = stepExercisesFor(stepData);
+  if (exercises.length < 3) {
+    toast("Ten krok wymaga słuchania – wyłącz „Brak dźwięku” w Profilu.");
+    return;
+  }
+  const items = exercises.map((exercise, index) => buildPathItem(stepId, exercise, index));
   openSession("lessonTest", items, { stepId });
 }
 

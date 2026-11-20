@@ -122,6 +122,13 @@ const actions = {
   },
   toggleLab: () => { labOpen = !labOpen; if (!labOpen) labUnlocked = false; rerenderAdd(); },
   lockLab: () => { labUnlocked = false; labOpen = false; rerenderAdd(); },
+  showBlik: () => showBlik(),
+  copyBlik: () => copyBlik(),
+  supportDonated: () => { writeSupportStatus("donated"); closeModal("supportModal"); toast("Dziękuję! ☕ Ta prośba już się nie pojawi."); },
+  supportDeclined: () => { writeSupportStatus("declined"); closeModal("supportModal"); },
+  supportLater: () => closeModal("supportModal"),
+  openLegal: () => openLegalModal(),
+  closeLegal: () => closeModal("legalModal"),
   toggleFullscreen: () => toggleFullscreen(),
   resetProfile: () => resetProfile(),
   resetStats: () => {
@@ -186,6 +193,7 @@ document.addEventListener("input", (event) => {
   if (["name", "musicVolume"].includes(event.target.dataset.setting)) handleSettingChange(event.target);
 });
 
+startSupportTimer();
 const brandMascot = $("#brandMascot");
 if (brandMascot) brandMascot.innerHTML = rychuSvg("happy", 38);
 render();

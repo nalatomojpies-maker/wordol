@@ -43,7 +43,7 @@ const STATUS_FILTERS = [
 ];
 /** minGrade = first class in which the exercise is offered (class 0 cannot read or write). */
 const MODES = [
-  { id: "listenpick", name: "Wskaż obrazek", icon: "👂", desc: "Posłuchaj i wskaż obrazek", minGrade: 0, color: "#ff7a59" },
+  { id: "listenpick", name: "Wskaż obrazek", icon: "👂", desc: "Posłuchaj i wskaż obrazek", minGrade: 0, color: "#ff7a59", needsAudio: true },
   { id: "memory", name: "Memory", icon: "🧠", desc: "Znajdź pary obrazków", minGrade: 0, color: "#8e6bff" },
   { id: "cards", name: "Fiszki", icon: "🎴", desc: "Odwracaj i oceniaj się", minGrade: 0, color: "#ffb02e" },
   { id: "pictures", name: "Obrazki", icon: "🖼️", desc: "Odgadnij słowo po obrazku", minGrade: 1, color: "#22b8cf" },
@@ -52,7 +52,7 @@ const MODES = [
   { id: "quiz", name: "Test wyboru", icon: "✅", desc: "Wybierz poprawne znaczenie", minGrade: 2, color: "#5b6cff" },
   { id: "type", name: "Wpisywanie", icon: "⌨️", desc: "Wpisz tłumaczenie", minGrade: 3, color: "#7950f2" },
   { id: "sentences", name: "Układanie zdań", icon: "🧩", desc: "Ułóż zdanie z klocków", minGrade: 3, color: "#fd7e14" },
-  { id: "listen", name: "Dyktando", icon: "🎧", desc: "Posłuchaj i napisz", minGrade: 3, color: "#339af0" },
+  { id: "listen", name: "Dyktando", icon: "🎧", desc: "Posłuchaj i napisz", minGrade: 3, color: "#339af0", needsAudio: true },
   { id: "irregular", name: "Czasowniki nieregularne", icon: "⏪", desc: "Wpisz formę Past Simple", minGrade: 5, color: "#e64980" },
   { id: "lessonTest", name: "Ćwiczenia ze ścieżki", icon: "🎓", desc: "", minGrade: 0, color: "#5b6cff", home: false },
 ];
@@ -146,7 +146,7 @@ function sha256Hex(text) {
 }
 
 const EXPERIMENTAL_SALT = "wordol-lab:";
-const EXPERIMENTAL_HASH = "38abcadd4d2be3bc4d1c5d48189f69c0605a7f1e9dd3a8a608dc1f533e58e86a";
+const EXPERIMENTAL_HASH = "a0759c9c3c6b87bd9195fe83fd7ead1f00d38d4ec163ca3be57491a541342416";
 /** Compares with a salted hash, so the password itself is not stored in the code (a light barrier only). */
 const isExperimentalPassword = (input) => sha256Hex(EXPERIMENTAL_SALT + input) === EXPERIMENTAL_HASH;
 
@@ -157,10 +157,11 @@ function defaultState() {
   return {
     settings: {
       name: "", grade: 5, onboarded: false, theme: "light", sessionLength: 0, dailyGoal: 0, difficulty: "medium",
-      direction: "mix", sound: true, music: true, musicVolume: 0.3, autoSpeak: false, wordScope: "own", status: "all", topics: [], grammarTopics: [],
+      direction: "mix", sound: true, music: true, musicVolume: 0.3, noSound: false, autoSpeak: false, wordScope: "own", status: "all", topics: [], grammarTopics: [],
     },
     custom: [],
     cache: {},
+    support: { seconds: 0, fired: {} },
     path: {},
     stats: { words: {}, sessions: [], lastDay: "", streak: 0, xp: 0, correctTotal: 0, daily: { day: "", count: 0 }, badges: {} },
   };
@@ -177,6 +178,7 @@ function loadState() {
       custom: Array.isArray(parsed.custom) ? parsed.custom : [],
       cache: isObject(parsed.cache) ? parsed.cache : {},
       path: isObject(parsed.path) ? parsed.path : {},
+      support: { ...defaults.support, ...(isObject(parsed.support) ? parsed.support : {}) },
       stats: { ...defaults.stats, ...(isObject(parsed.stats) ? parsed.stats : {}) },
     };
   } catch {
@@ -185,6 +187,7 @@ function loadState() {
 }
 
 const state = loadState();
+if (!state.support.fired || typeof state.support.fired !== "object") state.support.fired = {};
 
 function saveState() {
   try {
@@ -329,6 +332,11 @@ const unitPassedCount = (unit) => unit.steps.filter((entry) => isStepPassed(entr
 const isUnitDone = (unit) => unitPassedCount(unit) === unit.steps.length;
 const passThreshold = (exerciseCount) => Math.max(1, Math.round(exerciseCount * STEP_PASS_RATIO));
 const unitsForGrade = (grade) => PATH_UNITS.filter((unit) => unit.grade === grade);
+
+/** "Brak dźwięku": exercises that need listening to the voice are left out. */
+const stepExercisesFor = (stepData) => (state.settings.noSound ? stepData.exercises.filter((exercise) => exercise.t !== "pic") : stepData.exercises);
+const isUnitAvailable = (unit) => unit.steps.some((stepData) => stepExercisesFor(stepData).length >= 3);
+const availableUnitsForGrade = (grade) => unitsForGrade(grade).filter(isUnitAvailable);
 
 // ====================================================================
 // Sentences for the sentence builder (from SENTENCE_DATA and the examples of path units)
