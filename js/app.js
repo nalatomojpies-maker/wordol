@@ -122,6 +122,7 @@ const actions = {
   },
   toggleLab: () => { labOpen = !labOpen; if (!labOpen) labUnlocked = false; rerenderAdd(); },
   lockLab: () => { labUnlocked = false; labOpen = false; rerenderAdd(); },
+  acceptTerms: () => acceptTerms(),
   showBlik: () => showBlik(),
   copyBlik: () => copyBlik(),
   supportDonated: () => { writeSupportStatus("donated"); closeModal("supportModal"); toast("Dziękuję! ☕ Ta prośba już się nie pojawi."); },
@@ -197,6 +198,7 @@ startSupportTimer();
 const brandMascot = $("#brandMascot");
 if (brandMascot) brandMascot.innerHTML = rychuSvg("happy", 38);
 render();
+showIntroIfNeeded();
 
 // ====================================================================
 // Full screen (phones) & profile reset
@@ -261,5 +263,6 @@ function resetProfile() {
   startMusic();
   view = "welcome";
   render();
+  showIntroIfNeeded();
   toast("Profil wyczyszczony – zaczynamy od nowa!");
 }

@@ -440,7 +440,7 @@ function drawCard() {
 function renderMemory() {
   const roundWords = session.items.slice(session.index, session.index + memoryPairs());
   const cards = shuffle(roundWords.flatMap((word) => [word, word]));
-  session.current = { roundWords, cards, open: [], matched: new Set(), faults: new Set() };
+  session.current = { roundWords, cards, open: [], matched: new Set() };
   stageElement().innerHTML = `
     ${kindChipRaw("🧠", "Memory", "znajdź pary obrazków")}
     <p class="hint">Znajdź pary takich samych obrazków</p>
@@ -467,7 +467,7 @@ function flipMemory(button) {
     memory.matched.add(firstWord.id);
     memory.open = [];
     [first, second].forEach((position) => buttons[position].classList.add("done"));
-    record(firstWord, !memory.faults.has(firstWord.id));
+    record(firstWord, true);
     beep(true);
     if (memory.matched.size === memory.roundWords.length) {
       session.locked = true;
@@ -475,8 +475,6 @@ function flipMemory(button) {
     }
     return;
   }
-  memory.faults.add(firstWord.id);
-  memory.faults.add(memory.cards[second].id);
   beep(false);
   session.locked = true;
   later(() => {

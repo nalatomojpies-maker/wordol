@@ -219,7 +219,7 @@ const SUPPORT_TRIGGERS = [
 ];
 
 function maybeShowSupport() {
-  if (supportStatus() || $("#supportModal") || $("#legalModal") || SUPPORT_QUIET_VIEWS.includes(view)) return;
+  if (supportStatus() || $("#supportModal") || $("#legalModal") || $("#introModal") || SUPPORT_QUIET_VIEWS.includes(view)) return;
   const due = SUPPORT_TRIGGERS.filter((trigger) => !state.support.fired[trigger.id] && trigger.test());
   if (due.length === 0) return;
   due.forEach((trigger) => { state.support.fired[trigger.id] = Date.now(); });
@@ -247,3 +247,61 @@ function startSupportTimer() {
 }
 
 const scheduleSupportCheck = () => setTimeout(maybeShowSupport, SUPPORT_CHECK_DELAY_MS);
+
+// ====================================================================
+// Welcome notice ("Zanim zaczniesz") – shown until confirmed, again after "Wyczyść profil"
+// ====================================================================
+/** Raise this number when the text below changes in a way users should read again. */
+const TERMS_VERSION = 1;
+
+const termsAccepted = () => Number(state.settings.termsAccepted) >= TERMS_VERSION;
+
+function setPageInert(isInert) {
+  [$(".topbar"), $("#app")].forEach((element) => {
+    if (element) element.inert = isInert;
+  });
+}
+
+function openIntroModal() {
+  if ($("#introModal")) return;
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="modal-backdrop" id="introModal" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+      <div class="modal legal intro">
+        <div class="modal-rychu">${rychuSvg("cheer", 76)}</div>
+        <h2 id="introTitle">Zanim zaczniesz 👋</h2>
+        <ul class="intro-list">
+          <li>💚 <b>Całkowicie darmowy.</b> WORDOL jest w pełni darmowy i powstał na własne potrzeby, żeby ułatwić naukę angielskiego. Nie ma reklam, kont ani ukrytych opłat.</li>
+          <li>📜 <b>Licencja.</b> © ${COPYRIGHT_YEAR} ${AUTHOR_LINE}. Darmowy do użytku niekomercyjnego (domowego i edukacyjnego), wszelkie prawa zastrzeżone. Bez zgody autora nie wolno go sprzedawać, wykorzystywać komercyjnie ani rozpowszechniać zmienionych kopii.</li>
+          <li>🔧 <b>Z czego korzysta:</b>
+            <ul>
+              <li><b>Głos (lektor)</b> – wbudowany syntezator mowy Twojej przeglądarki lub urządzenia. Aplikacja nie ma własnych nagrań, a jakość zależy od zainstalowanych głosów (niektóre, np. w Chrome, działają przez internet).</li>
+              <li><b>Muzyka i dźwięki</b> – generowane w przeglądarce.</li>
+              <li><b>Tłumaczenie własnych słów</b> – usługa MyMemory (translated.net), do której trafiają wpisane słowa.</li>
+              <li><b>Hosting</b> – GitHub Pages. Funkcja eksperymentalna (OCR) pobiera moduł Tesseract.js z jsDelivr.</li>
+              <li><b>Bez ciasteczek, reklam i śledzenia.</b> Imię, klasa i postępy zostają tylko na Twoim urządzeniu.</li>
+            </ul>
+          </li>
+          <li>🔇 <b>Nie masz dźwięku?</b> W <i>Profil → Brak dźwięku</i> włączysz tryb, w którym gra dostosuje się do tej opcji i ukryje ćwiczenia wymagające słuchania.</li>
+          <li>☕ <b>Podoba Ci się?</b> Możesz postawić mi kawę BLIKIEM na numer telefonu. To zupełnie dobrowolne.
+            <div id="blikBox" class="blik-box"><button class="btn" data-action="showBlik">📱 Pokaż numer BLIK</button></div>
+          </li>
+        </ul>
+        <p class="small muted center-text"><button class="link" data-action="openLegal">Pełny regulamin, licencja i prywatność</button></p>
+        <div class="modal-actions"><button class="btn primary big" data-action="acceptTerms">✔ Zapoznałem się</button></div>
+      </div>
+    </div>`);
+  setPageInert(true);
+  const accept = $("#introModal .btn.primary");
+  if (accept) accept.focus();
+}
+
+function acceptTerms() {
+  state.settings.termsAccepted = TERMS_VERSION;
+  saveState();
+  closeModal("introModal");
+  setPageInert(false);
+}
+
+function showIntroIfNeeded() {
+  if (!termsAccepted()) openIntroModal();
+}
