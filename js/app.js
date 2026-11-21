@@ -16,7 +16,7 @@ function applyGradeDefaults(grade) {
   settings.grade = grade;
   settings.topics = [];
   settings.grammarTopics = [];
-  settings.wordScope = "own";
+  settings.wordScope = "upto";
   settings.status = "all";
   settings.difficulty = grade <= 2 ? "easy" : "medium";
   settings.autoSpeak = grade <= 3;
@@ -46,25 +46,25 @@ const actions = {
     render();
   },
   setTheme: (element) => { state.settings.theme = element.dataset.themeId; saveState(); render(); },
-  setDifficulty: (element) => { state.settings.difficulty = element.dataset.id; saveState(); render(); },
+  setDifficulty: (element) => { state.settings.difficulty = element.dataset.id; saveState(); render(true); },
   toggleOptions: () => { showTrainingOptions = !showTrainingOptions; render(); },
 
   // ----- topics -----
-  allTopics: () => { state.settings.topics = []; saveState(); render(); },
+  allTopics: () => { state.settings.topics = []; saveState(); render(true); },
   toggleTopic: (element) => {
     const { topics } = state.settings;
     const id = element.dataset.id;
     state.settings.topics = topics.includes(id) ? topics.filter((topic) => topic !== id) : [...topics, id];
     saveState();
-    render();
+    render(true);
   },
-  allGrammar: () => { state.settings.grammarTopics = []; saveState(); render(); },
+  allGrammar: () => { state.settings.grammarTopics = []; saveState(); render(true); },
   toggleGrammar: (element) => {
     const { grammarTopics } = state.settings;
     const id = element.dataset.id;
     state.settings.grammarTopics = grammarTopics.includes(id) ? grammarTopics.filter((topic) => topic !== id) : [...grammarTopics, id];
     saveState();
-    render();
+    render(true);
   },
 
   // ----- sessions -----
@@ -73,6 +73,15 @@ const actions = {
   startExtra: () => { workout = null; startWorkout(); },
   openShop: () => { session = null; workout = null; view = "shop"; render(); },
   openJokes: () => { view = "jokes"; render(); },
+  openRiddles: () => { view = "riddles"; render(); },
+  openGames: () => { view = "games"; render(); },
+  buyRiddle: (element) => buyRiddle(element.dataset.id),
+  revealRiddle: (element) => { revealedRiddles.add(element.dataset.id); render(true); },
+  buyGame: (element) => buyGame(element.dataset.id),
+  playGame: (element) => playGame(element.dataset.id),
+  quitGame: () => goTo("rewards"),
+  testUnlock: () => { setTestUnlock(true); rerenderAdd(); },
+  testLock: () => { setTestUnlock(false); rerenderAdd(); },
   openCalendar: () => { calendarMonth = null; view = "calendar"; render(); },
   buyJoke: (element) => buyJoke(element.dataset.id),
   revealJoke: (element) => { revealedJokes.add(element.dataset.id); render(); },
@@ -204,7 +213,7 @@ function handleSettingChange(element) {
     updateMusicButton();
   }
   if (key === "sound" && state.settings.sound) sfx("ok");
-  if (element.dataset.rerender) render();
+  if (element.dataset.rerender) render(true);
 }
 
 document.addEventListener("change", (event) => {

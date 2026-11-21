@@ -76,18 +76,54 @@ function recordDailyResult(finishedSession) {
 // ====================================================================
 // Shop
 // ====================================================================
-/** Today's shelf: 4 jokes for the pupil's level that are not owned yet. */
+/** Today's shelves: 4 jokes and 4 riddles for the pupil's level that are not owned yet. */
 function ensureShelf() {
   const day = todayIso();
   const grade = currentGrade();
-  const owned = new Set(state.jokes.owned);
-  if (state.shop.day !== day || state.shop.grade !== grade) {
-    const pool = jokesForGrade(grade).filter((joke) => !owned.has(joke.id));
-    state.shop = { day, grade, ids: seededShuffle(pool, `${day}|shelf|${grade}`).slice(0, SHOP_SHELF_SIZE).map((joke) => joke.id) };
+  const ownedJokes = new Set(state.jokes.owned);
+  const ownedRiddles = new Set(state.riddles.owned);
+  if (state.shop.day !== day || state.shop.grade !== grade || !Array.isArray(state.shop.riddleIds)) {
+    const jokePool = jokesForGrade(grade).filter((joke) => !ownedJokes.has(joke.id));
+    const riddlePool = riddlesForGrade(grade).filter((riddle) => !ownedRiddles.has(riddle.id));
+    state.shop = {
+      day, grade,
+      ids: seededShuffle(jokePool, `${day}|shelf|${grade}`).slice(0, SHOP_SHELF_SIZE).map((joke) => joke.id),
+      riddleIds: seededShuffle(riddlePool, `${day}|riddles|${grade}`).slice(0, SHOP_SHELF_SIZE).map((riddle) => riddle.id),
+    };
     saveState();
   }
-  state.shop.ids = state.shop.ids.filter((id) => !owned.has(id));
+  state.shop.ids = state.shop.ids.filter((id) => !ownedJokes.has(id));
+  state.shop.riddleIds = state.shop.riddleIds.filter((id) => !ownedRiddles.has(id));
   return state.shop;
+}
+
+let lastBoughtRiddleId = null;
+
+/** Checks the slow unlocking; tells the pupil how many exercises are still needed. */
+function rewardUnlocked(type, ownedCount) {
+  if (canUnlockMore(type, ownedCount)) return true;
+  const missing = exercisesUntilUnlocked(type, ownedCount + 1);
+  sfx("bad");
+  toast(`🔒 Odblokujesz za ${missing} ${exercisesWord(missing)}.`);
+  return false;
+}
+
+function buyRiddle(id) {
+  const riddle = RIDDLES.find((entry) => entry.id === id);
+  if (!riddle || state.riddles.owned.includes(id)) return;
+  if (!rewardUnlocked("riddle", state.riddles.owned.length)) return;
+  if (state.gems < JOKE_PRICE) {
+    sfx("bad");
+    toast(`Brakuje ${JOKE_PRICE - state.gems} 💎. Zrób zadanie dnia!`);
+    return;
+  }
+  state.gems -= JOKE_PRICE;
+  state.riddles.owned.push(id);
+  lastBoughtRiddleId = id;
+  lastBoughtJokeId = null;
+  saveState();
+  sfx("badge");
+  renderShop();
 }
 
 let lastBoughtJokeId = null;
@@ -95,6 +131,7 @@ let lastBoughtJokeId = null;
 function buyJoke(id) {
   const joke = JOKES.find((entry) => entry.id === id);
   if (!joke || state.jokes.owned.includes(id)) return;
+  if (!rewardUnlocked("joke", state.jokes.owned.length)) return;
   const price = jokePrice(joke);
   if (state.gems < price) {
     sfx("bad");
@@ -104,6 +141,7 @@ function buyJoke(id) {
   state.gems -= price;
   state.jokes.owned.push(id);
   lastBoughtJokeId = id;
+  lastBoughtRiddleId = null;
   revealedJokes.add(id);
   saveState();
   sfx("badge");
@@ -139,36 +177,159 @@ function speakJoke(id) {
   if (joke) speak(`${joke.enQuestion} ... ${joke.enAnswer}`);
 }
 
+/** A locked shelf item: opens after more finished exercises. */
+function lockedItemHtml(icon, title, missing) {
+  return `
+    <article class="shelf-item locked">
+      <div class="shelf-icon">🔒</div>
+      <b>${esc(title)}</b>
+      <small class="muted">${icon} odblokujesz za ${missing} ${exercisesWord(missing)}</small>
+      <button class="btn" disabled>Zablokowane</button>
+    </article>`;
+}
+
+/** One item on a shop shelf. */
+function shelfItemHtml(icon, title, subtitle, price, action, id) {
+  const affordable = state.gems >= price;
+  return `
+    <article class="shelf-item ${affordable ? "" : "poor"}">
+      <div class="shelf-icon">${icon}</div>
+      <b>${esc(title)}</b>
+      <small class="muted">${esc(subtitle)}</small>
+      <button class="btn ${affordable ? "primary" : ""}" data-action="${action}" data-id="${id}">💎 ${price} – kup</button>
+    </article>`;
+}
+
 function renderShop() {
   const shelf = ensureShelf();
   const grade = currentGrade();
-  const bought = lastBoughtJokeId ? JOKES.find((joke) => joke.id === lastBoughtJokeId) : null;
-  const cards = shelf.ids.map((id) => JOKES.find((joke) => joke.id === id)).map((joke) => {
-    const price = jokePrice(joke);
-    const affordable = state.gems >= price;
-    return `
-      <article class="shelf-item ${affordable ? "" : "poor"}">
-        <div class="shelf-icon">🎁</div>
-        <b>Dowcip</b>
-        <small class="muted">${price >= 10 ? "długi" : price >= 7 ? "średni" : "krótki"}</small>
-        <button class="btn ${affordable ? "primary" : ""}" data-action="buyJoke" data-id="${joke.id}">💎 ${price} – kup</button>
-      </article>`;
+  const boughtJoke = lastBoughtJokeId ? JOKES.find((joke) => joke.id === lastBoughtJokeId) : null;
+  const boughtRiddle = lastBoughtRiddleId ? RIDDLES.find((riddle) => riddle.id === lastBoughtRiddleId) : null;
+  /** Items beyond what the pupil has unlocked so far are shown with a padlock. */
+  const shelfFor = (type, ids, ownedCount, itemHtml, icon, title) => ids.map((id, index) => {
+    const needed = ownedCount + index + 1;
+    return state.testUnlock || needed <= unlockedCount(type) ? itemHtml(id) : lockedItemHtml(icon, title, exercisesUntilUnlocked(type, needed));
   }).join("");
-  const allOwned = jokesForGrade(grade).every((joke) => state.jokes.owned.includes(joke.id));
+  const jokeCards = shelfFor("joke", shelf.ids, state.jokes.owned.length, (id) => shelfItemHtml("🎁", "Dowcip", "niespodzianka", JOKE_PRICE, "buyJoke", id), "😄", "Dowcip");
+  const riddleCards = shelfFor("riddle", shelf.riddleIds, state.riddles.owned.length, (id) => {
+    const riddle = RIDDLES.find((entry) => entry.id === id);
+    return shelfItemHtml(RIDDLE_KIND_ICONS[riddle.kind] || "🧩", "Zagadka", RIDDLE_KIND_NAMES[riddle.kind] || "", JOKE_PRICE, "buyRiddle", riddle.id);
+  }, "🧩", "Zagadka");
+  const gameCards = GAMES.filter((game) => !isGameOwned(game.id))
+    .map((game) => (isGameUnlocked(game.id)
+      ? shelfItemHtml(game.icon, game.name, game.desc, GAME_PRICE, "buyGame", game.id)
+      : lockedItemHtml(game.icon, game.name, exercisesUntilUnlocked("game", gameIndex(game.id) + 1)))).join("");
+  const allJokes = jokesForGrade(grade).every((joke) => state.jokes.owned.includes(joke.id));
+  const allRiddles = riddlesForGrade(grade).every((riddle) => state.riddles.owned.includes(riddle.id));
 
   app.innerHTML = `
     <button class="btn ghost" data-action="nav" data-view="rewards">← Nagrody</button>
     <section class="card hero" style="margin-top:12px">
-      ${rychuBubble("cheer", "Witaj w sklepiku! Za klejnoty kupisz dowcipy – nowe półki codziennie.", 84)}
-      <div class="badges"><span class="badge">💎 Masz: ${state.gems}</span><span class="badge">😄 Dowcipy: ${state.jokes.owned.length}</span></div>
+      ${rychuBubble("cheer", "Witaj w sklepiku! Dowcipy i zagadki zmieniają się codziennie, a gierki czekają, aż na nie uzbierasz.", 84)}
+      <div class="badges"><span class="badge">💎 Masz: ${state.gems}</span><span class="badge">😄 ${state.jokes.owned.length}</span><span class="badge">🧩 ${state.riddles.owned.length}</span><span class="badge">🎮 ${state.games.owned.length}</span></div>
     </section>
-    ${bought ? jokeCardHtml(bought, true) : ""}
+    ${boughtJoke ? jokeCardHtml(boughtJoke, true) : ""}
+    ${boughtRiddle ? riddleCardHtml(boughtRiddle, true) : ""}
     <section class="card">
-      <h2>Półka dnia</h2>
-      ${cards ? `<div class="shelf">${cards}</div>` : `<p class="muted">${allOwned ? "Masz już wszystkie dowcipy z tego poziomu. Brawo! 🎉" : "Półka jest na dziś pusta – wróć jutro."}</p>`}
+      <h2>😄 Dowcipy dnia</h2>
+      ${jokeCards ? `<div class="shelf">${jokeCards}</div>` : `<p class="muted">${allJokes ? "Masz już wszystkie dowcipy z tego poziomu. Brawo! 🎉" : "Półka jest na dziś pusta – wróć jutro."}</p>`}
+    </section>
+    <section class="card">
+      <h2>🧩 Zagadki dnia</h2>
+      ${riddleCards ? `<div class="shelf">${riddleCards}</div>` : `<p class="muted">${allRiddles ? "Masz już wszystkie zagadki z tego poziomu. Brawo! 🎉" : "Półka jest na dziś pusta – wróć jutro."}</p>`}
+    </section>
+    <section class="card">
+      <h2>🎮 Gierki</h2>
+      <p class="muted small">Gierkę kupujesz raz. Po każdym zagraniu ładuje się – znów zagrasz po ${GAME_RECHARGE_EXERCISES} ukończonych ćwiczeniach. Kolejne gierki odblokowują się powoli, gdy robisz ćwiczenia.</p>
+      ${gameCards ? `<div class="shelf">${gameCards}</div>` : `<p class="muted">Masz już wszystkie gierki! 🏆</p>`}
+    </section>
+    <section class="card">
       <p class="muted small">Klejnoty zdobywasz za <b>Zadanie dnia</b>. Dowcipy są po angielsku (w klasach 0–2 po polsku), z przyciskiem tłumaczenia.</p>
-      <div class="row"><button class="btn" data-action="openJokes">😄 Moje dowcipy (${state.jokes.owned.length})</button><button class="btn" data-action="openCalendar">📅 Kalendarz nagród</button></div>
+      <div class="row"><button class="btn" data-action="openJokes">😄 Moje dowcipy</button><button class="btn" data-action="openRiddles">🧩 Moje zagadki</button><button class="btn" data-action="openGames">🎮 Moje gierki</button></div>
     </section>`;
+}
+
+// ---------- riddles ----------
+const RIDDLE_KIND_NAMES = { logic: "logiczna", maths: "matematyczna", english: "po angielsku", nature: "przyrodnicza" };
+const revealedRiddles = new Set();
+
+function riddleCardHtml(riddle, highlight = false) {
+  const revealed = revealedRiddles.has(riddle.id);
+  return `
+    <article class="joke-card riddle-card ${highlight ? "new" : ""}">
+      ${highlight ? `<div class="joke-new">🎉 Nowa zagadka!</div>` : ""}
+      <p class="riddle-kind">${RIDDLE_KIND_ICONS[riddle.kind] || "🧩"} Zagadka ${esc(RIDDLE_KIND_NAMES[riddle.kind] || "")}</p>
+      <p class="joke-q">${esc(riddle.question)}</p>
+      ${revealed
+        ? `<p class="joke-a">${esc(riddle.answer)}</p>${riddle.why ? `<p class="muted small">💡 ${esc(riddle.why)}</p>` : ""}`
+        : `<button class="btn" data-action="revealRiddle" data-id="${riddle.id}">🤔 Pokaż odpowiedź</button>`}
+    </article>`;
+}
+
+function renderRiddles() {
+  const owned = [...state.riddles.owned].reverse().map((id) => RIDDLES.find((riddle) => riddle.id === id)).filter(Boolean);
+  app.innerHTML = `
+    <button class="btn ghost" data-action="nav" data-view="rewards">← Nagrody</button>
+    <section class="card hero" style="margin-top:12px">${rychuBubble("happy", owned.length ? "Twoje zagadki. Najpierw pomyśl, dopiero potem zajrzyj do odpowiedzi!" : "Jeszcze nie masz zagadek – kupisz je w sklepiku.", 84)}</section>
+    ${owned.length ? owned.map((riddle) => riddleCardHtml(riddle)).join("") : `<section class="card"><p class="muted">Kolekcja jest pusta.</p><button class="btn primary" data-action="openShop">🛍️ Do sklepiku</button></section>`}`;
+}
+
+// ---------- games ----------
+function gameTileHtml(game) {
+  if (!isGameOwned(game.id) && !state.testUnlock && !isGameUnlocked(game.id)) {
+    const missing = exercisesUntilUnlocked("game", gameIndex(game.id) + 1);
+    return `
+      <article class="game-tile locked">
+        <span class="game-tile-icon">🔒</span><b>${esc(game.name)}</b><small class="muted">${esc(game.desc)}</small>
+        <small>Odblokujesz za ${missing} ${exercisesWord(missing)}</small>
+      </article>`;
+  }
+  const best = bestScore(game.id);
+  const record = best === null ? "" : `<small class="game-best">🏆 Rekord: ${best}</small>`;
+  if (!isGameOwned(game.id) && !state.testUnlock) {
+    return `
+      <article class="game-tile locked">
+        <span class="game-tile-icon">${game.icon}</span><b>${esc(game.name)}</b><small class="muted">${esc(game.desc)}</small>
+        <button class="btn ${state.gems >= GAME_PRICE ? "primary" : ""}" data-action="buyGame" data-id="${game.id}">💎 ${GAME_PRICE} – kup</button>
+      </article>`;
+  }
+  const missing = exercisesToRecharge(game.id);
+  const charge = Math.round(((GAME_RECHARGE_EXERCISES - missing) / GAME_RECHARGE_EXERCISES) * 100);
+  return `
+    <article class="game-tile ${missing ? "charging" : "ready"}">
+      <span class="game-tile-icon">${game.icon}</span><b>${esc(game.name)}</b><small class="muted">${esc(game.desc)}</small>${record}
+      ${missing
+        ? `<div class="charge" title="Ładowanie"><div style="width:${charge}%"></div></div><small>🔋 Jeszcze ${missing} ${missing === 1 ? "ćwiczenie" : "ćwiczenia"}</small>`
+        : `<button class="btn primary" data-action="playGame" data-id="${game.id}">▶ Graj</button>`}
+    </article>`;
+}
+
+function renderGamesList() {
+  const ownedCount = state.games.owned.length;
+  app.innerHTML = `
+    <button class="btn ghost" data-action="nav" data-view="rewards">← Nagrody</button>
+    <section class="card hero" style="margin-top:12px">
+      ${rychuBubble("cheer", ownedCount ? "Twoje gierki! Po każdym zagraniu gierka ładuje się – zrób 3 ćwiczenia i grasz znowu." : "Tu będą Twoje gierki. Kup pierwszą za klejnoty!", 84)}
+      <div class="badges"><span class="badge">💎 ${state.gems}</span><span class="badge">🎮 ${ownedCount}/${GAMES.length}</span>${state.testUnlock ? `<span class="badge">🧪 tryb testowy</span>` : ""}</div>
+    </section>
+    <section class="grid game-tiles">${GAMES.map(gameTileHtml).join("")}</section>
+    ${scoreboardHtml()}`;
+}
+
+/** Scoreboard under the games: the best results of this profile in every game it has played. */
+function scoreboardHtml() {
+  const played = GAMES.filter((game) => state.games.scores[game.id] && state.games.scores[game.id].length);
+  const medals = ["🥇", "🥈", "🥉", "4.", "5."];
+  const formatDay = (iso) => iso.split("-").reverse().join(".");
+  return `
+    <h2 class="section-title" id="scoreboard">🏆 Tablica wyników</h2>
+    ${played.length ? `<section class="grid score-grid">${played.map((game) => `
+      <section class="card score-card">
+        <h3>${game.icon} ${esc(game.name)}</h3>
+        <ol class="scores">${state.games.scores[game.id].map((entry, index) =>
+          `<li><span class="medal-place">${medals[index]}</span><b>${entry.s} pkt</b><small class="muted">${formatDay(entry.d)}</small></li>`).join("")}</ol>
+      </section>`).join("")}</section>`
+      : `<section class="card"><p class="muted">Zagraj w jakąś gierkę – tu pojawią się Twoje rekordy.</p></section>`}`;
 }
 
 function renderJokes() {
@@ -255,15 +416,18 @@ function dailyTaskHtml(goal, answersCount) {
 function renderRewards() {
   const monthPrefix = todayIso().slice(0, 7);
   const rewardDays = Object.keys(state.calendar).filter((key) => key.startsWith(monthPrefix)).length;
+  const nextUnlockIn = UNLOCK_EVERY_EXERCISES - (state.games.exercises % UNLOCK_EVERY_EXERCISES);
   app.innerHTML = `
     <section class="card hero">
-      ${rychuBubble("cheer", "Tu zbierasz nagrody! Klejnoty dostajesz za Zadanie dnia, a w sklepiku kupisz za nie dowcipy.", 84)}
-      <div class="badges"><span class="badge">💎 ${state.gems}</span><span class="badge">🔥 Seria: ${currentStreak()}</span><span class="badge">😄 ${state.jokes.owned.length}</span></div>
+      ${rychuBubble("cheer", "Tu zbierasz nagrody! Klejnoty dostajesz za Zadanie dnia, a w sklepiku kupisz za nie dowcipy, zagadki i gierki.", 84)}
+      <div class="badges"><span class="badge">💎 ${state.gems}</span><span class="badge">🔥 Seria: ${currentStreak()}</span><span class="badge" title="Co ${UNLOCK_EVERY_EXERCISES} ukończone ćwiczenia odblokowują się ${UNLOCK_PER_STEP} nowe nagrody">🔓 Nowe nagrody za ${nextUnlockIn} ${exercisesWord(nextUnlockIn)}</span></div>
     </section>
     <section class="grid reward-tiles">
-      <button class="reward-tile" data-action="openShop"><span class="ico">🛍️</span><b>Sklepik</b><small>Kup dowcipy za klejnoty</small></button>
-      <button class="reward-tile" data-action="openCalendar"><span class="ico">📅</span><b>Kalendarz</b><small>Odebrane nagrody: ${rewardDays} dni w tym miesiącu</small></button>
+      <button class="reward-tile" data-action="openShop"><span class="ico">🛍️</span><b>Sklepik</b><small>Dowcipy i zagadki po ${JOKE_PRICE} 💎, gierki po ${GAME_PRICE} 💎</small></button>
+      <button class="reward-tile" data-action="openGames"><span class="ico">🎮</span><b>Moje gierki</b><small>${state.games.owned.length} z ${GAMES.length}${GAMES.some((game) => isGameOwned(game.id) && isGameReady(game.id)) ? " · możesz zagrać!" : ""}</small></button>
       <button class="reward-tile" data-action="openJokes"><span class="ico">😄</span><b>Moje dowcipy</b><small>${state.jokes.owned.length} w kolekcji</small></button>
+      <button class="reward-tile" data-action="openRiddles"><span class="ico">🧩</span><b>Moje zagadki</b><small>${state.riddles.owned.length} w kolekcji</small></button>
+      <button class="reward-tile" data-action="openCalendar"><span class="ico">📅</span><b>Kalendarz</b><small>Odebrane nagrody: ${rewardDays} dni w tym miesiącu</small></button>
     </section>
     <section class="card daily-task-card">${dailyTaskHtml(dailyGoal(), answersToday())}</section>`;
 }

@@ -102,6 +102,17 @@ function tone(frequency, delay, duration, type, volume) {
 
 const NOTE = { C5: 523.25, E5: 659.25, G5: 783.99, C6: 1046.5, E6: 1318.5, G6: 1568, C7: 2093 };
 
+/** A soft bell note (used by the "Powtórz melodię" game). */
+function playNote(frequency, duration = 0.4) {
+  if (!state.settings.sound || !ensureAudio()) return;
+  try {
+    tone(frequency, 0, duration, "sine", 0.16);
+    tone(frequency * 2, 0, duration * 0.5, "sine", 0.035);
+  } catch {
+    /* audio not available – the game still works with colours */
+  }
+}
+
 /** @param {"click"|"flip"|"ok"|"bad"|"pass"|"fanfare"|"badge"|"goal"|"gem"} name */
 function sfx(name) {
   if (!state.settings.sound) return;
@@ -357,7 +368,7 @@ function stopMusic() {
 
 /** Music plays in menus and is silent during exercises, so it never covers the pronunciation. */
 function setMusicForView(viewName) {
-  musicWanted = viewName !== "session";
+  musicWanted = viewName !== "session" && viewName !== "game";
   applyMusicGain();
 }
 

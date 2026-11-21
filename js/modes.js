@@ -67,6 +67,8 @@ function candidatesFor(modeId) {
         sentence.grade <= grade && (grammarTopics.length === 0 || grammarTopics.includes(sentence.topic)) &&
         sentence.en.replace(/[.?!]+$/, "").split(" ").length <= sentenceTokenLimit());
     }
+    case "gaps":
+      return pool.filter((word) => /^[a-z][a-z -]{2,13}$/i.test(word.en));
     case "irregular":
       return IRREGULAR_VERBS;
     default:
@@ -74,8 +76,8 @@ function candidatesFor(modeId) {
   }
 }
 
-const memoryPairs = () => (currentGrade() === 0 ? 3 : { easy: 3, medium: 4, hard: 6 }[difficulty()]);
-const matchRoundSize = () => (currentGrade() <= 2 ? 4 : 5);
+const memoryPairs = () => (currentGrade() === 0 ? 3 : { easy: 3, medium: 5, hard: 8 }[difficulty()]);
+const matchRoundSize = () => (currentGrade() <= 2 ? 4 : difficulty() === "hard" ? 6 : 5);
 const roundSizeFor = (modeId) => (modeId === "memory" ? memoryPairs() : modeId === "match" ? matchRoundSize() : 1);
 
 function openSession(modeId, items, extra = {}) {
@@ -112,7 +114,7 @@ function startSession(modeId, options = {}) {
 function startWorkout() {
   const playable = (id) => modesForGrade().some((mode) => mode.id === id) && candidatesFor(id).length >= (id === "memory" || id === "match" ? 2 : 1) &&
     !((id === "listen" || id === "listenpick") && !speechAvailable());
-  const groups = [["quiz", "pictures", "listenpick"], ["type", "letters", "sentences", "listen"], ["match", "memory", "cards"]];
+  const groups = [["quiz", "pictures", "listenpick"], ["type", "letters", "sentences", "listen", "gaps"], ["match", "memory", "cards"]];
   const queue = groups.map((group) => shuffle(group.filter(playable))[0]).filter(Boolean);
   if (queue.length === 0) {
     toast("Brak materiału do treningu – zmień zbiory lub filtr słów.");
@@ -162,7 +164,11 @@ function renderSessionFrame() {
       <span class="session-count" id="sessionCount" aria-live="polite"></span>
       <b class="session-icon" title="${esc(mode.name)}">${mode.icon}</b>
     </div>
-    <div class="stage" id="stage"></div>`;
+    <div class="stage" id="stage"></div>
+    <div class="session-rychu" id="sessionRychu" aria-hidden="true">
+      <div class="session-rychu-bubble" id="sessionRychuBubble"></div>
+      <div class="session-rychu-owl" id="sessionRychuOwl">${rychuSvg("happy", SESSION_RYCHU_SIZE)}</div>
+    </div>`;
   updateProgressBar();
   renderQuestion();
 }
@@ -171,7 +177,7 @@ function renderQuestion() {
   const renderers = {
     listenpick: renderListenPick, memory: renderMemory, cards: renderCards, pictures: renderPictures, match: renderMatchRound,
     letters: renderLetters, quiz: renderQuiz, type: renderTyping, sentences: renderSentence, listen: renderTyping,
-    irregular: renderIrregular, lessonTest: renderStepQuestion,
+    irregular: renderIrregular, gaps: renderGaps, lessonTest: renderStepQuestion,
   };
   renderers[session.mode]();
 }
@@ -200,6 +206,32 @@ function updateProgressBar() {
   if (counter) counter.textContent = `${Math.min(session.done, session.items.length)}/${session.items.length}`;
 }
 
+/** Rychu under the exercise (below the answers / "Sprawdź"): jumps for joy on a good answer, shakes his head sadly on a wrong one. */
+const SESSION_RYCHU_SIZE = 96;
+const RYCHU_HAPPY_WORDS = ["Super!", "Brawo!", "Tak jest!", "Ekstra!", "Świetnie!"];
+const RYCHU_SAD_WORDS = ["Ojej…", "Nic nie szkodzi!", "Następnym razem!", "Głowa do góry!"];
+let rychuReactTimer = 0;
+
+function rychuReact(isCorrect) {
+  const holder = $("#sessionRychu");
+  const owl = $("#sessionRychuOwl");
+  const bubble = $("#sessionRychuBubble");
+  if (!holder || !owl) return;
+  owl.innerHTML = rychuSvg(isCorrect ? "cheer" : "sad", SESSION_RYCHU_SIZE);
+  if (bubble) bubble.textContent = shuffle(isCorrect ? RYCHU_HAPPY_WORDS : RYCHU_SAD_WORDS)[0];
+  holder.classList.remove("jump", "shake", "talk");
+  void holder.offsetWidth; // restart the animation
+  holder.classList.add(isCorrect ? "jump" : "shake", "talk");
+  clearTimeout(rychuReactTimer);
+  rychuReactTimer = setTimeout(() => {
+    const currentHolder = $("#sessionRychu");
+    const currentOwl = $("#sessionRychuOwl");
+    if (!currentHolder || !currentOwl) return;
+    currentOwl.innerHTML = rychuSvg("happy", SESSION_RYCHU_SIZE);
+    currentHolder.classList.remove("jump", "shake", "talk");
+  }, 1400);
+}
+
 function record(item, isCorrect) {
   if (!item.isPath) {
     const stat = state.stats.words[item.id] || (state.stats.words[item.id] = { ok: 0, bad: 0 });
@@ -215,6 +247,7 @@ function record(item, isCorrect) {
     session.mistakes.push(item);
   }
   session.done++;
+  rychuReact(isCorrect);
   countAnswerToday();
   updateProgressBar();
   saveState();
@@ -371,7 +404,7 @@ function renderPictures() {
   const word = currentWord();
   const { ask } = topicKind(word.topic);
   const promptHtml = `${kindChip(word.topic, "nazwa obrazka")}${emojiBig(emojiFor(word))}`;
-  const canType = currentGrade() >= 3 && difficulty() !== "easy" && Math.random() < 0.5;
+  const canType = currentGrade() >= 3 && difficulty() !== "easy" && Math.random() < (difficulty() === "hard" ? 0.8 : 0.5);
   if (canType) {
     mountTyping(word, word.en, `${promptHtml}<p class="hint">${ask} Wpisz po angielsku</p>`, {}, typingHint(word.en));
     return;
@@ -404,6 +437,34 @@ function renderIrregular() {
     `${kindChip("verbs", "forma Past Simple")}<div class="prompt">${esc(verb.en)} ${speakButton(verb.en)}</div><p class="hint">${esc(verb.pl)} · wpisz formę Past Simple</p>`,
     {}, typingHint(verb.past)
   );
+}
+
+// ---------- Missing letters exercise ----------
+/** Share of hidden letters by level; the first letter stays visible on easy and medium. */
+const GAP_SHARE = { easy: 0.3, medium: 0.45, hard: 0.65 };
+
+/** Hides some letters of a word: "elephant" -> "e_e_h_nt". Spaces and hyphens always stay. */
+function gappedWord(word) {
+  const letters = [...word];
+  const letterPositions = letters.map((char, index) => (/[a-z]/i.test(char) ? index : -1)).filter((index) => index >= 0);
+  const keepFirst = difficulty() !== "hard";
+  const hideable = keepFirst ? letterPositions.slice(1) : letterPositions;
+  const hideCount = Math.min(hideable.length, Math.max(1, Math.round(letterPositions.length * GAP_SHARE[difficulty()])));
+  const hidden = new Set(shuffle(hideable).slice(0, hideCount));
+  return letters.map((char, index) => (hidden.has(index) ? "_" : char)).join("");
+}
+
+function renderGaps() {
+  const word = currentWord();
+  const picture = emojiFor(word);
+  const showPicture = picture && difficulty() !== "hard";
+  const promptHtml = `
+    ${kindChip(word.topic, "uzupełnij brakujące litery")}
+    ${showPicture ? emojiBig(picture) : ""}
+    <div class="gap-word" aria-label="Słowo z lukami">${esc(gappedWord(word.en)).replace(/_/g, `<span class="gap">_</span>`)}</div>
+    <p class="hint">${esc(word.pl)} · wpisz całe słowo po angielsku</p>`;
+  mountTyping(word, word.en, promptHtml);
+  $("#typeInput").placeholder = "całe słowo";
 }
 
 // ---------- Flashcards ----------
@@ -562,8 +623,8 @@ const RANDOM_LETTERS = "abcdefghijklmnoprstuwy";
 function renderLetters() {
   const word = currentWord();
   const answer = word.en.toLowerCase();
-  const decoys = difficulty() === "hard" && currentGrade() >= 3
-    ? shuffle([...RANDOM_LETTERS].filter((letter) => !answer.includes(letter))).slice(0, 2) : [];
+  const decoyCount = currentGrade() < 3 ? (difficulty() === "hard" ? 1 : 0) : { easy: 0, medium: 2, hard: 4 }[difficulty()];
+  const decoys = shuffle([...RANDOM_LETTERS].filter((letter) => !answer.includes(letter))).slice(0, decoyCount);
   const tiles = shuffle([...answer, ...decoys]).map((text) => ({ text, used: false }));
   session.current = { word, answer, joiner: "", slots: answer.length, fixed: 0, result: null, draw: drawLetters, picked: [], tiles };
   if (difficulty() === "easy") placeFirstTile(answer[0]);
@@ -609,14 +670,23 @@ function renderSentence() {
   const answer = item.en.replace(/[.?!]+$/, "");
   const ending = item.en.slice(answer.length);
   const words = answer.split(" ");
-  let shuffled = shuffle(words);
-  for (let attempt = 0; attempt < 5 && shuffled.join(" ") === answer; attempt++) shuffled = shuffle(words);
+  let shuffled = shuffle([...words, ...sentenceDecoys(words)]);
+  for (let attempt = 0; attempt < 5 && shuffled.join(" ") === answer; attempt++) shuffled = shuffle(shuffled);
   session.current = {
     word: item, answer, ending, joiner: " ", slots: words.length, fixed: 0, result: null, draw: drawSentence, picked: [],
     tiles: shuffled.map((text) => ({ text, used: false })),
   };
   if (difficulty() === "easy" && words.length > 3) placeFirstTile(words[0]);
   drawSentence();
+}
+
+/** Hard level (free sentence builder, class 4+): one extra word that does not belong to the sentence. */
+function sentenceDecoys(words) {
+  if (session.mode !== "sentences" || difficulty() !== "hard" || currentGrade() < 4) return [];
+  const used = new Set(words.map(normalize));
+  const spare = SENTENCES.flatMap((sentence) => sentence.en.replace(/[.?!]+$/, "").split(" "))
+    .filter((token) => /^[a-z']+$/.test(token) && !used.has(normalize(token)));
+  return spare.length ? [shuffle(spare)[0]] : [];
 }
 
 function drawSentence() {
@@ -742,6 +812,7 @@ function finishSession() {
   stats.sessions.push({ t: Date.now(), mode: session.mode, total, correct: session.correct, grade: mark });
   stats.sessions = stats.sessions.slice(-MAX_SAVED_SESSIONS);
   touchStreak();
+  if (session.done >= session.items.length) countExerciseForGames(); // finished exercises recharge the mini-games
 
   const bonus = percent >= 85 ? 20 : percent >= 50 ? 10 : 5;
   stats.xp += bonus;

@@ -33,9 +33,9 @@ const GRADE_INFO = [
   { id: 8, label: "Klasa 8", age: "14 lat", emoji: "🏆" },
 ];
 const DIFFICULTIES = [
-  { id: "easy", name: "Łatwy", icon: "🌱", hint: "3 odpowiedzi do wyboru, obrazki przy słowach, pierwsza litera i pierwsze słowo podpowiedziane, 3 pary w Memory." },
-  { id: "medium", name: "Średni", icon: "🔥", hint: "4 odpowiedzi do wyboru, podpowiedź liter przy wpisywaniu, 4 pary w Memory." },
-  { id: "hard", name: "Trudny", icon: "🚀", hint: "5 odpowiedzi do wyboru, wpisywanie bez podpowiedzi, dodatkowe litery-pułapki, 6 par w Memory." },
+  { id: "easy", name: "Łatwy", icon: "🌱", hint: "3 odpowiedzi z różnych tematów, obrazki przy słowach, pierwsza litera i pierwsze słowo podpowiedziane, mało luk w słowach, 3 pary w Memory." },
+  { id: "medium", name: "Średni", icon: "🔥", hint: "4 podobne odpowiedzi (z tego samego tematu), przy wpisywaniu widać tylko liczbę liter, 2 litery-pułapki, więcej luk w słowach, 5 par w Memory." },
+  { id: "hard", name: "Trudny", icon: "🚀", hint: "6 bardzo podobnych odpowiedzi, wpisywanie bez podpowiedzi, 4 litery-pułapki, słowo-pułapka w zdaniach, dużo luk bez obrazka, 8 par w Memory, dłuższe sesje." },
 ];
 const STATUS_FILTERS = [
   { id: "all", name: "Wszystkie słowa" }, { id: "new", name: "Nowe" }, { id: "learning", name: "Uczę się" },
@@ -53,6 +53,7 @@ const MODES = [
   { id: "type", name: "Wpisywanie", icon: "⌨️", desc: "Wpisz tłumaczenie", minGrade: 3, color: "#7950f2" },
   { id: "sentences", name: "Układanie zdań", icon: "🧩", desc: "Ułóż zdanie z klocków", minGrade: 3, color: "#fd7e14" },
   { id: "listen", name: "Dyktando", icon: "🎧", desc: "Posłuchaj i napisz", minGrade: 3, color: "#339af0", needsAudio: true },
+  { id: "gaps", name: "Brakujące litery", icon: "🔡", desc: "Uzupełnij słowo z lukami", minGrade: 2, color: "#0ca678" },
   { id: "irregular", name: "Czasowniki nieregularne", icon: "⏪", desc: "Wpisz formę Past Simple", minGrade: 5, color: "#e64980" },
   { id: "lessonTest", name: "Ćwiczenia ze ścieżki", icon: "🎓", desc: "", minGrade: 0, color: "#5b6cff", home: false },
 ];
@@ -181,7 +182,7 @@ function defaultState() {
   return {
     settings: {
       name: "", grade: 5, onboarded: false, theme: "light", sessionLength: 0, dailyGoal: 0, difficulty: "medium",
-      direction: "mix", sound: true, music: true, musicVolume: 0.3, noSound: false, autoSpeak: false, termsAccepted: 0, wordScope: "own", status: "all", topics: [], grammarTopics: [],
+      direction: "mix", sound: true, music: true, musicVolume: 0.3, noSound: false, autoSpeak: false, termsAccepted: 0, wordScope: "upto", status: "all", topics: [], grammarTopics: [],
     },
     custom: [],
     cache: {},
@@ -190,6 +191,9 @@ function defaultState() {
     daily: { day: "", grade: -1, modes: [], results: [], done: false },
     calendar: {},
     jokes: { owned: [] },
+    riddles: { owned: [] },
+    testUnlock: false,
+    games: { owned: [], exercises: 0, charge: {}, plays: {}, scores: {} },
     shop: { day: "", ids: [] },
     path: {},
     stats: { words: {}, sessions: [], lastDay: "", streak: 0, xp: 0, correctTotal: 0, daily: { day: "", count: 0 }, badges: {} },
@@ -212,6 +216,9 @@ function loadState() {
       daily: { ...defaults.daily, ...(isObject(parsed.daily) ? parsed.daily : {}) },
       calendar: isObject(parsed.calendar) ? parsed.calendar : {},
       jokes: { owned: isObject(parsed.jokes) && Array.isArray(parsed.jokes.owned) ? parsed.jokes.owned : [] },
+      testUnlock: parsed.testUnlock === true,
+      riddles: { owned: isObject(parsed.riddles) && Array.isArray(parsed.riddles.owned) ? parsed.riddles.owned : [] },
+      games: { ...defaults.games, ...(isObject(parsed.games) ? parsed.games : {}) },
       shop: { ...defaults.shop, ...(isObject(parsed.shop) ? parsed.shop : {}) },
       stats: { ...defaults.stats, ...(isObject(parsed.stats) ? parsed.stats : {}) },
     };
@@ -222,6 +229,12 @@ function loadState() {
 
 const state = loadState();
 if (!state.support.fired || typeof state.support.fired !== "object") state.support.fired = {};
+// One-time switch: the default word scope is now "from class 0 up to my class".
+if (!state.settings.scopeV2) {
+  state.settings.wordScope = "upto";
+  state.settings.scopeV2 = true;
+}
+if (!Array.isArray(state.games.owned)) state.games = defaultState().games;
 
 function saveState() {
   try {
@@ -232,7 +245,7 @@ function saveState() {
 }
 
 const currentGrade = () => Math.min(8, Math.max(0, Number(state.settings.grade) || 0));
-const sessionLength = () => state.settings.sessionLength || SESSION_LENGTH_BY_GRADE[currentGrade()];
+const sessionLength = () => state.settings.sessionLength || Math.round(SESSION_LENGTH_BY_GRADE[currentGrade()] * difficultyLengthFactor());
 const dailyGoal = () => state.settings.dailyGoal || DAILY_GOAL_BY_GRADE[currentGrade()];
 const difficulty = () => state.settings.difficulty;
 const isKidsMode = () => currentGrade() <= 3;
@@ -338,7 +351,7 @@ function pickWords(pool, count) {
 function pickDistractors(word, answerField, count, source = allWords()) {
   const seen = new Set([normalize(word[answerField])]);
   const candidates = shuffle(source.filter((other) => other.id !== word.id))
-    .sort((a, b) => Number(b.topic === word.topic) - Number(a.topic === word.topic));
+    .sort((a, b) => distractorScore(word, b, answerField) - distractorScore(word, a, answerField));
   const result = [];
   for (const candidate of candidates) {
     const key = normalize(candidate[answerField]);
@@ -350,11 +363,31 @@ function pickDistractors(word, answerField, count, source = allWords()) {
   return result;
 }
 
+/**
+ * How "tricky" a wrong option is. Easy: random words. Medium: the same topic first.
+ * Hard: the same topic and similar spelling (same first letter, similar length) – easy to confuse.
+ */
+function distractorScore(word, other, answerField) {
+  const level = difficulty();
+  if (level === "easy") return 0;
+  let score = other.topic === word.topic ? 2 : 0;
+  if (level === "hard") {
+    const target = normalize(word[answerField]);
+    const candidate = normalize(other[answerField]);
+    if (candidate[0] === target[0]) score += 1;
+    if (Math.abs(candidate.length - target.length) <= 2) score += 1;
+  }
+  return score;
+}
+
 /** Number of answer options by difficulty (class 0 always gets few, large choices). */
 function optionCount() {
   if (currentGrade() === 0) return difficulty() === "hard" ? 4 : 3;
-  return { easy: 3, medium: 4, hard: 5 }[difficulty()];
+  return { easy: 3, medium: 4, hard: 6 }[difficulty()];
 }
+
+/** Hard level: longer sessions. */
+const difficultyLengthFactor = () => (difficulty() === "hard" ? 1.25 : 1);
 
 // ====================================================================
 // Learning path helpers

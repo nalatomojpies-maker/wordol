@@ -27,6 +27,11 @@ function experimentalSection() {
       <div class="ocr-bar hidden" id="ocrBar"><div id="ocrProgress"></div></div>
       <p class="muted" id="ocrStatus">OCR działa w przeglądarce (Tesseract.js). Przy pierwszym użyciu pobiera moduł z internetu.</p>
     </div>
+    <h2>🎁 Test nagród</h2>
+    <p class="muted small">Odblokowuje wszystkie dowcipy, zagadki i gierki, a gierki nie muszą się ładować. Do sprawdzania aplikacji. ${state.testUnlock ? "<b>Teraz: włączony.</b>" : ""}</p>
+    ${state.testUnlock
+      ? `<button class="btn" data-action="testLock">🔒 Wyłącz tryb testowy</button>`
+      : `<button class="btn primary" data-action="testUnlock">🔓 Odblokuj wszystkie nagrody</button>`}
     <button class="btn ghost" data-action="lockLab">🔒 Zablokuj</button>
   </section>`;
 }

@@ -596,3 +596,88 @@ body.kids .mode-group .mode .ico { width: 54px; height: 54px; font-size: 2rem; }
 .pb-N { background: #ffc9c9; } .pb-Q { background: #96f2d7; } .pb-R { background: #e9ecef; }
 .pattern-legend { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
 .pattern-legend .pb { font-size: .72rem; padding: 2px 8px; font-weight: 700; }
+
+/* ================= Missing letters exercise ================= */
+.gap-word { font-family: "Consolas", "Courier New", monospace; font-size: clamp(1.8rem, 8vw, 2.6rem); font-weight: 800; letter-spacing: .18em; margin: 10px 0 4px; word-break: break-all; }
+.gap-word .gap { color: var(--primary); }
+
+/* ================= Rewards: riddles & games ================= */
+.riddle-kind { font-size: .8rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+.game-tiles { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.game-tile { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 14px; border-radius: 20px; background: var(--card); box-shadow: var(--shadow); border-top: 6px solid var(--ok); }
+.game-tile.locked { border-top-color: var(--border); }
+.game-tile.charging { border-top-color: var(--accent); }
+.game-tile .btn { margin-top: auto; width: 100%; }
+.game-tile-icon { font-size: 2rem; }
+.charge { width: 100%; height: 10px; border-radius: 99px; background: var(--border); overflow: hidden; margin-top: auto; }
+.charge > div { height: 100%; background: linear-gradient(90deg, var(--accent), var(--ok)); }
+
+/* ================= Game screen ================= */
+.game-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-bottom: 10px; }
+.game-title { flex: 1; font-size: 1.05rem; }
+.game-info { order: 3; width: 100%; text-align: center; font-weight: 800; color: var(--muted); font-variant-numeric: tabular-nums; }
+.game-stage { position: relative; max-width: 440px; margin: 0 auto; }
+.game-canvas { width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 18px; box-shadow: var(--shadow); touch-action: none; user-select: none; -webkit-user-select: none; }
+.game-help { margin-top: 8px; }
+.game-msg { text-align: center; font-weight: 800; min-height: 1.5em; margin: 4px 0 10px; }
+.game-over { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, .35); border-radius: 18px; z-index: 2; }
+.game-over-box { background: var(--card); color: var(--text); border-radius: 22px; padding: 20px; text-align: center; max-width: 86%; box-shadow: var(--shadow); animation: pop .35s; }
+.game-over-box p { font-size: 1.1rem; font-weight: 800; margin: 6px 0 14px; }
+.game-over-icon { font-size: 3rem; }
+.arrow-pad { display: grid; grid-template-columns: repeat(3, 64px); grid-template-rows: repeat(2, 56px); gap: 6px; justify-content: center; margin-top: 10px; touch-action: none; }
+.arrow-btn { padding: 0; font-size: 1.6rem; touch-action: none; }
+.arrow-pad [data-key="ArrowUp"] { grid-column: 2; grid-row: 1; }
+.arrow-pad [data-key="ArrowLeft"] { grid-column: 1; grid-row: 2; }
+.arrow-pad [data-key="ArrowDown"] { grid-column: 2; grid-row: 2; }
+.arrow-pad [data-key="ArrowRight"] { grid-column: 3; grid-row: 2; }
+.ttt { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 330px; margin: 0 auto; }
+.ttt-cell { aspect-ratio: 1; font-size: 2.6rem; border: 0; border-radius: 18px; background: var(--card); box-shadow: var(--shadow); cursor: pointer; }
+.ttt-cell.taken { cursor: default; }
+.chk-board { display: grid; grid-template-columns: repeat(8, 1fr); max-width: 380px; margin: 0 auto 12px; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+.chk-cell { aspect-ratio: 1; border: 0; padding: 0; font-size: clamp(1.2rem, 6vw, 1.9rem); display: flex; align-items: center; justify-content: center; }
+.chk-cell.light { background: #fff4e6; cursor: default; }
+.chk-cell.dark { background: #d0a274; cursor: pointer; }
+.chk-cell.hint { background: #8ce99a; }
+.memdash { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 380px; margin: 0 auto; }
+.memdash-card { aspect-ratio: 1; font-size: 2rem; border: 0; border-radius: 14px; background: var(--primary); color: #fff; cursor: pointer; box-shadow: var(--shadow); }
+.memdash-card.open { background: var(--card); }
+.memdash-card.done { background: color-mix(in srgb, var(--ok) 25%, var(--card)); }
+
+/* ================= v17: Rychu in exercises, scores, new games ================= */
+@keyframes rychu-jump { 0% { transform: translateY(0); } 30% { transform: translateY(-14px) rotate(-6deg); } 60% { transform: translateY(0) rotate(4deg); } 80% { transform: translateY(-5px); } 100% { transform: translateY(0); } }
+@keyframes rychu-shake { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-12deg); } 40% { transform: rotate(10deg); } 60% { transform: rotate(-8deg); } 80% { transform: rotate(5deg); } }
+@media (prefers-reduced-motion: reduce) { .session-rychu-owl, .session-rychu-owl svg { animation: none !important; } }
+
+.shelf-item.locked { opacity: .75; background: var(--bg); }
+.game-best { font-weight: 800; color: var(--primary); }
+.game-score { font-size: 1.2rem !important; margin: 4px 0 !important; }
+.game-record { margin: 0 0 14px !important; color: var(--muted); }
+.game-record.new { color: var(--ok); font-size: 1.15rem !important; animation: pop .4s; }
+.score-card h2 { font-size: 1.05rem; }
+.scores { list-style: none; margin: 0; padding: 0; }
+.scores li { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.scores li:last-child { border-bottom: 0; }
+.medal-place { width: 2em; text-align: center; font-size: 1.2rem; }
+.scores b { flex: 1; }
+
+.bells { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 320px; margin: 0 auto; }
+.bell { aspect-ratio: 1; border: 0; border-radius: 24px; font-size: 2.6rem; cursor: pointer; background: color-mix(in srgb, var(--bell) 45%, var(--card)); box-shadow: var(--shadow); transition: transform .1s, background .1s; }
+.bell.lit { background: var(--bell); transform: scale(1.07); box-shadow: 0 0 0 6px color-mix(in srgb, var(--bell) 40%, transparent); }
+
+.moles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 340px; margin: 0 auto; }
+.mole-hole { position: relative; aspect-ratio: 1; border: 0; border-radius: 50%; background: radial-gradient(circle at 50% 70%, #6d4c41 0 45%, #a1887f 46% 60%, #c5e1a5 61%); cursor: pointer; overflow: hidden; }
+.mole-hole .mole { position: absolute; left: 0; right: 0; bottom: 18%; font-size: 2.4rem; transform: translateY(70%); transition: transform .15s; }
+.mole-hole.up .mole, .mole-hole.happy .mole { transform: translateY(0); }
+.mole-hole .carrot { position: absolute; top: 4%; right: 8%; font-size: 1.5rem; animation: pop .3s; }
+
+/* Rychu under the exercise, below the answers / "Sprawdź" (does not block taps) */
+.session-rychu { display: flex; align-items: center; justify-content: center; gap: 10px; max-width: 680px; margin: 18px auto 0; pointer-events: none; }
+.session-rychu-owl { line-height: 0; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .18)); }
+.session-rychu-owl svg { animation: bob 3.2s ease-in-out infinite; }
+.session-rychu.jump .session-rychu-owl { animation: rychu-jump .7s ease-out; }
+.session-rychu.shake .session-rychu-owl { animation: rychu-shake .6s ease-in-out; }
+.session-rychu-bubble { order: -1; background: var(--card); color: var(--text); border-radius: 14px; padding: 6px 12px; font-weight: 800; box-shadow: var(--shadow); opacity: 0; transform: scale(.6); transition: opacity .15s, transform .15s; }
+.session-rychu.talk .session-rychu-bubble { opacity: 1; transform: scale(1); }
+.score-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.score-grid .score-card { margin-bottom: 0; }
+.score-card h3 { margin: 0 0 6px; }

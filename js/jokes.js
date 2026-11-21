@@ -93,6 +93,46 @@ const JOKE_DATA = `
 8|Why did the electrician start a band?|He had great connections!|Dlaczego elektryk założył zespół?|Miał świetne połączenia! (connections = połączenia i znajomości)
 8|Why do mathematicians love forests?|Because of all the natural logs!|Dlaczego matematycy kochają lasy?|Bo jest tam pełno naturalnych logarytmów! (natural log = logarytm naturalny, log = kłoda)
 8|Why was the equal sign so humble?|It knew it was not less than or greater than anyone else!|Dlaczego znak równości był taki skromny?|Wiedział, że nikt nie jest od niego mniejszy ani większy!
+0|What has a long neck and spots?|A giraffe!|Kto ma długą szyję i łaty?|Żyrafa!
+0|What is orange and long and rabbits love it?|A carrot!|Co jest pomarańczowe, długie i uwielbiają to króliki?|Marchewka!
+0|What is round and you kick it?|A ball!|Co jest okrągłe i można to kopać?|Piłka!
+0|What is cold and you eat it in summer?|Ice cream!|Co jest zimne i je się to latem?|Lody!
+0|Who has long ears and hops?|A rabbit!|Kto ma długie uszy i skacze?|Królik!
+1|Why do bees hum?|Because they forgot the words!|Dlaczego pszczoły tylko brzęczą?|Bo zapomniały słów piosenki!
+1|Which animal can jump higher than a house?|All of them – houses cannot jump!|Które zwierzę skoczy wyżej niż dom?|Każde – domy nie skaczą!
+1|What has ears but cannot hear?|A cornfield!|Co ma kłosy-uszy, ale nic nie słyszy?|Pole kukurydzy! (ear = ucho i kłos)
+1|What do frogs order at a restaurant?|French flies!|Co żaby zamawiają w restauracji?|Frytki z muchami! (French fries = frytki, flies = muchy)
+1|Why do cows wear bells?|Because their horns don't work!|Dlaczego krowy noszą dzwonki?|Bo ich rogi nie trąbią! (horn = róg i klakson)
+2|Which animal is always at a cricket match?|A bat!|Które zwierzę zawsze jest na meczu krykieta?|Nietoperz! (bat = nietoperz i kij do krykieta)
+2|What is a snake's favourite subject?|Hiss-tory!|Jaki jest ulubiony przedmiot węża?|Historia! (hiss = syczeć, history = historia)
+2|Why don't elephants use computers?|They are afraid of the mouse!|Dlaczego słonie nie używają komputerów?|Boją się myszki!
+2|What do you call a fly without wings?|A walk!|Jak nazwać muchę bez skrzydeł?|Spacer! (fly = mucha i latać, walk = chodzić)
+2|What did the egg say to the frying pan?|You crack me up!|Co jajko powiedziało do patelni?|Pęknę ze śmiechu! (crack up = pękać ze śmiechu)
+3|What gets wetter the more it dries?|A towel!|Co robi się coraz bardziej mokre, im więcej suszy?|Ręcznik!
+3|What do you call a dog magician?|A labracadabrador!|Jak nazwać psa-magika?|Labrakadabrador!
+3|Why did the girl bring a ladder to school?|She wanted to go to high school!|Dlaczego dziewczynka przyniosła do szkoły drabinę?|Chciała iść do „wysokiej” szkoły! (high school = szkoła średnia, high = wysoko)
+3|Why do fish live in salt water?|Because pepper makes them sneeze!|Dlaczego ryby żyją w słonej wodzie?|Bo od pieprzu kichają!
+3|What do you call a train full of toffee?|A chew-chew train!|Jak nazwać pociąg pełen krówek?|Ciuch-ciuch-ciągutka! (choo-choo = ciuchcia, chew = żuć)
+4|Why are ghosts bad at lying?|Because you can see right through them!|Dlaczego duchy nie umieją kłamać?|Bo widać je na wylot!
+4|Why did the girl take a ruler to bed?|To see how long she slept!|Dlaczego dziewczynka zabrała linijkę do łóżka?|Żeby zmierzyć, jak długo spała!
+4|Why did the orange stop rolling?|It ran out of juice!|Dlaczego pomarańcza przestała się toczyć?|Skończył jej się sok! (run out of juice = opaść z sił)
+4|What can you catch but not throw?|A cold!|Co można złapać, ale nie można tym rzucić?|Katar! (catch a cold = przeziębić się)
+4|How do bees get to school?|On the school buzz!|Jak pszczoły jeżdżą do szkoły?|Szkolnym bzzzusem! (buzz = bzyczenie, bus = autobus)
+5|Why was the calendar so popular?|It had a lot of dates!|Dlaczego kalendarz był taki popularny?|Miał mnóstwo randek! (date = data i randka)
+5|Why did the boy throw the clock out of the window?|He wanted to see time fly!|Dlaczego chłopiec wyrzucił zegar przez okno?|Chciał zobaczyć, jak czas leci! (time flies = czas leci)
+5|Why did the robot go on holiday?|It needed to recharge its batteries!|Dlaczego robot pojechał na wakacje?|Musiał naładować baterie!
+5|What do you call a snowman in summer?|A puddle!|Jak nazwać bałwana latem?|Kałuża!
+5|Why is the letter A like a flower?|Because a B comes after it!|Dlaczego litera A jest jak kwiat?|Bo zaraz za nią leci B! (B brzmi jak bee = pszczoła)
+6|What did one plate say to the other?|Dinner is on me!|Co jeden talerz powiedział do drugiego?|Obiad jest na mnie! (on me = na mnie i „ja stawiam”)
+6|What do you call a lazy kangaroo?|A pouch potato!|Jak nazwać leniwego kangura?|Torbowy leniuch! (gra słów: couch potato = kanapowy leń)
+6|Why did the man put his money in the freezer?|He wanted cold, hard cash!|Dlaczego pan schował pieniądze do zamrażarki?|Chciał mieć zimną gotówkę! (cold hard cash = żywa gotówka)
+6|What do clouds wear?|Thunderwear!|Co noszą chmury?|Burzo-majtki! (underwear = bielizna, thunder = grzmot)
+6|Why did the barber win the race?|He knew a short cut!|Dlaczego fryzjer wygrał wyścig?|Znał skrót! (short cut = skrót i krótkie strzyżenie)
+7|I'm reading a book about anti-gravity.|It's impossible to put down!|Czytam książkę o antygrawitacji.|Nie da się jej odłożyć! (put down = odłożyć)
+7|What do you call a deer with no eyes?|No idea!|Jak nazwać jelenia bez oczu?|Nie mam pojęcia! („no idea” brzmi jak „no eye deer” = jeleń bez oka)
+7|Why did the student bring a pillow to the history lesson?|The teacher said it would be about the Dark Ages!|Dlaczego uczeń przyniósł poduszkę na historię?|Pani mówiła, że lekcja będzie o „ciemnych wiekach”! (Dark Ages = wczesne średniowiecze)
+8|Why don't scientists trust atoms?|Because they make up everything!|Dlaczego naukowcy nie ufają atomom?|Bo one wszystko zmyślają! (make up = tworzyć i zmyślać)
+8|What did the triangle say to the circle?|You're pointless!|Co trójkąt powiedział do koła?|Jesteś bez sensu! (pointless = bezsensowny, dosł. „bez rogów”)
 `;
 
 /** @type {Array<{id: string, level: number, enQuestion: string, enAnswer: string, plQuestion: string, plAnswer: string}>} */
@@ -104,8 +144,6 @@ const JOKES = JOKE_DATA.trim().split("\n").map((line, index) => {
 /** Jokes suitable for a class: its own level and up to three levels below. */
 const jokesForGrade = (grade) => JOKES.filter((joke) => joke.level <= grade && joke.level >= grade - 3);
 
-/** Price in gems: short jokes are cheaper. */
-const jokePrice = (joke) => {
-  const length = joke.enQuestion.length + joke.enAnswer.length;
-  return length < 55 ? 4 : length < 95 ? 7 : 10;
-};
+/** Price in gems of one joke or riddle (games cost more, see games.js). */
+const JOKE_PRICE = 3;
+const jokePrice = () => JOKE_PRICE;

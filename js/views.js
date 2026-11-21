@@ -16,7 +16,7 @@ function applyTheme() {
 }
 
 function activeNavFor(currentView) {
-  if (["rewards", "shop", "jokes", "calendar"].includes(currentView)) return "rewards";
+  if (["rewards", "shop", "jokes", "calendar", "riddles", "games", "game"].includes(currentView)) return "rewards";
   if (currentView === "add") return "settings";
   const inPath = ["learn", "unit", "step"].includes(currentView) ||
     ((currentView === "session" || currentView === "result") && session && session.mode === "lessonTest");
@@ -24,7 +24,10 @@ function activeNavFor(currentView) {
   return currentView === "session" || currentView === "result" ? "home" : currentView;
 }
 
-function render() {
+/** Draws the current view. keepScroll = stay at the same place (e.g. while ticking topics in the options). */
+function render(keepScroll = false) {
+  const scrollY = window.scrollY;
+  stopActiveGame();
   applyTheme();
   if (view !== "add") {
     labOpen = false;
@@ -38,13 +41,14 @@ function render() {
     welcome: renderWelcome, home: renderHome, learn: renderLearn, unit: renderUnit, step: renderStepCard, add: renderAdd,
     stats: renderStats, settings: renderSettings, session: renderSessionFrame, result: renderResult,
     rewards: renderRewards, shop: renderShop, jokes: renderJokes, calendar: renderCalendar,
+    riddles: renderRiddles, games: renderGamesList, game: renderGame,
   };
   renderers[view]();
-  if (view !== "session") app.insertAdjacentHTML("beforeend", footerHtml());
+  if (view !== "session" && view !== "game") app.insertAdjacentHTML("beforeend", footerHtml());
   scheduleSupportCheck();
   setMusicForView(view);
   updateMusicButton();
-  window.scrollTo(0, 0);
+  window.scrollTo(0, keepScroll === true ? scrollY : 0);
 }
 
 /** Result screen: sounds (pass / fanfare / badge / daily goal) and a spoken summary. */
@@ -82,7 +86,7 @@ function renderWelcome() {
 const MODE_GROUPS = [
   { title: "👀 Patrz i słuchaj", ids: ["listenpick", "pictures", "memory", "cards"] },
   { title: "🧩 Ćwicz słówka", ids: ["match", "quiz", "letters", "irregular"] },
-  { title: "✍️ Pisz i układaj", ids: ["type", "listen", "sentences"] },
+  { title: "✍️ Pisz i układaj", ids: ["gaps", "type", "listen", "sentences"] },
 ];
 
 function groupedModes(modes) {
