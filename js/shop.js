@@ -208,17 +208,28 @@ function renderShop() {
   /** Items beyond what the pupil has unlocked so far are shown with a padlock. */
   const shelfFor = (type, ids, ownedCount, itemHtml, icon, title) => ids.map((id, index) => {
     const needed = ownedCount + index + 1;
-    return state.testUnlock || needed <= unlockedCount(type) ? itemHtml(id) : lockedItemHtml(icon, title, exercisesUntilUnlocked(type, needed));
-  }).join("");
+    const html = state.testUnlock || needed <= unlockedCount(type) ? itemHtml(id) : lockedItemHtml(icon, title, exercisesUntilUnlocked(type, needed));
+    return { id, html };
+  });
   const jokeCards = shelfFor("joke", shelf.ids, state.jokes.owned.length, (id) => shelfItemHtml("🎁", "Dowcip", "niespodzianka", JOKE_PRICE, "buyJoke", id), "😄", "Dowcip");
   const riddleCards = shelfFor("riddle", shelf.riddleIds, state.riddles.owned.length, (id) => {
     const riddle = RIDDLES.find((entry) => entry.id === id);
     return shelfItemHtml(RIDDLE_KIND_ICONS[riddle.kind] || "🧩", "Zagadka", RIDDLE_KIND_NAMES[riddle.kind] || "", JOKE_PRICE, "buyRiddle", riddle.id);
   }, "🧩", "Zagadka");
   const gameCards = GAMES.filter((game) => !isGameOwned(game.id))
-    .map((game) => (isGameUnlocked(game.id)
+    .map((game) => ({ id: game.id, html: isGameUnlocked(game.id)
       ? shelfItemHtml(game.icon, game.name, game.desc, GAME_PRICE, "buyGame", game.id)
-      : lockedItemHtml(game.icon, game.name, exercisesUntilUnlocked("game", gameIndex(game.id) + 1)))).join("");
+      : lockedItemHtml(game.icon, game.name, exercisesUntilUnlocked("game", gameIndex(game.id) + 1)) }));
+  /** All rewards on one shelf, mixed in a new order every day (available ones first); each item keeps its place after a purchase. */
+  const mixKey = (card) => {
+    const random = seededRandom(`${card.id}|mix|${shelf.day}|${grade}`);
+    random(); random(); // warm up: seeds that differ only slightly would otherwise give similar first numbers
+    return random();
+  };
+  const allCards = [...jokeCards, ...riddleCards, ...gameCards]
+    .map((card) => ({ html: card.html, key: mixKey(card) + (card.html.includes("shelf-item locked") ? 1 : 0) })) // ready to buy first, padlocks after
+    .sort((a, b) => a.key - b.key).map((card) => card.html).join("");
+  const allGames = GAMES.every((game) => isGameOwned(game.id));
   const allJokes = jokesForGrade(grade).every((joke) => state.jokes.owned.includes(joke.id));
   const allRiddles = riddlesForGrade(grade).every((riddle) => state.riddles.owned.includes(riddle.id));
 
@@ -231,17 +242,9 @@ function renderShop() {
     ${boughtJoke ? jokeCardHtml(boughtJoke, true) : ""}
     ${boughtRiddle ? riddleCardHtml(boughtRiddle, true) : ""}
     <section class="card">
-      <h2>😄 Dowcipy dnia</h2>
-      ${jokeCards ? `<div class="shelf">${jokeCards}</div>` : `<p class="muted">${allJokes ? "Masz już wszystkie dowcipy z tego poziomu. Brawo! 🎉" : "Półka jest na dziś pusta – wróć jutro."}</p>`}
-    </section>
-    <section class="card">
-      <h2>🧩 Zagadki dnia</h2>
-      ${riddleCards ? `<div class="shelf">${riddleCards}</div>` : `<p class="muted">${allRiddles ? "Masz już wszystkie zagadki z tego poziomu. Brawo! 🎉" : "Półka jest na dziś pusta – wróć jutro."}</p>`}
-    </section>
-    <section class="card">
-      <h2>🎮 Gierki</h2>
-      <p class="muted small">Gierkę kupujesz raz. Po każdym zagraniu ładuje się – znów zagrasz po ${GAME_RECHARGE_EXERCISES} ukończonych ćwiczeniach. Kolejne gierki odblokowują się powoli, gdy robisz ćwiczenia.</p>
-      ${gameCards ? `<div class="shelf">${gameCards}</div>` : `<p class="muted">Masz już wszystkie gierki! 🏆</p>`}
+      <h2>🎁 Nagrody dnia</h2>
+      <p class="muted small">Dowcipy 😄, zagadki 🧩 i gierki 🎮 – wszystko razem, codziennie w innej kolejności. Gierkę kupujesz raz. Po każdym zagraniu ładuje się – znów zagrasz po ${GAME_RECHARGE_EXERCISES} ukończonych ćwiczeniach. Kolejne nagrody odblokowują się powoli, gdy robisz ćwiczenia.</p>
+      ${allCards ? `<div class="shelf">${allCards}</div>` : `<p class="muted">${allJokes && allRiddles && allGames ? "Masz już wszystkie nagrody z tego poziomu. Brawo! 🏆" : "Półka jest na dziś pusta – wróć jutro."}</p>`}
     </section>
     <section class="card">
       <p class="muted small">Klejnoty zdobywasz za <b>Zadanie dnia</b>. Dowcipy są po angielsku (w klasach 0–2 po polsku), z przyciskiem tłumaczenia.</p>
