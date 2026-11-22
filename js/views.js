@@ -250,6 +250,8 @@ function renderSettings() {
       <label class="check" style="margin-top:10px"><input type="checkbox" data-setting="sound" ${settings.sound ? "checked" : ""}> Efekty dźwiękowe (kliknięcia, dobra / zła odpowiedź, nagrody)</label>
       <label class="check" style="margin-top:10px"><input type="checkbox" data-setting="autoSpeak" ${settings.autoSpeak ? "checked" : ""}> Automatycznie czytaj angielskie słowa</label>
       <p class="muted small">Przeglądarki włączają dźwięk dopiero po pierwszym dotknięciu ekranu. Czytane są tylko angielskie słowa.</p>
+      <button class="btn" data-action="testSpeech">🔊 Sprawdź lektora</button>
+      <p class="muted small" id="speechTest" role="status"></p>
     </section>
     <section class="card danger-zone">
       <h2>Zacznij od nowa</h2>

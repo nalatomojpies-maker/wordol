@@ -443,6 +443,7 @@ function updateMusicButton() {
 
 /** First user gesture: browsers allow audio only after it. */
 function unlockAudio() {
+  setTimeout(maybeWarnAboutSpeech, 400); // the reader can be tested only after a tap
   if (isQuiet()) return;
   ensureAudio();
   loadAnswerSounds(); // ready before the first answer
@@ -547,7 +548,9 @@ function speakText(text, lang, rate) {
   try {
     speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang;
+    const voice = lang.startsWith("en") ? englishVoice() : null;
+    if (voice) utterance.voice = voice;
+    utterance.lang = voice ? voice.lang : lang;
     utterance.rate = rate;
     utterance.onstart = () => { musicDuck = 0.3; applyMusicGain(true); };
     const restore = () => { musicDuck = 1; applyMusicGain(); };
@@ -560,3 +563,111 @@ function speakText(text, lang, rate) {
 }
 
 const speak = (text) => speakText(text, "en-GB", isKidsMode() ? 0.75 : 0.85);
+
+// ====================================================================
+// Is the reader available on this device? (English voice + a silent test)
+// ====================================================================
+/** The best English voice: British first, then any English; local voices before network ones. */
+function englishVoice() {
+  if (!speechAvailable()) return null;
+  const voices = speechSynthesis.getVoices().filter((voice) => /^en([-_]|$)/i.test(voice.lang));
+  const score = (voice) => (/^en[-_]GB/i.test(voice.lang) ? 2 : 0) + (voice.localService ? 1 : 0);
+  return voices.sort((a, b) => score(b) - score(a))[0] || null;
+}
+
+/** The voice list often arrives a moment later (and on iPhone only after a tap). */
+function waitForVoices(timeoutMs = 2500) {
+  return new Promise((resolve) => {
+    if (!speechAvailable()) return resolve([]);
+    const now = speechSynthesis.getVoices();
+    if (now.length) return resolve(now);
+    const done = () => resolve(speechSynthesis.getVoices());
+    speechSynthesis.addEventListener("voiceschanged", done, { once: true });
+    setTimeout(done, timeoutMs);
+  });
+}
+
+/**
+ * Checks the reader without making a sound (volume 0).
+ * @returns {Promise<{status: "ok"|"no-api"|"no-voice"|"error"|"unknown", voice: SpeechSynthesisVoice|null, detail?: string}>}
+ * "unknown" = the browser did not let us test now (e.g. before the first tap) – never shown as a problem.
+ */
+async function checkSpeech({ audible = false } = {}) {
+  if (!speechAvailable()) return { status: "no-api", voice: null };
+  const voices = await waitForVoices();
+  const voice = englishVoice();
+  if (!voice) return { status: voices.length ? "no-voice" : "unknown", voice: null };
+  return new Promise((resolve) => {
+    let finished = false;
+    const finish = (result) => { if (!finished) { finished = true; resolve(result); } };
+    try {
+      speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(audible ? "Hello! I am your English reader." : "hi");
+      utterance.voice = voice;
+      utterance.lang = voice.lang;
+      utterance.volume = audible ? 1 : 0;
+      utterance.rate = audible ? 0.9 : 2;
+      utterance.onstart = () => { if (!audible) { speechSynthesis.cancel(); finish({ status: "ok", voice }); } };
+      utterance.onend = () => finish({ status: "ok", voice });
+      utterance.onerror = (event) => finish(["not-allowed", "interrupted", "canceled"].includes(event.error)
+        ? (audible && event.error !== "not-allowed" ? { status: "ok", voice } : { status: "unknown", voice })
+        : { status: "error", voice, detail: event.error });
+      speechSynthesis.speak(utterance);
+      setTimeout(() => finish({ status: "unknown", voice }), audible ? 8000 : 3000);
+    } catch {
+      finish({ status: "error", voice });
+    }
+  });
+}
+
+const SPEECH_PROBLEMS = {
+  "no-api": "Ta przeglądarka nie ma lektora (syntezatora mowy).",
+  "no-voice": "Na tym urządzeniu nie ma angielskiego głosu lektora.",
+  error: "Lektor na tym urządzeniu nie działa (np. głos wymaga internetu albo jest wyłączony).",
+};
+
+/** After the first tap: if the reader certainly does not work, offer quiet mode (once per kind of problem). */
+let speechChecked = false;
+
+async function maybeWarnAboutSpeech() {
+  if (speechChecked || isQuiet()) return;
+  speechChecked = true;
+  const result = await checkSpeech();
+  if (!SPEECH_PROBLEMS[result.status]) {
+    if (state.settings.speechWarned) { delete state.settings.speechWarned; saveState(); }
+    return;
+  }
+  if (state.settings.speechWarned === result.status) return; // already told about this problem
+  const show = () => {
+    if ($(".modal-backdrop") || $("#tutorial") || $("#celebrate") || ["welcome", "session", "game"].includes(view)) {
+      setTimeout(show, 1500);
+      return;
+    }
+    state.settings.speechWarned = result.status;
+    saveState();
+    document.body.insertAdjacentHTML("beforeend", quietModalHtml("speechWarn", "🗣️ Lektor nie działa",
+      `${SPEECH_PROBLEMS[result.status]} Ćwiczenia z lektorem (Wskaż obrazek, Dyktando, zadania „posłuchaj”) mogą nie działać. Włączyć tryb cichy, który je ukryje?
+       <br><small class="muted">Możesz to sprawdzić później w Profilu → „Sprawdź lektora”.</small>`,
+      `<button class="btn primary" data-action="speechWarnQuiet">🔇 Włącz tryb cichy</button>
+       <button class="btn" data-action="speechWarnKeep">Zostaw</button>`));
+    setPageInert(true);
+    $("#speechWarn .btn.primary").focus();
+  };
+  show();
+}
+
+/** Profil → "Sprawdź lektora": reads a sentence aloud and says which voice was found. */
+async function testSpeech() {
+  const box = $("#speechTest");
+  if (!box) return;
+  if (isQuiet()) {
+    box.textContent = "🔇 Włączony jest tryb cichy – wyłącz go, żeby sprawdzić lektora.";
+    return;
+  }
+  box.textContent = "⏳ Sprawdzam…";
+  const result = await checkSpeech({ audible: true });
+  const name = result.voice ? `${result.voice.name} (${result.voice.lang})` : "";
+  box.textContent = result.status === "ok"
+    ? `✔ Lektor działa: ${name}. Czy słychać było zdanie po angielsku? Jeśli nie – sprawdź głośność urządzenia.`
+    : SPEECH_PROBLEMS[result.status] || `❔ Nie udało się sprawdzić lektora${name ? ` (głos: ${name})` : ""}. Spróbuj jeszcze raz.`;
+}
