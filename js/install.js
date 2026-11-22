@@ -98,7 +98,7 @@ function openInstallWindow() {
 /** After a screen change: on the chosen launches, in a browser (not from the shortcut), in menus only. */
 async function maybeSuggestInstall() {
   if (installCheckedThisLaunch || isStandaloneApp()) return;
-  if (["welcome", "session", "game", "result"].includes(view) || $(".modal-backdrop") || $("#tutorial") || $("#celebrate") || $("#supportBanner")) return;
+  if (["welcome", "session", "game", "result"].includes(view) || $(".modal-backdrop") || $("#tutorial") || $("#celebrate")) return;
   const store = readInstallStore();
   if (launchCount() < (store.nextAt || INSTALL_FIRST_LAUNCH)) return;
   installCheckedThisLaunch = true;
