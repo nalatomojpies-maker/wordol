@@ -17,7 +17,7 @@ const isBannerLaunch = (launches) => launches >= 3 && launches % 2 === 1;
 const SUPPORT_QUIET_VIEWS = ["session", "result", "step", "welcome"];
 const AUTHOR_LINE = "Bartek SP5EOE";
 /** The author's invitation – in the welcome notice and in the banner that shows up now and then under the title bar. */
-const SHARE_TEXT = "Używaj, rozpowszechniaj, dziel się z innymi, a jeśli spodoba Ci się moja praca i chciałbyś zobaczyć więcej moich projektów, Twój rodzic lub opiekun może postawić mi kawę";
+const SHARE_TEXT = "Używaj, rozpowszechniaj, dziel się z innymi, a jeśli spodoba Ci się moja praca i chcesz zobaczyć więcej moich projektów, Twój rodzic lub opiekun może postawić mi kawę";
 const COPYRIGHT_YEAR = 2026;
 
 // ====================================================================
@@ -183,7 +183,6 @@ function openLegalModal() {
         <ul>
           <li><b>Hosting:</b> aplikacja jest udostępniana przez GitHub Pages (GitHub, Inc.), który może zapisywać techniczne logi, np. adres IP (zob. polityka prywatności GitHub).</li>
           <li><b>Tłumaczenie własnych słów:</b> wpisane słowa są wysyłane do usługi MyMemory (translated.net).</li>
-          <li><b>OCR (funkcja eksperymentalna):</b> moduł Tesseract.js jest pobierany z sieci CDN jsDelivr; zdjęcie jest przetwarzane lokalnie w przeglądarce.</li>
           <li><b>Dźwięki odpowiedzi:</b> melodyjki z zestawu „Music Jingles” autorstwa Kenney (kenney.nl), licencja CC0 (domena publiczna).</li>
           <li><b>Czytanie słów:</b> korzysta z syntezatora mowy przeglądarki lub urządzenia. Niektóre głosy (np. w Chrome) mogą działać przez internet.</li>
         </ul>
@@ -333,7 +332,7 @@ function openIntroModal() {
           </li>
         </ul>
         <p class="small muted center-text"><button class="link" data-action="openLegal">Pełny regulamin, licencja i prywatność</button></p>
-        <div class="modal-actions"><button class="btn primary big" data-action="acceptTerms">✔ Zapoznałem się</button></div>
+        <div class="modal-actions"><button class="btn primary big" data-action="acceptTerms">✔ Rozumiem, zaczynamy</button></div>
       </div>
     </div>`);
   setPageInert(true);

@@ -448,7 +448,7 @@ function startTicTacToe(api) {
     if (result === "X") { score.win++; sfx("pass"); }
     else if (result === "O") { score.lose++; sfx("flip"); }
     else { score.draw++; sfx("ok"); }
-    draw(result === "X" ? "Wygrałeś tę partię! 🎉" : result === "O" ? "Tym razem wygrał Rychu 🦉" : "Remis! 🤝");
+    draw(result === "X" ? g("Wygrałeś tę partię! 🎉", "Wygrałaś tę partię! 🎉", "Ta partia jest Twoja! 🎉") : result === "O" ? "Tym razem wygrał Rychu 🦉" : "Remis! 🤝");
     api.later(() => {
       if (round === ROUNDS) {
         api.finish(`Koniec! Wygrane: ${score.win}, remisy: ${score.draw}, przegrane: ${score.lose}.`, score.win * 3 + score.draw);
@@ -584,7 +584,7 @@ function startBounce(api) {
     }
     api.setInfo(`⏱ ${api.timeLeft} s · 🧱 ${score}`);
   });
-  api.countdown(GAME_SECONDS, () => api.finish(`Rozbiłeś ${score} klocków! 🧱`, score));
+  api.countdown(GAME_SECONDS, () => api.finish(g(`Rozbiłeś ${score} klocków! 🧱`, `Rozbiłaś ${score} klocków! 🧱`, `Rozbite klocki: ${score}! 🧱`), score));
   api.setHelp("Przesuwaj paletkę palcem, myszką albo strzałkami.");
   buildWall();
   resetBall();
@@ -1008,12 +1008,12 @@ function startCheckers(api) {
     sfx("bad");
     if (tries >= 3) {
       points += captured;
-      draw(`Zbiłeś ${captured} z ${puzzle.target}. Przechodzimy dalej!`);
+      draw(g(`Zbiłeś ${captured} z ${puzzle.target}. Przechodzimy dalej!`, `Zbiłaś ${captured} z ${puzzle.target}. Przechodzimy dalej!`, `Zbite pionki: ${captured} z ${puzzle.target}. Przechodzimy dalej!`));
       nextPuzzle();
       return;
     }
     showHints = showHints || tries >= 2;
-    draw(`Zbiłeś ${captured}, a da się ${puzzle.target}. Spróbuj innej drogi!`);
+    draw(g(`Zbiłeś ${captured}, a da się ${puzzle.target}. Spróbuj innej drogi!`, `Zbiłaś ${captured}, a da się ${puzzle.target}. Spróbuj innej drogi!`, `Zbite pionki: ${captured}, a da się ${puzzle.target}. Spróbuj innej drogi!`));
     api.later(() => restart(tries >= 2 ? "Zielone pola prowadzą do najlepszego wyniku." : "Od nowa – szukaj dłuższej serii skoków."), 1400);
   }
 
@@ -1123,7 +1123,7 @@ function startTraffic(api) {
     }
     api.setInfo(`⏱ ${api.timeLeft} s · 🚗 ${passed}`);
   });
-  api.countdown(GAME_SECONDS, () => api.finish(`Wyminąłeś ${passed} aut${bumps === 0 ? " i ani razu się nie stuknąłeś! 🏆" : `. Stuknięcia: ${bumps}.`}`, Math.max(0, passed - bumps)));
+  api.countdown(GAME_SECONDS, () => api.finish(`${g("Wyminąłeś", "Wyminęłaś", "Wyminięte auta:")} ${passed} aut${bumps === 0 ? ` i ${g("ani razu się nie stuknąłeś", "ani razu się nie stuknęłaś", "ani jednego stuknięcia")}! 🏆` : `. Stuknięcia: ${bumps}.`}`, Math.max(0, passed - bumps)));
   api.setHelp("Dotknij pasa albo użyj strzałek, żeby zmienić pas.");
 }
 
@@ -1184,7 +1184,7 @@ function startBalloons(api) {
     });
     api.setInfo(`⏱ ${api.timeLeft} s · 🎈 ${score}`);
   });
-  api.countdown(GAME_SECONDS, () => api.finish(`Przekłułeś balony za ${score} punktów! 🎈`, score));
+  api.countdown(GAME_SECONDS, () => api.finish(g(`Przekłułeś balony za ${score} punktów! 🎈`, `Przekłułaś balony za ${score} punktów! 🎈`, `Balony przekłute za ${score} punktów! 🎈`), score));
   api.setHelp("Dotykaj balonów. Złoty balon ⭐ = 3 punkty.");
 }
 
@@ -1452,7 +1452,7 @@ function startFruits(api) {
     drawEmoji(ctx, "🧺", basket.x + wobble, basket.y, 46);
     api.setInfo(`⏱ ${api.timeLeft} s · 🍎 ${score}`);
   });
-  api.countdown(GAME_SECONDS, () => api.finish(`Złapałeś ${score} owoców! 🧺`, score));
+  api.countdown(GAME_SECONDS, () => api.finish(g(`Złapałeś ${score} owoców! 🧺`, `Złapałaś ${score} owoców! 🧺`, `Złapane owoce: ${score}! 🧺`), score));
   api.setHelp("Przesuwaj koszyk. Owoc = +1, kamyk = −1.");
 }
 
@@ -1506,7 +1506,7 @@ function startMemoryDash(api) {
     draw();
   });
   const infoTimer = setInterval(() => api.setInfo(`⏱ ${api.timeLeft} s · 🃏 ${pairs}`), 200);
-  api.countdown(GAME_SECONDS, () => { clearInterval(infoTimer); api.finish(`Znalazłeś ${pairs} par! 🃏`, pairs); });
+  api.countdown(GAME_SECONDS, () => { clearInterval(infoTimer); api.finish(g(`Znalazłeś ${pairs} par! 🃏`, `Znalazłaś ${pairs} par! 🃏`, `Znalezione pary: ${pairs}! 🃏`), pairs); });
   const stopBase = api.stop;
   api.stop = () => { clearInterval(infoTimer); stopBase(); };
   api.setHelp("Odkrywaj po dwie karty i szukaj par. Gdy znajdziesz wszystkie – nowa plansza!");
@@ -1663,7 +1663,7 @@ function startMelody(api) {
       listening = false;
       sfx("bad");
       message("Ups, inna kolejność!");
-      api.later(() => api.finish(`Zapamiętałeś melodię z ${best} dźwięków! 🔔`, best * 2), 700);
+      api.later(() => api.finish(g(`Zapamiętałeś melodię z ${best} dźwięków! 🔔`, `Zapamiętałaś melodię z ${best} dźwięków! 🔔`, `Zapamiętana melodia: ${best} dźwięków! 🔔`), best * 2), 700);
       return;
     }
     position++;
@@ -1724,7 +1724,7 @@ function startMole(api) {
     sfx("ok");
     draw();
   });
-  api.countdown(GAME_SECONDS, () => api.finish(`Przywitałeś ${score} kretów marchewką! 🥕`, score));
+  api.countdown(GAME_SECONDS, () => api.finish(g(`Przywitałeś ${score} kretów marchewką! 🥕`, `Przywitałaś ${score} kretów marchewką! 🥕`, `Przywitane krety: ${score}! 🥕`), score));
   api.setHelp("Gdy kret wychyli się z norki, dotknij go – dostanie marchewkę i się uśmiechnie.");
   draw();
   popUp();

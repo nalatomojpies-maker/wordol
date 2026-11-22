@@ -6,7 +6,7 @@
  * Shown once for a new player; can be replayed from Profil.
  */
 const TUTORIAL_STEPS = [
-  { text: "Cześć{name}! Jestem Rychu. Pokażę Ci w kilku krokach, gdzie co jest. Gotowy?" },
+  { text: "Cześć{name}! Jestem Rychu. Pokażę Ci w kilku krokach, gdzie co jest. {Gotowy?|Gotowa?|Zaczynamy?}" },
   { target: ".card.daily", text: "🎯 To jest Zadanie dnia: 3 krótkie ćwiczenia. Za każde dostajesz klejnoty 💎, a za całe zadanie – bonus!" },
   { target: ".extra-chest", text: "🧰 Chcesz więcej? Dodatkowy trening napełnia Skrzynię skarbów. Co 3 ćwiczenia – nowe klejnoty!" },
   { target: ".mode-group", text: "📚 Tu wybierasz ćwiczenie: fiszki, memory, dyktando, układanki i wiele innych. Każde uczy trochę inaczej." },
@@ -59,7 +59,7 @@ function showTutorialStep() {
   const step = steps[tutorialIndex];
   if (!step) return closeTutorial(true);
   const name = state.settings.name ? `, ${state.settings.name}` : "";
-  box.querySelector(".tutorial-text").textContent = step.text.replace("{name}", name);
+  box.querySelector(".tutorial-text").textContent = genderize(step.text.replace("{name}", name));
   box.querySelector(".tutorial-count").textContent = `${tutorialIndex + 1}/${steps.length}`;
   const next = box.querySelector("[data-action='tutorialNext']");
   next.textContent = tutorialIndex === steps.length - 1 ? "Zaczynamy! 🚀" : "Dalej →";

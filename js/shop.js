@@ -256,7 +256,7 @@ function renderShop() {
     ${boughtRiddle ? riddleCardHtml(boughtRiddle, true) : ""}
     <section class="card">
       ${cards.length ? `<div class="shelf">${cards.join("")}</div>` : `<p class="muted">Masz już wszystkie nagrody z tego poziomu. Brawo! 🏆</p>`}
-      ${unlockLeftToday() === 0 ? `<p class="banner">🌙 Na dziś odblokowałeś już wszystko, co się dało. Kolejne kłódki otworzą się jutro!</p>` : ""}
+      ${unlockLeftToday() === 0 ? `<p class="banner">🌙 Na dziś ${g("odblokowałeś", "odblokowałaś", "odblokowane jest")} już wszystko, co się dało. Kolejne kłódki otworzą się jutro!</p>` : ""}
       <p class="muted small">Klejnoty zdobywasz za <b>Zadanie dnia</b> i za skrzynie z dodatkowego treningu. Kolejne nagrody odblokowują się, gdy robisz ćwiczenia. Gierkę kupujesz raz – po każdym zagraniu ładuje się i znów zagrasz po ${GAME_RECHARGE_EXERCISES} ukończonych ćwiczeniach.</p>
     </section>`;
 }
@@ -348,7 +348,7 @@ function renderJokes() {
   const owned = [...state.jokes.owned].reverse().map((id) => JOKES.find((joke) => joke.id === id)).filter(Boolean);
   app.innerHTML = `
     <button class="btn ghost" data-action="openShop">← Sklepik</button>
-    <section class="card hero" style="margin-top:12px">${rychuBubble("happy", owned.length ? "Twoja kolekcja dowcipów. Opowiedz je komuś!" : "Jeszcze nic nie kupiłeś – zajrzyj do sklepiku!", 84)}</section>
+    <section class="card hero" style="margin-top:12px">${rychuBubble("happy", owned.length ? "Twoja kolekcja dowcipów. Opowiedz je komuś!" : g("Jeszcze nic nie kupiłeś – zajrzyj do sklepiku!", "Jeszcze nic nie kupiłaś – zajrzyj do sklepiku!", "Kolekcja jest jeszcze pusta – zajrzyj do sklepiku!"), 84)}</section>
     ${owned.length ? owned.map((joke) => jokeCardHtml(joke)).join("") : `<section class="card"><p class="muted">Kolekcja jest pusta.</p><button class="btn primary" data-action="openShop">🛍️ Do sklepiku</button></section>`}`;
 }
 
