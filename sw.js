@@ -1,7 +1,7 @@
 "use strict";
 
 // Bump CACHE_VERSION after every deployment so users get the new files.
-const CACHE_VERSION = "wordol-v19";
+const CACHE_VERSION = "wordol-v20";
 const APP_SHELL = [
   "./", "index.html", "styles.css", "manifest.webmanifest", "icon.svg", "icon-192.png", "icon-512.png",
   "js/data.js", "js/emoji.js", "js/art.js", "js/sentences.js", "js/path-young.js", "js/path-mid.js", "js/path-upper.js",
