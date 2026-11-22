@@ -127,7 +127,7 @@ const actions = {
     else finishTyping(false);
   },
   speak: (element) => speak(element.dataset.text),
-  toggleMusic: () => toggleMusic(),
+  toggleMusic: () => toggleQuiet(),
 
   // ----- learning path -----
   learnGrade: (element) => { learnGrade = Number(element.dataset.grade); render(); },

@@ -16,7 +16,7 @@ const TUTORIAL_STEPS = [
   { target: ".nav [data-view='rewards']", text: "🎁 Nagrody – sklepik z niespodziankami oraz Twoje dowcipy, zagadki i gierki." },
   { target: ".nav [data-view='stats']", text: "📊 Wyniki – Twoje postępy, odznaki i słówka do powtórki." },
   { target: ".nav [data-view='settings']", text: "👤 Profil – imię, klasa, dźwięk i wygląd. Tu też możesz jeszcze raz obejrzeć ten samouczek." },
-  { target: "#musicBtn", text: "🎵 Tym przyciskiem włączasz i wyłączasz muzykę w tle." },
+  { target: "#musicBtn", text: "🔇 To tryb cichy: jednym kliknięciem wyłączasz wszystkie dźwięki – muzykę, melodyjki i lektora. Muzykę samą wyłączysz w Profilu." },
   { text: "To wszystko! Zacznij od Zadania dnia. Powodzenia{name}! 🦉" },
 ];
 
