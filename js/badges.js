@@ -214,7 +214,7 @@ function toggleAllBadges() {
 
 function badgeSectionHtml() {
   const earnedCount = BADGES.filter(badgeEarned).length;
-  const nearest = BADGES.filter((badge) => !badgeEarned(badge) && !badge.test)
+  const nearest = BADGES.filter((badge) => !badgeEarned(badge) && !badge.test && badgeProgress(badge) < 1)
     .map((badge) => ({ badge, progress: badgeProgress(badge) }))
     .sort((a, b) => b.progress - a.progress)
     .slice(0, 3);

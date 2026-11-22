@@ -150,6 +150,7 @@ const actions = {
   acceptTerms: () => acceptTerms(),
   startTutorial: () => startTutorial(),
   toggleAllBadges: () => toggleAllBadges(),
+  statsRange: (element) => setStatsRange(Number(element.dataset.range)),
   tutorialNext: () => nextTutorialStep(),
   tutorialSkip: () => closeTutorial(true),
   openSupport: () => openSupportModal(),
