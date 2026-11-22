@@ -9,7 +9,7 @@
 // Constants
 // ====================================================================
 const STORE_KEY = "wordol.v1";
-const CUSTOM_TOPIC = { id: "custom", name: "Moje słowa", icon: "⭐" };
+const CUSTOM_TOPIC = { id: "custom", name: "Dodane słowa", icon: "⭐" };
 const MAX_SAVED_SESSIONS = 200;
 const MAX_IMPORT_ENTRIES = 60;
 const XP_PER_CORRECT = 10;
@@ -24,7 +24,7 @@ const THEMES = [
   { id: "ocean", name: "Ocean", color: "#0891b2" },
   { id: "forest", name: "Las", color: "#3f8f3f" },
   { id: "candy", name: "Cukierek", color: "#e0489b" },
-  { id: "cvd", name: "Dla daltonistów", color: "#0072B2" },
+  { id: "lowvision", name: "Dla niedowidzących", color: "#003f88" },
 ];
 const GRADE_INFO = [
   { id: 0, label: "Zerówka", age: "5–6 lat", emoji: "🧸" }, { id: 1, label: "Klasa 1", age: "7 lat", emoji: "🎒" },
@@ -242,6 +242,8 @@ if (!state.settings.scopeV2) {
   state.settings.scopeV2 = true;
 }
 if (!Array.isArray(state.games.owned)) state.games = defaultState().games;
+// the colour-blind theme became the low-vision theme (still colour-blind safe)
+if (state.settings.theme === "cvd") state.settings.theme = "lowvision";
 // quiet mode (top bar) and "Brak dźwięku" (Profil) are one option now
 if (state.settings.quiet || state.settings.noSound) { state.settings.quiet = true; state.settings.noSound = true; }
 if (!Number.isFinite(state.games.unlockProgress)) state.games.unlockProgress = Number(state.games.exercises) || 0;
@@ -299,7 +301,7 @@ const TOPIC_KIND = {
   verbs: ["🏃", "Czynność (czasownik)", "Jaka to czynność?"], adjectives: ["😊", "Cecha (przymiotnik)", "Jaka to cecha?"], nature: ["🌳", "Przyroda", "Co to jest w przyrodzie?"],
   tech: ["💻", "Technologia", "Co to za urządzenie?"], phrases: ["💬", "Zwrot", "Jaki to zwrot?"], health: ["🏥", "Zdrowie", "Co to jest?"],
   shopping: ["🛒", "Zakupy", "Co to jest?"], countries: ["🌍", "Kraj lub język", "Co to jest?"], environment: ["♻️", "Środowisko", "Co to jest?"],
-  science: ["🔬", "Nauka", "Co to jest?"], media: ["📺", "Media", "Co to jest?"], custom: ["⭐", "Moje słowo", "Co to jest?"],
+  science: ["🔬", "Nauka", "Co to jest?"], media: ["📺", "Media", "Co to jest?"], custom: ["⭐", "Dodane słowo", "Co to jest?"],
 };
 const topicKind = (topicId) => {
   const [icon, label, ask] = TOPIC_KIND[topicId] || ["📦", "Słowo", "Co to jest?"];
@@ -336,7 +338,7 @@ function wordsInScope() {
 
 function topicsInScope() {
   const topicIds = new Set(wordsInScope().map((word) => word.topic));
-  return [...WORDOL_TOPICS, CUSTOM_TOPIC].filter((topic) => topicIds.has(topic.id));
+  return [CUSTOM_TOPIC, ...WORDOL_TOPICS].filter((topic) => topicIds.has(topic.id)); // own words first
 }
 
 function getPool() {

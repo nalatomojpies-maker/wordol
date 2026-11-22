@@ -25,11 +25,12 @@
   --ok: #1fb58a; --bad: #e5484d; --border: #f7d6e8; --shadow: 0 8px 24px rgba(200, 60, 140, .14);
 }
 
-/* Colour-blind friendly (Okabe–Ito): blue = good, orange = wrong; never red against green */
-[data-theme="cvd"] {
-  --bg: #f2f6fb; --card: #ffffff; --text: #17202e; --muted: #4c5a6e;
-  --primary: #0b5fa5; --primary-contrast: #ffffff; --accent: #e69f00;
-  --ok: #0072b2; --bad: #d55e00; --border: #d8e2ee; --shadow: 0 8px 24px rgba(20, 60, 110, .14);
+/* For low vision: high contrast (text 14–21:1), larger text, strong outlines;
+   colour-blind safe (blue = good, orange = wrong; never red against green) */
+[data-theme="lowvision"] {
+  --bg: #ffffff; --card: #ffffff; --text: #000000; --muted: #2b2b2b;
+  --primary: #003f88; --primary-contrast: #ffffff; --accent: #a34700;
+  --ok: #0057a8; --bad: #b34000; --border: #5a5a5a; --shadow: none;
 }
 
 /* ================= Base ================= */
@@ -793,8 +794,17 @@ body.kids .mode-group .mode .ico { width: 54px; height: 54px; font-size: 2rem; }
 .meter-row > span:nth-child(2) { float: right; font-size: .85rem; }
 .stat .stat-small { font-size: 1.35rem; white-space: nowrap; }
 .hero-level { margin: 10px 0 0; font-size: .9rem; color: inherit; }
-/* word statuses in the colour-blind theme (Okabe–Ito, validated) – after the default chart colours so it wins */
-[data-theme="cvd"] { --st-mastered: #0072b2; --st-learning: #56b4e9; --st-hard: #d55e00; --st-new: #cc79a7; }
+/* low-vision theme: word statuses (validated: colour-blind safe, all >= 3:1 on white) and bigger, bolder UI */
+[data-theme="lowvision"] { --st-mastered: #0057a8; --st-learning: #3a8fd1; --st-hard: #b34000; --st-new: #9b4f96; --chart-grid: rgba(0, 0, 0, .25); }
+html[data-theme="lowvision"] { font-size: 20px; }
+html[data-theme="lowvision"] body, html[data-theme="lowvision"] body.kids { font-size: 1.1rem; line-height: 1.5; }
+[data-theme="lowvision"] .card, [data-theme="lowvision"] .btn, [data-theme="lowvision"] .chip, [data-theme="lowvision"] .topic,
+[data-theme="lowvision"] .mode, [data-theme="lowvision"] .icon-btn, [data-theme="lowvision"] input, [data-theme="lowvision"] select,
+[data-theme="lowvision"] textarea { border-width: 2px; border-color: var(--border); }
+[data-theme="lowvision"] .muted, [data-theme="lowvision"] small { color: var(--muted); opacity: 1; }
+[data-theme="lowvision"] :focus-visible { outline: 4px solid #ffbf00; outline-offset: 2px; }
+[data-theme="lowvision"] .chart .axis { font-size: 11px; font-weight: 700; }
+[data-theme="lowvision"] .medal:not(.earned) > :first-child { opacity: .6; }
 
 /* ---------- reward moments: tap the badge / tap the chest 3 times ---------- */
 .celebrate { position: fixed; inset: 0; z-index: 75; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 20px; text-align: center; color: #fff; background: radial-gradient(circle at 50% 45%, rgba(60, 40, 140, .96), rgba(10, 12, 35, .98)); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: cel-in .3s ease; overflow: hidden; }
