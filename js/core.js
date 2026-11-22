@@ -242,6 +242,8 @@ if (!state.settings.scopeV2) {
   state.settings.scopeV2 = true;
 }
 if (!Array.isArray(state.games.owned)) state.games = defaultState().games;
+// quiet mode (top bar) and "Brak dźwięku" (Profil) are one option now
+if (state.settings.quiet || state.settings.noSound) { state.settings.quiet = true; state.settings.noSound = true; }
 if (!Number.isFinite(state.games.unlockProgress)) state.games.unlockProgress = Number(state.games.exercises) || 0;
 if (!state.games.unlockToday || typeof state.games.unlockToday !== "object") state.games.unlockToday = { day: "", count: 0 };
 

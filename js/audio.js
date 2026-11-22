@@ -449,25 +449,81 @@ function unlockAudio() {
   if (state.settings.music) startMusic();
 }
 
-/** Quiet mode: music, answer jingles, effects, games and the reader all go silent at once. */
-function toggleQuiet() {
-  if (state.settings.noSound) {
-    toast("Włączony jest tryb „Brak dźwięku”. Wyłącz go w Profilu, aby włączyć dźwięk.");
-    return;
-  }
-  state.settings.quiet = !state.settings.quiet;
+let quietNoticeShown = false;
+
+/**
+ * Quiet mode = "Brak dźwięku" in Profil (one setting, kept in both fields): no music, no effects,
+ * no reader – so the exercises that need the reader are hidden.
+ */
+function setQuietMode(on) {
+  quietNoticeShown = true; // the player has just chosen it – no reminder needed in this visit
+  state.settings.quiet = on;
+  state.settings.noSound = on;
   saveState();
-  if (state.settings.quiet) {
+  if (on) {
     stopMusic();
     if (speechAvailable()) speechSynthesis.cancel();
     if (audioCtx) audioCtx.suspend(); // cuts off anything still playing
-    toast("🔇 Tryb cichy – wszystkie dźwięki wyłączone");
   } else {
     if (audioCtx) audioCtx.resume();
     unlockAudio();
-    toast("🔊 Dźwięk włączony");
   }
   updateMusicButton();
+  if (view !== "session" && view !== "game") render(true); // the list of exercises changes
+}
+
+const QUIET_TEXT = "Nie wszystkie ćwiczenia są dostępne – ćwiczeń z lektorem (np. Wskaż obrazek, Dyktando, zadania „posłuchaj”) nie zrobisz.";
+
+function quietModalHtml(id, title, text, buttons) {
+  return `
+    <div class="modal-backdrop" id="${id}" role="dialog" aria-modal="true" aria-labelledby="${id}Title">
+      <div class="modal">
+        <div class="modal-rychu">${rychuSvg("happy", 70)}</div>
+        <h2 id="${id}Title">${title}</h2>
+        <p>${text}</p>
+        <div class="modal-actions">${buttons}</div>
+      </div>
+    </div>`;
+}
+
+function closeQuietModal(id) {
+  closeModal(id);
+  setPageInert(false);
+}
+
+/** The speaker button in the top bar. Switching quiet mode on first explains what it hides. */
+function toggleQuiet() {
+  if (isQuiet()) {
+    setQuietMode(false);
+    toast("🔊 Dźwięk włączony – ćwiczenia z lektorem znów są dostępne");
+    return;
+  }
+  if ($("#quietAsk")) return;
+  document.body.insertAdjacentHTML("beforeend", quietModalHtml("quietAsk", "🔇 Włączyć tryb cichy?",
+    `Wszystkie dźwięki zostaną wyłączone: muzyka, efekty i lektor. <b>Ukryte zostaną wszystkie ćwiczenia z lektorem</b> (np. Wskaż obrazek, Dyktando, zadania „posłuchaj”). W Profilu zaznaczy się opcja „Tryb cichy”.`,
+    `<button class="btn primary" data-action="quietConfirm">🔇 Włącz tryb cichy</button>
+     <button class="btn" data-action="quietCancel">Anuluj</button>`));
+  setPageInert(true);
+  $("#quietAsk .btn.primary").focus();
+}
+
+function confirmQuiet() {
+  closeQuietModal("quietAsk");
+  setQuietMode(true);
+  toast("🔇 Tryb cichy włączony");
+}
+
+/** Once per start of the app: a reminder that quiet mode is on. */
+
+function maybeShowQuietNotice() {
+  if (quietNoticeShown || !isQuiet()) return;
+  if (["welcome", "session", "game"].includes(view) || $(".modal-backdrop") || $("#tutorial") || $("#celebrate")) return;
+  quietNoticeShown = true;
+  document.body.insertAdjacentHTML("beforeend", quietModalHtml("quietNotice", "🔇 Włączony jest tryb cichy", QUIET_TEXT,
+    `<button class="btn primary" data-action="quietNoticeOk">OK</button>
+     <button class="btn" data-action="quietNoticeSound">🔊 Włącz dźwięk</button>`));
+  setPageInert(true);
+  $("#quietNotice .btn.primary").focus();
 }
 
 function pauseAudioWhenHidden() {
