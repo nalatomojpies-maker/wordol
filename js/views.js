@@ -260,62 +260,6 @@ function renderSettings() {
 }
 
 // ---------- Stats ----------
-function renderStats() {
-  const { sessions } = state.stats;
-  const totalAnswers = sessions.reduce((sum, entry) => sum + entry.total, 0);
-  const totalCorrect = sessions.reduce((sum, entry) => sum + entry.correct, 0);
-  const recent = sessions.slice(-20);
-  const averageMark = recent.length > 0 ? (recent.reduce((sum, entry) => sum + entry.grade, 0) / recent.length).toFixed(1) : "–";
-  const accuracy = totalAnswers > 0 ? Math.round((totalCorrect / totalAnswers) * 100) : 0;
-  const words = allWords();
-  const level = levelInfo();
-  const hardWords = words.filter((word) => wordStat(word).bad > 0)
-    .sort((a, b) => (wordStat(b).bad - wordStat(b).ok) - (wordStat(a).bad - wordStat(a).ok)).slice(0, 8);
-
-  const modeRows = MODES.map((mode) => {
-    const modeSessions = sessions.filter((entry) => entry.mode === mode.id);
-    if (modeSessions.length === 0) return "";
-    const total = modeSessions.reduce((sum, entry) => sum + entry.total, 0);
-    const correct = modeSessions.reduce((sum, entry) => sum + entry.correct, 0);
-    const percent = total > 0 ? Math.round((correct / total) * 100) : 0;
-    return `<div><span>${mode.icon} ${mode.name}</span> <span class="muted">· ${modeSessions.length} ćwiczeń · ${percent}%</span><div class="meter"><div style="width:${percent}%"></div></div></div>`;
-  }).join("");
-
-  const bars = sessions.slice(-12).map((entry) => {
-    const percent = entry.total > 0 ? Math.round((entry.correct / entry.total) * 100) : 0;
-    return `<div class="bar" style="height:${Math.max(percent, 18)}%" title="${new Date(entry.t).toLocaleDateString("pl-PL")}: ${percent}%">${entry.grade}</div>`;
-  }).join("");
-
-  const pathRows = GRADE_INFO.map((info) => {
-    const units = unitsForGrade(info.id);
-    const steps = units.reduce((sum, unit) => sum + unit.steps.length, 0);
-    const passed = units.reduce((sum, unit) => sum + unitPassedCount(unit), 0);
-    const percent = steps > 0 ? Math.round((passed / steps) * 100) : 0;
-    return `<div><span>${info.emoji} ${info.label}</span> <span class="muted">· ${passed}/${steps} kroków</span><div class="meter"><div style="width:${percent}%"></div></div></div>`;
-  }).join("");
-
-  app.innerHTML = `
-    <section class="card hero">${rychuBubble("happy", `Poziom ${level.level}: ${level.title}. Masz ${state.stats.xp} XP – tak trzymać!`, 84)}</section>
-    <section class="grid stat-grid">
-      <div class="card stat"><b>${sessions.length}</b>ćwiczeń</div>
-      <div class="card stat"><b>${accuracy}%</b>poprawnych</div>
-      <div class="card stat"><b>${averageMark}</b>średnia ocen</div>
-      <div class="card stat"><b>${currentStreak()}</b>dni z rzędu</div>
-      <div class="card stat"><b>${words.filter(isMastered).length}</b>opanowanych słów</div>
-    </section>
-    ${badgeSectionHtml()}
-    <section class="card"><h2>Ostatnie oceny</h2>
-      ${bars ? `<div class="bars">${bars}</div>` : `<p class="muted">Zrób pierwsze ćwiczenie, a pojawi się tu wykres.</p>`}
-    </section>
-    ${modeRows ? `<section class="card"><h2>Skuteczność w ćwiczeniach</h2>${modeRows}</section>` : ""}
-    <section class="card"><h2>Ścieżka nauki</h2>${pathRows}</section>
-    <section class="card"><h2>Do powtórki</h2>
-      ${hardWords.length > 0
-        ? hardWords.map((word) => `<div class="word-item"><span><b>${esc(word.en)}</b> – ${esc(word.pl)}</span><span class="muted">błędy: ${wordStat(word).bad}</span></div>`).join("")
-        : `<p class="muted">Brak trudnych słów. Świetnie!</p>`}
-    </section>
-    <button class="btn danger" data-action="resetStats">Wyzeruj postępy</button>`;
-}
 
 // ---------- Result ----------
 function mistakeLabel(item) {
