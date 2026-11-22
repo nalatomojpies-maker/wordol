@@ -146,7 +146,7 @@ let activeGame = null;
 function playGame(id) {
   if (!isGameReady(id)) {
     sfx("bad");
-    toast(isGameOwned(id) ? `Gierka się ładuje – zrób jeszcze ${exercisesToRecharge(id)} ćwiczenia.` : "Najpierw kup tę gierkę w sklepiku.");
+    toast(isGameOwned(id) ? `Gierka się ładuje – zrób jeszcze ${exercisesToRecharge(id)} ${exercisesWord(exercisesToRecharge(id))}.` : "Najpierw kup tę gierkę w sklepiku.");
     return;
   }
   if (!state.testUnlock) state.games.charge[id] = state.games.exercises;
