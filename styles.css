@@ -795,3 +795,53 @@ body.kids .mode-group .mode .ico { width: 54px; height: 54px; font-size: 2rem; }
 .hero-level { margin: 10px 0 0; font-size: .9rem; color: inherit; }
 /* word statuses in the colour-blind theme (Okabe–Ito, validated) – after the default chart colours so it wins */
 [data-theme="cvd"] { --st-mastered: #0072b2; --st-learning: #56b4e9; --st-hard: #d55e00; --st-new: #cc79a7; }
+
+/* ---------- reward moments: tap the badge / tap the chest 3 times ---------- */
+.celebrate { position: fixed; inset: 0; z-index: 75; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 20px; text-align: center; color: #fff; background: radial-gradient(circle at 50% 45%, rgba(60, 40, 140, .96), rgba(10, 12, 35, .98)); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: cel-in .3s ease; overflow: hidden; }
+.celebrate.leaving { opacity: 0; transition: opacity .25s; }
+.cel-rays { position: absolute; left: 50%; top: 45%; width: 900px; height: 900px; margin: -450px 0 0 -450px; background: repeating-conic-gradient(rgba(255, 230, 120, .16) 0 10deg, transparent 10deg 20deg); border-radius: 50%; animation: cel-spin 14s linear infinite; pointer-events: none; -webkit-mask: radial-gradient(circle, #000 20%, transparent 65%); mask: radial-gradient(circle, #000 20%, transparent 65%); }
+.cel-title { position: relative; margin: 0 0 8px; font-size: 1.6rem; color: #ffe27a; text-shadow: 0 3px 0 rgba(0, 0, 0, .3); }
+.cel-name { position: relative; margin: 8px 0 0; font-size: 1.4rem; font-weight: 800; }
+.cel-desc { position: relative; margin: 0; opacity: .8; }
+.cel-hint { position: relative; margin: 14px 0 0; font-weight: 700; font-size: 1.05rem; animation: cel-blink 1.4s ease-in-out infinite; }
+.cel-target { position: relative; border: 0; background: none; cursor: pointer; padding: 0; color: inherit; }
+.cel-target:focus-visible { outline: 3px solid #ffe27a; outline-offset: 8px; border-radius: 24px; }
+.cel-badge { width: 170px; height: 170px; border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle at 35% 30%, #fff8d6, #ffd34d 45%, #e59a12); box-shadow: 0 0 0 8px rgba(255, 255, 255, .18), 0 0 50px 10px rgba(255, 210, 80, .55), inset 0 -10px 0 rgba(0, 0, 0, .12); animation: cel-pop .55s cubic-bezier(.2, 1.6, .4, 1), cel-float 2.4s ease-in-out .55s infinite; }
+.cel-badge-icon { font-size: 5.4rem; line-height: 1; filter: drop-shadow(0 4px 2px rgba(0, 0, 0, .25)); }
+/* claimed: the badge (or the opened chest) flies towards the player – grows, spins and fades */
+.celebrate.claimed .cel-badge { animation: cel-fly 1s cubic-bezier(.5, 0, .7, .4) forwards; }
+.celebrate.claimed .cel-hint, .celebrate.claimed .cel-desc { animation: none; }
+.cel-chest { animation: cel-pop .55s cubic-bezier(.2, 1.6, .4, 1); }
+.cel-chest svg { display: block; overflow: visible; }
+.cel-chest.hit1 { animation: cel-wobble .35s ease; }
+.cel-chest.hit2 { animation: cel-wobble .45s ease; filter: drop-shadow(0 0 14px rgba(255, 220, 90, .7)); }
+.cel-chest.hit3 { filter: drop-shadow(0 0 28px rgba(255, 220, 90, .95)); }
+.chest-lid { transform-origin: 14px 50px; transition: transform .45s cubic-bezier(.3, 1.6, .5, 1); }
+.chest-glow { opacity: 0; transition: opacity .3s; }
+.celebrate.open .chest-lid { transform: rotate(-38deg) translate(-4px, -6px); }
+.celebrate.open .chest-glow { opacity: 1; }
+.celebrate.open .cel-chest { animation: cel-open-fly 1.6s ease .45s forwards; }
+.chest-dots { display: flex; gap: 8px; margin-top: 8px; position: relative; }
+.chest-dots i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #ffe27a; }
+.chest-dots i.on { background: #ffe27a; }
+.cel-gems { font-size: 2rem; color: #ffe27a; display: inline-block; animation: cel-pop .5s cubic-bezier(.2, 1.6, .4, 1); }
+.cel-particle { position: fixed; z-index: 76; font-size: 1.8rem; pointer-events: none; transform: translate(-50%, -50%); animation: cel-burst 1.3s cubic-bezier(.2, .8, .4, 1) forwards; }
+@keyframes cel-in { from { opacity: 0; } }
+@keyframes cel-spin { to { transform: rotate(360deg); } }
+@keyframes cel-blink { 50% { opacity: .55; } }
+@keyframes cel-pop { 0% { transform: scale(.2) rotate(-20deg); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes cel-float { 50% { transform: translateY(-10px) rotate(3deg); } }
+@keyframes cel-fly { 0% { transform: scale(1); } 25% { transform: scale(.85) rotate(-15deg); } 100% { transform: scale(5) rotate(360deg); opacity: 0; } }
+@keyframes cel-wobble { 20% { transform: rotate(-9deg) scale(1.05); } 45% { transform: rotate(8deg) scale(1.08); } 70% { transform: rotate(-5deg); } 100% { transform: rotate(0); } }
+@keyframes cel-open-fly { 0% { transform: scale(1); } 40% { transform: scale(1.1) translateY(-8px); } 100% { transform: scale(3.2) translateY(30px); opacity: 0; } }
+/* particles: shoot out, then come towards the player (bigger) and vanish */
+@keyframes cel-burst {
+  0% { transform: translate(-50%, -50%) scale(.3); opacity: 0; }
+  15% { opacity: 1; }
+  55% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.2); opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--dx) * 1.6), calc(-50% + var(--dy) * 1.6 + 60px)) scale(3.2); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cel-rays, .cel-hint { animation: none !important; }
+  .celebrate.claimed .cel-badge, .celebrate.open .cel-chest { animation: none !important; opacity: .4; }
+}
