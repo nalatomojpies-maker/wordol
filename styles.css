@@ -25,6 +25,13 @@
   --ok: #1fb58a; --bad: #e5484d; --border: #f7d6e8; --shadow: 0 8px 24px rgba(200, 60, 140, .14);
 }
 
+/* Colour-blind friendly (Okabe–Ito): blue = good, orange = wrong; never red against green */
+[data-theme="cvd"] {
+  --bg: #f2f6fb; --card: #ffffff; --text: #17202e; --muted: #4c5a6e;
+  --primary: #0b5fa5; --primary-contrast: #ffffff; --accent: #e69f00;
+  --ok: #0072b2; --bad: #d55e00; --border: #d8e2ee; --shadow: 0 8px 24px rgba(20, 60, 110, .14);
+}
+
 /* ================= Base ================= */
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html { font-size: 16px; }
@@ -785,3 +792,6 @@ body.kids .mode-group .mode .ico { width: 54px; height: 54px; font-size: 2rem; }
 .meter-row { cursor: default; }
 .meter-row > span:nth-child(2) { float: right; font-size: .85rem; }
 .stat .stat-small { font-size: 1.35rem; white-space: nowrap; }
+.hero-level { margin: 10px 0 0; font-size: .9rem; color: inherit; }
+/* word statuses in the colour-blind theme (Okabe–Ito, validated) – after the default chart colours so it wins */
+[data-theme="cvd"] { --st-mastered: #0072b2; --st-learning: #56b4e9; --st-hard: #d55e00; --st-new: #cc79a7; }
