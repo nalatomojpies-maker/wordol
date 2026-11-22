@@ -39,6 +39,7 @@ const actions = {
     state.settings.onboarded = true;
     saveState();
     goTo("home");
+    if (!state.settings.tutorialDone) startTutorial(); // Rychu shows where everything is
   },
   setGrade: (element) => {
     applyGradeDefaults(Number(element.dataset.grade));
@@ -147,6 +148,9 @@ const actions = {
   toggleLab: () => { labOpen = !labOpen; if (!labOpen) labUnlocked = false; rerenderAdd(); },
   lockLab: () => { labUnlocked = false; labOpen = false; rerenderAdd(); },
   acceptTerms: () => acceptTerms(),
+  startTutorial: () => startTutorial(),
+  tutorialNext: () => nextTutorialStep(),
+  tutorialSkip: () => closeTutorial(true),
   openSupport: () => openSupportModal(true),
   showBlik: () => showBlik(),
   copyBlik: () => copyBlik(),

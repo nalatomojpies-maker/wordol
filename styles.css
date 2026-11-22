@@ -683,3 +683,13 @@ body.kids .mode-group .mode .ico { width: 54px; height: 54px; font-size: 2rem; }
 .score-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
 .score-grid .score-card { margin-bottom: 0; }
 .score-card h3 { margin: 0 0 6px; }
+
+/* ---------- tutorial (Rychu shows where everything is) ---------- */
+.tutorial { position: fixed; inset: 0; z-index: 70; }
+.tutorial-hole { position: fixed; border-radius: 18px; box-shadow: 0 0 0 9999px rgba(15, 20, 50, .65); outline: 3px solid #ffd23f; transition: all .25s ease; pointer-events: none; }
+.tutorial.no-target .tutorial-hole { left: 50%; top: 50%; width: 0; height: 0; outline: 0; }
+.tutorial-bubble { position: fixed; left: 50%; transform: translateX(-50%); width: min(420px, calc(100vw - 32px)); display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; align-items: center; padding: 14px 16px; border-radius: 20px; background: var(--card); color: var(--text); box-shadow: 0 10px 30px rgba(0, 0, 0, .25); }
+.tutorial.no-target .tutorial-bubble { top: 50% !important; bottom: auto !important; transform: translate(-50%, -50%); }
+.tutorial-text { margin: 0; font-weight: 600; line-height: 1.4; }
+.tutorial-actions { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+@media (prefers-reduced-motion: reduce) { .tutorial-hole { transition: none; } }
