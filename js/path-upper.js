@@ -32,7 +32,7 @@ unit("will", 6, "🔮", "Future: will", "Przewidywania, obietnice, decyzje", [
   step("will.1", "Przewidywania", card(
     ["Budowa: **will + czasownik bez zmian**. Dla wszystkich osób tak samo: I will, she will, they will.", "Krócej: I'll, she'll, they'll."],
     [["It will rain tomorrow.", "Jutro będzie padać."], ["I think she will win.", "Myślę, że ona wygra."], ["He will be twelve next month.", "W przyszłym miesiącu skończy dwanaście lat."]],
-    { intro: "Will to szklana kula Rychu. Używasz go, gdy przewidujesz, co się stanie.",
+    { intro: "Will to szklana kula Rycha. Używasz go, gdy przewidujesz, co się stanie.",
       when: "Gdy **przewidujemy** przyszłość (I think…), coś **obiecujemy** albo **decydujemy w tej chwili**.", timeline: ["future"],
       pattern: [pat("➕", "S:It", "H:will", "V:rain", "R:tomorrow.")], signals: ["tomorrow – jutro", "next week – w przyszłym tygodniu", "soon – wkrótce", "I think… – myślę, że…", "probably – prawdopodobnie"],
       mistake: ["She wills win.", "She will win."] }), [
