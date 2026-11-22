@@ -186,7 +186,7 @@ function defaultState() {
     },
     custom: [],
     cache: {},
-    support: { seconds: 0, fired: {}, nextHourAt: 0, nextBannerAt: 0 },
+    support: { seconds: 0 },
     gems: 0,
     daily: { day: "", grade: -1, modes: [], results: [], done: false },
     calendar: {},
@@ -235,7 +235,6 @@ function loadState() {
 }
 
 const state = loadState();
-if (!state.support.fired || typeof state.support.fired !== "object") state.support.fired = {};
 // One-time switch: the default word scope is now "from class 0 up to my class".
 if (!state.settings.scopeV2) {
   state.settings.wordScope = "upto";

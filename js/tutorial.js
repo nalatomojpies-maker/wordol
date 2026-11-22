@@ -125,6 +125,7 @@ function closeTutorial(markDone) {
     saveState();
   }
   window.scrollTo({ top: 0, behavior: "instant" });
+  scheduleSupportCheck();
 }
 
 window.addEventListener("resize", placeTutorial);
