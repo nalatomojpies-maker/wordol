@@ -701,3 +701,8 @@ body.kids .mode-group .mode .ico { width: 54px; height: 54px; font-size: 2rem; }
 .support-banner .btn { padding: 7px 12px; white-space: nowrap; font-size: .85rem; }
 .support-banner.hiding { opacity: 0; transform: translateY(-12px); transition: opacity .3s, transform .3s; }
 @keyframes bannerIn { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: none; } }
+
+/* Typing with the on-screen keyboard open: a smaller Rychu, so he fits above the keyboard */
+.session-rychu.kb { margin-top: 6px; scroll-margin-bottom: 10px; }
+.session-rychu.kb .session-rychu-owl svg { width: 64px; height: 64px; }
+@media (max-width: 759px) { .kb-open .nav { display: none; } .kb-open .app { padding-bottom: 16px; } }
