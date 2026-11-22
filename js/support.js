@@ -1,45 +1,53 @@
 "use strict";
 
 /**
- * "Buy me a coffee" prompt, footer and legal information.
+ * "Buy me a coffee" invitation, footer and legal information. Addressed to parents and guardians, never to children.
  *
- * The prompt appears in menus only (never during an exercise) when the first of these happens:
- *  - 10 minutes of real use or 30% of the class path completed; afterwards again after every further hour of use.
- * The first two triggers fire once. The user's answer ("already donated" / "no") is kept under its own key,
- * so "Wyczyść profil" does not remove it. The phone number is stored encoded and is drawn on a canvas
- * only after a click, so simple scrapers cannot read it (a person can still copy it, obviously).
+ * - A banner under the title bar on every second app launch from the 3rd on (3, 5, 7…; in menus only, never during an exercise).
+ *   "Nie postawię kawy" hides it until the next of those launches; "Już postawiłem" hides it for good.
+ * The answer and the launch count are kept under their own key, so "Wyczyść profil" does not remove them.
+ * The phone number is stored encoded and is drawn on a canvas only after a click, so simple scrapers cannot read it.
  */
 const SUPPORT_KEY = "wordol.support.v1";
 const SUPPORT_TICK_MS = 15000;
 const SUPPORT_IDLE_LIMIT_MS = 60000;
 const SUPPORT_CHECK_DELAY_MS = 1200;
+/** The banner shows on every second launch, starting with the 3rd: 3, 5, 7, 9… */
+const isBannerLaunch = (launches) => launches >= 3 && launches % 2 === 1;
 const SUPPORT_QUIET_VIEWS = ["session", "result", "step", "welcome"];
 const AUTHOR_LINE = "Bartek SP5EOE";
+/** The author's invitation – in the welcome notice and in the banner that shows up now and then under the title bar. */
+const SHARE_TEXT = "Używaj, rozpowszechniaj, dziel się z innymi, a jeśli spodoba Ci się moja praca i chciałbyś zobaczyć więcej moich projektów, Twój rodzic lub opiekun może postawić mi kawę";
 const COPYRIGHT_YEAR = 2026;
 
 // ====================================================================
 // Persistent answer (survives "Wyczyść profil")
 // ====================================================================
-let supportStatusMemory = null;
+let supportStoreMemory = null;
 
-function supportStatus() {
-  if (supportStatusMemory) return supportStatusMemory;
+function readSupportStore() {
+  if (supportStoreMemory) return supportStoreMemory;
   try {
     const stored = JSON.parse(localStorage.getItem(SUPPORT_KEY) || "null");
-    return stored && stored.status ? stored.status : null;
+    supportStoreMemory = stored && typeof stored === "object" ? stored : {};
   } catch {
-    return null;
+    supportStoreMemory = {};
+  }
+  return supportStoreMemory;
+}
+
+function writeSupportStore(changes) {
+  supportStoreMemory = { ...readSupportStore(), ...changes };
+  try {
+    localStorage.setItem(SUPPORT_KEY, JSON.stringify(supportStoreMemory));
+  } catch {
+    /* storage blocked – remembered until the page is closed */
   }
 }
 
-function writeSupportStatus(status) {
-  supportStatusMemory = status;
-  try {
-    localStorage.setItem(SUPPORT_KEY, JSON.stringify({ status, at: Date.now() }));
-  } catch {
-    /* storage blocked – the choice is still remembered until the page is closed */
-  }
-}
+/** Only "donated" stops the invitation for good (older saves may still hold "declined", which no longer counts). */
+const hasDonated = () => readSupportStore().status === "donated";
+const writeSupportStatus = (status) => writeSupportStore({ status, at: Date.now() });
 
 // ====================================================================
 // Obfuscated phone number
@@ -126,20 +134,19 @@ const closeModal = (id) => {
   if (modal) modal.remove();
 };
 
-function openSupportModal(manual = false) {
+/** Opened by the user (footer, profile, banner "Postaw kawę"). */
+function openSupportModal() {
   if ($("#supportModal")) return;
-  const actions = manual
-    ? `<button class="btn primary" data-action="supportDonated">☕ Już postawiłem – dziękuję!</button>
-       <button class="btn" data-action="supportLater">Zamknij</button>`
-    : `<button class="btn primary" data-action="supportDonated">☕ Już postawiłem – dziękuję!</button>
-       <button class="btn" data-action="supportLater">🙂 Może później</button>
-       <button class="btn ghost" data-action="supportDeclined">Nie, słabo to widzę.</button>`;
+  const title = "Aplikacja jest w pełni darmowa ☕";
+  const text = "WORD4ALL jest i zawsze będzie w całości <b>darmowy</b>. Jeśli Ci się podoba, Twój <b>rodzic lub opiekun</b> może postawić autorowi kawę BLIKIEM na numer telefonu. To zupełnie dobrowolne.";
+  const actions = `<button class="btn primary" data-action="supportDonated">✔ Już postawiłem</button>
+       <button class="btn" data-action="supportLater">Zamknij</button>`;
   document.body.insertAdjacentHTML("beforeend", `
     <div class="modal-backdrop" id="supportModal" role="dialog" aria-modal="true" aria-labelledby="supportTitle">
       <div class="modal">
         <div class="modal-rychu">${rychuSvg("cheer", 76)}</div>
-        <h2 id="supportTitle">Aplikacja jest w pełni darmowa ☕</h2>
-        <p>WORD4ALL jest i zawsze będzie w całości <b>darmowy</b>. Jeśli Ci się podoba i chcesz mnie wesprzeć, możesz <b>postawić mi kawę BLIKIEM na numer telefonu</b>. To zupełnie dobrowolne.</p>
+        <h2 id="supportTitle">${title}</h2>
+        <p>${text}</p>
         <div id="blikBox" class="blik-box"><button class="btn" data-action="showBlik">📱 Pokaż numer BLIK</button></div>
         <div class="modal-actions">${actions}</div>
         <p class="small muted center-text">– Bartek SP5EOE</p>
@@ -208,34 +215,68 @@ const footerHtml = () => `
 // ====================================================================
 // When to ask
 // ====================================================================
-function classPathProgress() {
-  const units = unitsForGrade(currentGrade());
-  const steps = units.reduce((sum, unit) => sum + unit.steps.length, 0);
-  const passed = units.reduce((sum, unit) => sum + unitPassedCount(unit), 0);
-  return steps > 0 ? passed / steps : 0;
+let bannerDueThisLaunch = false;
+
+/** Called once when the app starts: counts launches; on some of them the banner will show. */
+function countLaunch() {
+  const launches = (Number(readSupportStore().launches) || 0) + 1;
+  writeSupportStore({ launches });
+  bannerDueThisLaunch = isBannerLaunch(launches);
 }
 
-const SUPPORT_REPEAT_S = 3600;
-const SUPPORT_TRIGGERS = [
-  { id: "t10", test: () => state.support.seconds >= 600 },
-  { id: "p30", test: () => classPathProgress() >= 0.3 },
-];
-
-function maybeShowSupport() {
-  if (supportStatus() || $("#supportModal") || $("#legalModal") || $("#introModal") || $("#tutorial") || SUPPORT_QUIET_VIEWS.includes(view)) return;
-  const due = SUPPORT_TRIGGERS.filter((trigger) => !state.support.fired[trigger.id] && trigger.test());
-  const repeatDue = state.support.nextHourAt > 0 && state.support.seconds >= state.support.nextHourAt;
-  if (due.length === 0 && !repeatDue) return;
-  due.forEach((trigger) => { state.support.fired[trigger.id] = Date.now(); });
-  state.support.nextHourAt = state.support.seconds + SUPPORT_REPEAT_S; // the next reminder: after another hour of use
-  saveState();
-  openSupportModal();
+/** After every screen change: shows the banner in menus (on the chosen launches); hides it elsewhere. */
+function checkSupport() {
+  const busy = $("#introModal") || $("#legalModal") || $("#tutorial") || SUPPORT_QUIET_VIEWS.includes(view);
+  if (hasDonated() || busy) {
+    removeSupportBanner();
+    return;
+  }
+  if (bannerDueThisLaunch) showSupportBanner();
 }
 
-/** Counts only real use: the page is visible and the user touched it within the last minute. */
+function showSupportBanner() {
+  if ($("#supportBanner")) return;
+  const topbar = $(".topbar");
+  if (!topbar) return;
+  topbar.insertAdjacentHTML("afterend", `
+    <div class="support-banner" id="supportBanner" role="status">
+      <p>☕ ${SHARE_TEXT} ❤️</p>
+      <div class="support-banner-actions">
+        <button class="btn primary" data-action="openSupport">❤️ Postaw kawę</button>
+        <button class="btn" data-action="supportDonated">✔ Już postawiłem</button>
+        <button class="btn ghost" data-action="supportDeclined">Nie postawię kawy</button>
+      </div>
+    </div>`);
+  $("#supportBanner").style.top = `${topbar.getBoundingClientRect().height}px`;
+  // "Postaw kawę" is the default choice (Enter presses it).
+  $("#supportBanner [data-action='openSupport']").focus({ preventScroll: true });
+}
+
+function removeSupportBanner() {
+  const banner = $("#supportBanner");
+  if (banner) banner.remove();
+}
+
+/** "Nie postawię kawy": closes the banner until its next launch. */
+function declineSupport() {
+  bannerDueThisLaunch = false;
+  closeModal("supportModal");
+  removeSupportBanner();
+}
+
+/** "Już postawiłem": never ask again. */
+function confirmDonated() {
+  writeSupportStatus("donated");
+  closeModal("supportModal");
+  removeSupportBanner();
+  toast("Dziękuję! ☕ Ta prośba już się nie pojawi.");
+}
+
+/** Counts real use time (the page is visible and touched within the last minute). */
 let lastActivityAt = Date.now();
 
 function startSupportTimer() {
+  countLaunch();
   ["pointerdown", "keydown", "scroll"].forEach((type) =>
     document.addEventListener(type, () => { lastActivityAt = Date.now(); }, { passive: true }));
   document.addEventListener("keydown", (event) => {
@@ -247,11 +288,10 @@ function startSupportTimer() {
     if (document.hidden || Date.now() - lastActivityAt > SUPPORT_IDLE_LIMIT_MS) return;
     state.support.seconds += SUPPORT_TICK_MS / 1000;
     saveState();
-    maybeShowSupport();
   }, SUPPORT_TICK_MS);
 }
 
-const scheduleSupportCheck = () => setTimeout(maybeShowSupport, SUPPORT_CHECK_DELAY_MS);
+const scheduleSupportCheck = () => setTimeout(checkSupport, SUPPORT_CHECK_DELAY_MS);
 
 // ====================================================================
 // Welcome notice ("Zanim zaczniesz") – shown until confirmed, again after "Wyczyść profil"
@@ -287,7 +327,7 @@ function openIntroModal() {
             </ul>
           </li>
           <li>🔇 <b>Nie masz dźwięku?</b> W <i>Profil → Brak dźwięku</i> włączysz tryb, w którym gra dostosuje się do tej opcji i ukryje ćwiczenia wymagające słuchania.</li>
-          <li>☕ <b>Podoba Ci się?</b> Możesz postawić mi kawę BLIKIEM na numer telefonu. To zupełnie dobrowolne.
+          <li>☕ ${SHARE_TEXT} ❤️
             <div id="blikBox" class="blik-box"><button class="btn" data-action="showBlik">📱 Pokaż numer BLIK</button></div>
           </li>
         </ul>
@@ -305,6 +345,7 @@ function acceptTerms() {
   saveState();
   closeModal("introModal");
   setPageInert(false);
+  scheduleSupportCheck();
 }
 
 function showIntroIfNeeded() {
