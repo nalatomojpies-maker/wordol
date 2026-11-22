@@ -193,7 +193,7 @@ function defaultState() {
     jokes: { owned: [] },
     riddles: { owned: [] },
     testUnlock: false,
-    games: { owned: [], exercises: 0, charge: {}, plays: {}, scores: {} },
+    games: { owned: [], exercises: 0, unlockProgress: 0, unlockToday: { day: "", count: 0 }, charge: {}, plays: {}, scores: {} },
     extra: { day: "", exercises: 0, chests: 0 },
     shop: { day: "", ids: [] },
     path: {},
@@ -219,7 +219,12 @@ function loadState() {
       jokes: { owned: isObject(parsed.jokes) && Array.isArray(parsed.jokes.owned) ? parsed.jokes.owned : [] },
       testUnlock: parsed.testUnlock === true,
       riddles: { owned: isObject(parsed.riddles) && Array.isArray(parsed.riddles.owned) ? parsed.riddles.owned : [] },
-      games: { ...defaults.games, ...(isObject(parsed.games) ? parsed.games : {}) },
+      games: {
+        ...defaults.games,
+        ...(isObject(parsed.games) ? parsed.games : {}),
+        // Saves from before the daily unlock limit: unlocking continues from the old exercise count.
+        ...(isObject(parsed.games) && !Number.isFinite(parsed.games.unlockProgress) ? { unlockProgress: Number(parsed.games.exercises) || 0 } : {}),
+      },
       extra: { ...defaults.extra, ...(isObject(parsed.extra) ? parsed.extra : {}) },
       shop: { ...defaults.shop, ...(isObject(parsed.shop) ? parsed.shop : {}) },
       stats: { ...defaults.stats, ...(isObject(parsed.stats) ? parsed.stats : {}) },
@@ -237,8 +242,7 @@ if (!state.settings.scopeV2) {
   state.settings.scopeV2 = true;
 }
 if (!Array.isArray(state.games.owned)) state.games = defaultState().games;
-// Unlock progress is counted separately from game recharging (it has a daily limit); existing players keep what they unlocked.
-if (!Number.isFinite(state.games.unlockProgress)) state.games.unlockProgress = state.games.exercises || 0;
+if (!Number.isFinite(state.games.unlockProgress)) state.games.unlockProgress = Number(state.games.exercises) || 0;
 if (!state.games.unlockToday || typeof state.games.unlockToday !== "object") state.games.unlockToday = { day: "", count: 0 };
 
 function saveState() {

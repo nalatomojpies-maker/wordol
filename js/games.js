@@ -63,9 +63,11 @@ function unlockedCount(type, exercises = state.games.unlockProgress) {
 /** Exercises still needed until at least `needed` rewards of the type are unlocked. */
 function exercisesUntilUnlocked(type, needed) {
   if (state.testUnlock) return 0;
-  let exercises = state.games.unlockProgress;
-  while (unlockedCount(type, exercises) < needed) exercises++;
-  return exercises - state.games.unlockProgress;
+  const start = Number(state.games.unlockProgress) || 0;
+  let exercises = start;
+  // Safety limit: needed rewards always open within a few hundred exercises; never loop forever.
+  while (unlockedCount(type, exercises) < needed && exercises - start < 10000) exercises++;
+  return exercises - start;
 }
 
 /** May the pupil buy one more reward of this type? */
