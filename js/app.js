@@ -149,6 +149,8 @@ const actions = {
   lockLab: () => { labUnlocked = false; labOpen = false; rerenderAdd(); },
   acceptTerms: () => acceptTerms(),
   startTutorial: () => startTutorial(),
+  claimBadge: () => claimBadge(),
+  tapChest: () => tapChest(),
   toggleAllBadges: () => toggleAllBadges(),
   statsRange: (element) => setStatsRange(Number(element.dataset.range)),
   tutorialNext: () => nextTutorialStep(),

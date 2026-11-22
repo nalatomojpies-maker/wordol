@@ -38,52 +38,59 @@ const stepsPassed = () => Object.values(state.path).filter((entry) => entry.pass
 const totalPlays = () => Object.values(state.games.plays || {}).reduce((sum, count) => sum + count, 0);
 const modesTried = () => Object.keys(badgeStats().modes).filter((id) => id !== "lessonTest").length;
 
+/** Polish plural: [one, few (2–4, 22–24…), many]. */
+function pluralPl(count, [one, few, many]) {
+  if (count === 1) return one;
+  const tens = count % 100;
+  return count % 10 >= 2 && count % 10 <= 4 && (tens < 10 || tens >= 20) ? few : many;
+}
+
 /** [threshold, icon, name] for each tier; the badge id is `${group}-${threshold}`. */
 const BADGE_GROUPS = [
-  { id: "train", title: "Treningi", unit: "ukończonych ćwiczeń", value: () => state.games.exercises, tiers: [
+  { id: "train", title: "Treningi", unit: ["ukończone ćwiczenie", "ukończone ćwiczenia", "ukończonych ćwiczeń"], value: () => state.games.exercises, tiers: [
     [1, "🐣", "Pierwszy krok"], [5, "🌱", "Rozgrzany"], [10, "🥉", "Dziesiątka"], [25, "🥈", "Pracuś"], [50, "🥇", "Pół setki"],
     [100, "🏅", "Setka!"], [200, "🎖️", "Niezmordowany"], [300, "🏆", "Mistrz treningu"], [500, "👑", "Król ćwiczeń"], [1000, "🌌", "Legenda WORD4ALL"]] },
-  { id: "correct", title: "Dobre odpowiedzi", unit: "dobrych odpowiedzi", value: () => state.stats.correctTotal, tiers: [
+  { id: "correct", title: "Dobre odpowiedzi", unit: ["dobra odpowiedź", "dobre odpowiedzi", "dobrych odpowiedzi"], value: () => state.stats.correctTotal, tiers: [
     [10, "✔️", "Dobry start"], [50, "🎯", "Celne oko"], [100, "🏹", "Łucznik"], [250, "⚡", "Błyskawica"], [500, "🚀", "Rakieta"],
     [1000, "🌠", "Spadająca gwiazda"], [2500, "🧨", "Petarda"], [5000, "💫", "Kometa"], [10000, "🪐", "Galaktyka wiedzy"]] },
-  { id: "streak", title: "Seria dni", unit: "dni nauki z rzędu", value: () => badgeStats().bestStreak, tiers: [
+  { id: "streak", title: "Seria dni", unit: ["dzień nauki", "dni nauki z rzędu", "dni nauki z rzędu"], value: () => badgeStats().bestStreak, tiers: [
     [2, "✨", "Iskierka"], [3, "🔥", "Płomyk"], [5, "🕯️", "Ognisko"], [7, "🌟", "Tydzień mocy"], [14, "☄️", "Dwa tygodnie"],
     [21, "🌋", "Wulkan"], [30, "📅", "Miesiąc bez przerwy"], [50, "💎", "Diamentowa seria"], [100, "🏔️", "Szczyt"], [365, "🌞", "Cały rok!"]] },
-  { id: "words", title: "Opanowane słowa", unit: "opanowanych słów", value: () => allWords().filter(isMastered).length, tiers: [
+  { id: "words", title: "Opanowane słowa", unit: ["opanowane słowo", "opanowane słowa", "opanowanych słów"], value: () => allWords().filter(isMastered).length, tiers: [
     [10, "📗", "Mały słownik"], [25, "📘", "Zbieracz słów"], [50, "🧠", "Bystra głowa"], [100, "📚", "Biblioteka"],
     [200, "🗂️", "Encyklopedia"], [300, "🦉", "Mądra sowa"], [500, "🎓", "Profesor"]] },
-  { id: "perfect", title: "Bez błędów", unit: "bezbłędnych ćwiczeń", value: () => badgeStats().perfect, tiers: [
+  { id: "perfect", title: "Bez błędów", unit: ["bezbłędne ćwiczenie", "bezbłędne ćwiczenia", "bezbłędnych ćwiczeń"], value: () => badgeStats().perfect, tiers: [
     [1, "💯", "Bezbłędny"], [3, "✨", "Perfekcjonista"], [10, "💠", "Diamentowa precyzja"], [25, "🎯", "Snajper"], [50, "🥷", "Ninja"], [100, "🦄", "Jednorożec"]] },
-  { id: "run", title: "Seria trafień", unit: "dobrych odpowiedzi pod rząd", value: () => badgeStats().bestRun, tiers: [
+  { id: "run", title: "Seria trafień", unit: ["dobra odpowiedź pod rząd", "dobre odpowiedzi pod rząd", "dobrych odpowiedzi pod rząd"], value: () => badgeStats().bestRun, tiers: [
     [5, "🎳", "Piątka pod rząd"], [10, "🎲", "Dziesiątka pod rząd"], [20, "🌈", "Tęcza"], [35, "🐉", "Smok"], [50, "🦸", "Superbohater"], [100, "🧙", "Czarodziej"]] },
-  { id: "steps", title: "Ścieżka nauki", unit: "zaliczonych kroków", value: stepsPassed, tiers: [
+  { id: "steps", title: "Ścieżka nauki", unit: ["zaliczony krok", "zaliczone kroki", "zaliczonych kroków"], value: stepsPassed, tiers: [
     [1, "👣", "Pierwsza lekcja"], [5, "🪜", "Po drabinie"], [10, "🧗", "Wspinacz"], [20, "⛰️", "Zdobywca"], [50, "🏔️", "Himalaista"], [100, "🚩", "Na szczycie"]] },
-  { id: "units", title: "Tematy", unit: "ukończonych tematów", value: () => PATH_UNITS.filter(isUnitDone).length, tiers: [
+  { id: "units", title: "Tematy", unit: ["ukończony temat", "ukończone tematy", "ukończonych tematów"], value: () => PATH_UNITS.filter(isUnitDone).length, tiers: [
     [1, "🎓", "Ukończony temat"], [3, "📖", "Trzy tematy"], [5, "🏫", "Prymus"], [10, "🧑‍🎓", "Absolwent"], [20, "🏛️", "Akademik"]] },
   { id: "level", title: "Poziomy", unit: "poziom", value: () => levelInfo().level, tiers: [
     [2, "⭐", "Poziom 2"], [5, "🌟", "Poziom 5"], [10, "💫", "Poziom 10"], [15, "🌠", "Poziom 15"], [20, "☀️", "Poziom 20"], [30, "🌞", "Poziom 30"], [50, "🌌", "Poziom 50"]] },
-  { id: "daily", title: "Zadania dnia", unit: "wykonanych zadań dnia", value: () => Object.keys(state.calendar).length, tiers: [
+  { id: "daily", title: "Zadania dnia", unit: ["wykonane zadanie dnia", "wykonane zadania dnia", "wykonanych zadań dnia"], value: () => Object.keys(state.calendar).length, tiers: [
     [1, "📅", "Pierwsze zadanie"], [3, "🗓️", "Trzy zadania"], [7, "📆", "Tydzień zadań"], [14, "🎗️", "Dwa tygodnie zadań"],
     [30, "🏵️", "Miesiąc zadań"], [60, "🎀", "Dwa miesiące zadań"], [100, "🏆", "Setka zadań"]] },
-  { id: "goal", title: "Cel dnia", unit: "dni z osiągniętym celem", value: () => badgeStats().goalDays, tiers: [
+  { id: "goal", title: "Cel dnia", unit: ["dzień z osiągniętym celem", "dni z osiągniętym celem", "dni z osiągniętym celem"], value: () => badgeStats().goalDays, tiers: [
     [1, "🥅", "Gol!"], [5, "⚽", "Strzelec"], [15, "🏟️", "Kapitan drużyny"], [40, "🏆", "Mistrz ligi"]] },
-  { id: "day", title: "Maraton", unit: "ćwiczeń jednego dnia", value: () => badgeStats().bestDay, tiers: [
+  { id: "day", title: "Maraton", unit: ["ćwiczenie jednego dnia", "ćwiczenia jednego dnia", "ćwiczeń jednego dnia"], value: () => badgeStats().bestDay, tiers: [
     [5, "🏃", "Biegacz"], [10, "🏃‍♀️", "Maratończyk"], [20, "🦾", "Ultramaraton"]] },
-  { id: "gems", title: "Klejnoty", unit: "zebranych klejnotów", value: () => badgeStats().gemsTotal, tiers: [
+  { id: "gems", title: "Klejnoty", unit: ["zebrany klejnot", "zebrane klejnoty", "zebranych klejnotów"], value: () => badgeStats().gemsTotal, tiers: [
     [10, "💎", "Pierwsze klejnoty"], [50, "💍", "Skarbczyk"], [100, "👛", "Sakiewka"], [250, "💰", "Skarbiec"], [500, "🏦", "Bank klejnotów"], [1000, "👑", "Korona"]] },
-  { id: "chests", title: "Skrzynie skarbów", unit: "otwartych skrzyń", value: () => badgeStats().chests, tiers: [
+  { id: "chests", title: "Skrzynie skarbów", unit: ["otwarta skrzynia", "otwarte skrzynie", "otwartych skrzyń"], value: () => badgeStats().chests, tiers: [
     [1, "🧰", "Pierwsza skrzynia"], [10, "🗝️", "Poszukiwacz skarbów"], [30, "🏴‍☠️", "Pirat"], [75, "⚓", "Kapitan skarbów"]] },
-  { id: "jokes", title: "Dowcipy", unit: "dowcipów w kolekcji", value: () => state.jokes.owned.length, tiers: [
+  { id: "jokes", title: "Dowcipy", unit: ["dowcip w kolekcji", "dowcipy w kolekcji", "dowcipów w kolekcji"], value: () => state.jokes.owned.length, tiers: [
     [1, "😄", "Śmieszek"], [5, "😆", "Wesołek"], [15, "🤣", "Kabareciarz"], [30, "🎭", "Mistrz humoru"]] },
-  { id: "riddles", title: "Zagadki", unit: "zagadek w kolekcji", value: () => state.riddles.owned.length, tiers: [
+  { id: "riddles", title: "Zagadki", unit: ["zagadka w kolekcji", "zagadki w kolekcji", "zagadek w kolekcji"], value: () => state.riddles.owned.length, tiers: [
     [1, "🧩", "Zagadkowy"], [5, "🔍", "Detektyw"], [15, "🕵️", "Sherlock"], [30, "🧠", "Geniusz zagadek"]] },
-  { id: "games", title: "Gierki", unit: "gierek w kolekcji", value: () => state.games.owned.length, tiers: [
+  { id: "games", title: "Gierki", unit: ["gierka w kolekcji", "gierki w kolekcji", "gierek w kolekcji"], value: () => state.games.owned.length, tiers: [
     [1, "🎮", "Gracz"], [4, "🕹️", "Kolekcjoner gierek"], [8, "👾", "Salon gier"], [16, "🏆", "Wszystkie gierki"]] },
-  { id: "plays", title: "Granie", unit: "rozegranych gierek", value: totalPlays, tiers: [
+  { id: "plays", title: "Granie", unit: ["rozegrana gierka", "rozegrane gierki", "rozegranych gierek"], value: totalPlays, tiers: [
     [1, "🎲", "Pierwsza gra"], [10, "🎯", "Zapalony gracz"], [30, "🏓", "Turniej"], [75, "🥇", "Mistrz gier"]] },
-  { id: "explore", title: "Odkrywca", unit: "różnych rodzajów ćwiczeń", value: modesTried, tiers: [
+  { id: "explore", title: "Odkrywca", unit: ["rodzaj ćwiczenia", "różne rodzaje ćwiczeń", "różnych rodzajów ćwiczeń"], value: modesTried, tiers: [
     [3, "🧭", "Odkrywca"], [6, "🗺️", "Podróżnik"], [10, "🌍", "Zdobywca świata"]] },
-  { id: "custom", title: "Własne słowa", unit: "dodanych własnych słów", value: () => state.custom.length, tiers: [
+  { id: "custom", title: "Własne słowa", unit: ["dodane własne słowo", "dodane własne słowa", "dodanych własnych słów"], value: () => state.custom.length, tiers: [
     [1, "✏️", "Autor"], [10, "📝", "Notatnik"], [30, "📒", "Własny słownik"]] },
 ];
 
@@ -111,7 +118,7 @@ const SPECIAL_BADGES = [
 const BADGES = [
   ...BADGE_GROUPS.flatMap((group) => group.tiers.map(([goal, icon, name]) => ({
     id: `${group.id}-${goal}`, group: group.title, icon, name, goal, value: group.value,
-    desc: group.id === "level" ? `Zdobądź poziom ${goal}` : `${goal} ${group.unit}`,
+    desc: group.id === "level" ? `Zdobądź poziom ${goal}` : `${goal} ${pluralPl(goal, group.unit)}`,
   }))),
   ...MODES.filter((mode) => mode.id !== "lessonTest").map((mode) => ({
     id: `mode-${mode.id}`, group: "Mistrz ćwiczenia", icon: mode.icon, name: `Mistrz: ${mode.name}`, goal: MODE_MASTER_GOAL,
@@ -141,8 +148,7 @@ function announceBadges() {
   const earned = checkBadges();
   if (earned.length === 0) return;
   saveState();
-  sfx("badge");
-  toast(`🏅 Nowa odznaka: ${earned.map((badge) => `${badge.icon} ${badge.name}`).join(", ")}`);
+  celebrate(earned.map((badge) => ({ type: "badge", badge })));
 }
 
 /** Called after every answer in an exercise: the run of correct answers in a row. */

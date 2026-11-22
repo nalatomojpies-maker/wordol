@@ -55,7 +55,6 @@ function render(keepScroll = false) {
 function playResultSounds(isStep) {
   const { percent, passed, earned, goalReached } = session;
   setTimeout(() => sfx(isStep && passed ? "pass" : percent >= 85 ? "fanfare" : "click"), 300);
-  if (earned.length > 0) setTimeout(() => sfx("badge"), 1100);
   if (session.gemsEarned) setTimeout(() => sfx("gem"), 700);
   if (goalReached) setTimeout(() => sfx("goal"), 1800);
 }
@@ -332,4 +331,12 @@ function renderResult() {
       ${mistakes.length > 0 ? `<h3>Do powtórki:</h3><ul class="mistakes">${mistakes.map((item) => `<li>${mistakeLabel(item)}</li>`).join("")}</ul>` : `<p>Bez błędów! 🌟</p>`}
       <div class="row center">${buttons}</div>
     </section>`;
+  // rewards to collect: the chest (tap 3×) first, then each new badge (tap it)
+  if (!session.celebrated && (session.chestOpened || session.earned.length > 0)) {
+    session.celebrated = true;
+    setTimeout(() => celebrate([
+      ...(session.chestOpened ? [{ type: "chest", gems: EXTRA_CHEST_GEMS }] : []),
+      ...session.earned.map((badge) => ({ type: "badge", badge })),
+    ]), 900);
+  }
 }
