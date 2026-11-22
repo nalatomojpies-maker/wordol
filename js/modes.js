@@ -222,6 +222,7 @@ function rychuReact(isCorrect) {
   holder.classList.remove("jump", "shake", "talk");
   void holder.offsetWidth; // restart the animation
   holder.classList.add(isCorrect ? "jump" : "shake", "talk");
+  showRychuAboveKeyboard();
   clearTimeout(rychuReactTimer);
   rychuReactTimer = setTimeout(() => {
     const currentHolder = $("#sessionRychu");
@@ -231,6 +232,31 @@ function rychuReact(isCorrect) {
     currentHolder.classList.remove("jump", "shake", "talk");
   }, 1400);
 }
+
+/**
+ * Typing exercises: the on-screen keyboard covers the lower half of the screen, where Rychu sits.
+ * While a text field has focus Rychu gets smaller ("kb"), and right after an answer the page scrolls
+ * so that the field, the feedback and Rychu with his comment are all visible above the keyboard.
+ */
+function isTypingInStage() {
+  const field = document.activeElement;
+  return Boolean(field && field.matches && field.matches("#stage input[type='text'], #stage textarea"));
+}
+
+function placeSessionRychu() {
+  const typing = isTypingInStage();
+  document.body.classList.toggle("kb-open", typing); // the bottom menu would ride on top of the keyboard
+  const holder = $("#sessionRychu");
+  if (holder) holder.classList.toggle("kb", typing);
+}
+
+function showRychuAboveKeyboard() {
+  const holder = $("#sessionRychu");
+  if (!holder || !isTypingInStage()) return;
+  setTimeout(() => holder.scrollIntoView({ block: "end", behavior: "smooth" }), 60);
+}
+
+["focusin", "focusout"].forEach((type) => document.addEventListener(type, () => setTimeout(placeSessionRychu, 50)));
 
 function record(item, isCorrect) {
   if (!item.isPath) {
@@ -330,7 +356,9 @@ function mountTyping(word, answer, promptHtml, extra = {}, hintHtml = "") {
     </form>
     <button class="btn ghost" data-action="giveUp">Nie wiem</button>
     <div id="feedback" class="feedback"></div>`;
-  $("#typeInput").focus();
+  window.scrollTo(0, 0); // a new word: show it again (after an answer the page was scrolled down to Rychu)
+  $("#typeInput").focus({ preventScroll: true });
+  placeSessionRychu();
 }
 
 function submitTyping() {
