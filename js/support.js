@@ -3,9 +3,8 @@
 /**
  * "Buy me a coffee" invitation, footer and legal information. Addressed to parents and guardians, never to children.
  *
- * - A banner under the title bar on every app launch (in menus only, never during an exercise).
- *   "Nie postawię kawy" hides it until the next launch; "Już postawiłem" hides it for good.
- * - A window "Podoba Ci się apka?" on the 10th and the 30th launch.
+ * - A banner under the title bar on the 2nd, 8th, 16th and 30th app launch (in menus only, never during an exercise).
+ *   "Nie postawię kawy" hides it until the next of those launches; "Już postawiłem" hides it for good.
  * The answer and the launch count are kept under their own key, so "Wyczyść profil" does not remove them.
  * The phone number is stored encoded and is drawn on a canvas only after a click, so simple scrapers cannot read it.
  */
@@ -13,7 +12,7 @@ const SUPPORT_KEY = "wordol.support.v1";
 const SUPPORT_TICK_MS = 15000;
 const SUPPORT_IDLE_LIMIT_MS = 60000;
 const SUPPORT_CHECK_DELAY_MS = 1200;
-const SUPPORT_MODAL_LAUNCHES = [10, 30];
+const SUPPORT_BANNER_LAUNCHES = [2, 8, 16, 30];
 const SUPPORT_QUIET_VIEWS = ["session", "result", "step", "welcome"];
 const AUTHOR_LINE = "Bartek SP5EOE";
 /** The author's invitation – in the welcome notice and in the banner that shows up now and then under the title bar. */
@@ -134,18 +133,13 @@ const closeModal = (id) => {
   if (modal) modal.remove();
 };
 
-/** manual = opened by the user (footer, profile, banner); otherwise the "Podoba Ci się apka?" window on the 10th / 30th launch. */
-function openSupportModal(manual = false) {
+/** Opened by the user (footer, profile, banner "Postaw kawę"). */
+function openSupportModal() {
   if ($("#supportModal")) return;
-  const title = manual ? "Aplikacja jest w pełni darmowa ☕" : "Podoba Ci się apka? ☕";
-  const text = manual
-    ? "WORD4ALL jest i zawsze będzie w całości <b>darmowy</b>. Jeśli Ci się podoba, Twój <b>rodzic lub opiekun</b> może postawić autorowi kawę BLIKIEM na numer telefonu. To zupełnie dobrowolne."
-    : "Może Twój <b>rodzic lub opiekun</b> chce postawić autorowi kawę? WORD4ALL jest i zawsze będzie <b>darmowy</b> – kawa jest zupełnie dobrowolna.";
-  const actions = manual
-    ? `<button class="btn primary" data-action="supportDonated">✔ Już postawiłem</button>
-       <button class="btn" data-action="supportLater">Zamknij</button>`
-    : `<button class="btn primary" data-action="supportDonated">✔ Już postawiłem</button>
-       <button class="btn" data-action="supportDeclined">Nie postawię kawy</button>`;
+  const title = "Aplikacja jest w pełni darmowa ☕";
+  const text = "WORD4ALL jest i zawsze będzie w całości <b>darmowy</b>. Jeśli Ci się podoba, Twój <b>rodzic lub opiekun</b> może postawić autorowi kawę BLIKIEM na numer telefonu. To zupełnie dobrowolne.";
+  const actions = `<button class="btn primary" data-action="supportDonated">✔ Już postawiłem</button>
+       <button class="btn" data-action="supportLater">Zamknij</button>`;
   document.body.insertAdjacentHTML("beforeend", `
     <div class="modal-backdrop" id="supportModal" role="dialog" aria-modal="true" aria-labelledby="supportTitle">
       <div class="modal">
@@ -220,28 +214,23 @@ const footerHtml = () => `
 // ====================================================================
 // When to ask
 // ====================================================================
-let bannerDismissedThisLaunch = false;
-let supportModalDue = false;
+let bannerDueThisLaunch = false;
 
-/** Called once when the app starts: counts launches; on the 10th and 30th the window will show. */
+/** Called once when the app starts: counts launches; on some of them the banner will show. */
 function countLaunch() {
   const launches = (Number(readSupportStore().launches) || 0) + 1;
   writeSupportStore({ launches });
-  supportModalDue = SUPPORT_MODAL_LAUNCHES.includes(launches);
+  bannerDueThisLaunch = SUPPORT_BANNER_LAUNCHES.includes(launches);
 }
 
-/** After every screen change: shows the banner (and on some launches the window) in menus; hides the banner elsewhere. */
+/** After every screen change: shows the banner in menus (on the chosen launches); hides it elsewhere. */
 function checkSupport() {
   const busy = $("#introModal") || $("#legalModal") || $("#tutorial") || SUPPORT_QUIET_VIEWS.includes(view);
   if (hasDonated() || busy) {
     removeSupportBanner();
     return;
   }
-  if (supportModalDue && !$("#supportModal")) {
-    supportModalDue = false;
-    openSupportModal();
-  }
-  if (!bannerDismissedThisLaunch) showSupportBanner();
+  if (bannerDueThisLaunch) showSupportBanner();
 }
 
 function showSupportBanner() {
@@ -265,9 +254,9 @@ function removeSupportBanner() {
   if (banner) banner.remove();
 }
 
-/** "Nie postawię kawy": closes the window and the banner until the next launch. */
+/** "Nie postawię kawy": closes the banner until the next of the chosen launches. */
 function declineSupport() {
-  bannerDismissedThisLaunch = true;
+  bannerDueThisLaunch = false;
   closeModal("supportModal");
   removeSupportBanner();
 }
