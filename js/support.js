@@ -3,8 +3,9 @@
 /**
  * "Buy me a coffee" invitation, footer and legal information. Addressed to parents and guardians, never to children.
  *
- * - A banner under the title bar on every second app launch from the 3rd on (3, 5, 7…; in menus only, never during an exercise).
- *   "Nie postawię kawy" hides it until the next of those launches; "Już postawiłem" hides it for good.
+ * - A window after 6, 16, 40, 60 and 90 finished exercises (in menus only, never during an exercise).
+ *   After 6 and 16: "Pokaż numer" + "Dalej"; later "Pokaż numer" / "Już postawiłem" / "Nie postawię kawy".
+ *   "Już postawiłem" hides it for good.
  * The answer and the launch count are kept under their own key, so "Wyczyść profil" does not remove them.
  * The phone number is stored encoded and is drawn on a canvas only after a click, so simple scrapers cannot read it.
  */
@@ -12,8 +13,10 @@ const SUPPORT_KEY = "wordol.support.v1";
 const SUPPORT_TICK_MS = 15000;
 const SUPPORT_IDLE_LIMIT_MS = 60000;
 const SUPPORT_CHECK_DELAY_MS = 1200;
-/** The banner shows on every second launch, starting with the 3rd: 3, 5, 7, 9… */
-const isBannerLaunch = (launches) => launches >= 3 && launches % 2 === 1;
+/** The banner shows after this many finished exercises (counted on this device, also across "Wyczyść profil"). */
+const SUPPORT_BANNER_AT = [6, 16, 40, 60, 90];
+/** The first two times only "Pokaż numer" and "Dalej"; from 40 on also "Już postawiłem" / "Nie postawię kawy". */
+const SUPPORT_WINDOW_SIMPLE = [6, 16];
 const SUPPORT_QUIET_VIEWS = ["session", "result", "step", "welcome"];
 const AUTHOR_LINE = "Bartek SP5EOE";
 /** The author's invitation – in the welcome notice and in the banner that shows up now and then under the title bar. */
@@ -215,60 +218,82 @@ const footerHtml = () => `
 // ====================================================================
 // When to ask
 // ====================================================================
-let bannerDueThisLaunch = false;
-
-/** Called once when the app starts: counts launches; on some of them the banner will show. */
+/** Called once when the app starts: counts launches (used by the install suggestion). */
 function countLaunch() {
   const launches = (Number(readSupportStore().launches) || 0) + 1;
   writeSupportStore({ launches });
-  bannerDueThisLaunch = isBannerLaunch(launches);
+}
+
+/** Called after every finished exercise. Older saves start from the exercises already done. */
+function countExerciseForSupport() {
+  const store = readSupportStore();
+  const done = Number.isFinite(store.exercises) ? store.exercises : Math.max(0, state.games.exercises - 1);
+  writeSupportStore({ exercises: done + 1 });
+}
+
+/** The highest threshold reached and not answered yet (or null). */
+function dueBannerThreshold() {
+  const store = readSupportStore();
+  const exercises = Number.isFinite(store.exercises) ? store.exercises : state.games.exercises;
+  const answered = Array.isArray(store.bannerDone) ? store.bannerDone : [];
+  const due = SUPPORT_BANNER_AT.filter((threshold) => exercises >= threshold && !answered.includes(threshold));
+  return due.length ? due[due.length - 1] : null;
+}
+
+/** "Dalej" / "Nie postawię kawy": this threshold (and any lower one) is done. */
+function markBannerAnswered() {
+  const threshold = dueBannerThreshold();
+  if (threshold === null) return;
+  const answered = Array.isArray(readSupportStore().bannerDone) ? readSupportStore().bannerDone : [];
+  writeSupportStore({ bannerDone: [...new Set([...answered, ...SUPPORT_BANNER_AT.filter((value) => value <= threshold)])] });
 }
 
 /** After every screen change: shows the banner in menus (on the chosen launches); hides it elsewhere. */
 function checkSupport() {
-  const busy = $("#introModal") || $("#legalModal") || $("#tutorial") || SUPPORT_QUIET_VIEWS.includes(view);
-  if (hasDonated() || busy) {
-    removeSupportBanner();
-    return;
-  }
-  if (bannerDueThisLaunch) showSupportBanner();
+  const busy = $(".modal-backdrop") || $("#tutorial") || $("#celebrate") || SUPPORT_QUIET_VIEWS.includes(view) || view === "game";
+  if (hasDonated() || busy) return;
+  const threshold = dueBannerThreshold();
+  if (threshold !== null) showSupportWindow(threshold);
 }
 
-function showSupportBanner() {
-  if ($("#supportBanner")) return;
-  const topbar = $(".topbar");
-  if (!topbar) return;
-  topbar.insertAdjacentHTML("afterend", `
-    <div class="support-banner" id="supportBanner" role="status">
-      <p>☕ ${SHARE_TEXT} ❤️</p>
-      <div class="support-banner-actions">
-        <button class="btn primary" data-action="openSupport">❤️ Postaw kawę</button>
-        <button class="btn" data-action="supportDonated">✔ Już postawiłem</button>
-        <button class="btn ghost" data-action="supportDeclined">Nie postawię kawy</button>
+/** The coffee window: after 6 and 16 exercises "Pokaż numer" + "Dalej"; later also "Już postawiłem" / "Nie postawię kawy". */
+function showSupportWindow(threshold) {
+  if ($("#supportAsk")) return;
+  const firstTimes = SUPPORT_WINDOW_SIMPLE.includes(threshold);
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="modal-backdrop" id="supportAsk" role="dialog" aria-modal="true" aria-labelledby="supportAskTitle">
+      <div class="modal">
+        <div class="modal-rychu">${rychuSvg("cheer", 76)}</div>
+        <h2 id="supportAskTitle">Podoba Ci się WORD4ALL? ☕</h2>
+        <p>${SHARE_TEXT} ❤️</p>
+        <div id="blikBox" class="blik-box"><button class="btn primary" data-action="showBlik">📱 Pokaż numer</button></div>
+        <div class="modal-actions">${firstTimes
+          ? `<button class="btn" data-action="supportDeclined">Dalej →</button>`
+          : `<button class="btn" data-action="supportDonated">✔ Już postawiłem</button>
+             <button class="btn ghost" data-action="supportDeclined">Nie postawię kawy</button>`}
+        </div>
+        <p class="small muted center-text">– Bartek SP5EOE</p>
       </div>
     </div>`);
-  $("#supportBanner").style.top = `${topbar.getBoundingClientRect().height}px`;
-  // "Postaw kawę" is the default choice (Enter presses it).
-  $("#supportBanner [data-action='openSupport']").focus({ preventScroll: true });
+  setPageInert(true);
+  // "Pokaż numer" is the default choice: Enter presses it
+  $("#supportAsk [data-action='showBlik']").focus();
 }
 
-function removeSupportBanner() {
-  const banner = $("#supportBanner");
-  if (banner) banner.remove();
-}
-
-/** "Nie postawię kawy": closes the banner until its next launch. */
+/** "Dalej" / "Nie postawię kawy": closes the window until the next number of exercises is reached. */
 function declineSupport() {
-  bannerDueThisLaunch = false;
+  markBannerAnswered();
   closeModal("supportModal");
-  removeSupportBanner();
+  closeModal("supportAsk");
+  setPageInert(false);
 }
 
 /** "Już postawiłem": never ask again. */
 function confirmDonated() {
   writeSupportStatus("donated");
   closeModal("supportModal");
-  removeSupportBanner();
+  closeModal("supportAsk");
+  setPageInert(false);
   toast("Dziękuję! ☕ Ta prośba już się nie pojawi.");
 }
 

@@ -844,6 +844,7 @@ function finishSession() {
   touchStreak();
   if (session.done >= session.items.length) {
     countExerciseForGames(); // finished exercises recharge the mini-games
+    countExerciseForSupport(); // …and bring the coffee banner closer (after 6, 16, 40, 60, 90)
     session.unlocked = countExerciseForUnlock(); // …and slowly open new rewards in the shop
   }
 
