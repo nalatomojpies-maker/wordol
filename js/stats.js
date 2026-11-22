@@ -137,7 +137,7 @@ function wordStatusHtml() {
   const words = wordsInScope();
   const kinds = [
     { id: "mastered", label: "Opanowane", hint: "co najmniej 3 dobre odpowiedzi, 80% skuteczności" },
-    { id: "learning", label: "W nauce", hint: "już ćwiczone" },
+    { id: "learning", label: "W trakcie", hint: "już ćwiczone" },
     { id: "hard", label: "Trudne", hint: "więcej błędów niż trafień" },
     { id: "new", label: "Jeszcze nie ćwiczone", hint: "" },
   ];
