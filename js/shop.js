@@ -9,6 +9,10 @@ const DAILY_MAX_EXERCISES = 3;
 const DAILY_GEMS_PER_EXERCISE_MAX = 3;
 const DAILY_BONUS_GEMS = 3;
 const DAILY_STREAK_BONUS_MAX = 3;
+/** Extra training (outside the daily task): every 3 finished exercises open a chest with 2 gems, at most 2 chests a day. */
+const EXTRA_CHEST_EVERY = 3;
+const EXTRA_CHEST_GEMS = 2;
+const EXTRA_CHESTS_PER_DAY = 2;
 const MONTH_NAMES = ["styczeń", "luty", "marzec", "kwiecień", "maj", "czerwiec", "lipiec", "sierpień", "wrzesień", "październik", "listopad", "grudzień"];
 const WEEKDAY_NAMES = ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"];
 
@@ -70,6 +74,39 @@ function recordDailyResult(finishedSession) {
   finishedSession.dailyBonus = bonus;
   finishedSession.dailyDone = task.done;
   saveState();
+}
+
+// ====================================================================
+// Extra training: the treasure chest
+// ====================================================================
+function extraToday() {
+  const day = todayIso();
+  if (state.extra.day !== day) state.extra = { day, exercises: 0, chests: 0 };
+  return state.extra;
+}
+
+/** Called when an exercise outside the daily task is finished. */
+function recordExtraExercise(finishedSession) {
+  const extra = extraToday();
+  if (extra.chests >= EXTRA_CHESTS_PER_DAY) return;
+  extra.exercises++;
+  if (extra.exercises >= EXTRA_CHEST_EVERY) {
+    extra.exercises = 0;
+    extra.chests++;
+    state.gems += EXTRA_CHEST_GEMS;
+    finishedSession.gemsEarned = EXTRA_CHEST_GEMS;
+    finishedSession.chestOpened = true;
+  }
+  finishedSession.chestProgress = { exercises: extra.exercises, chests: extra.chests };
+  saveState();
+}
+
+/** One line about the chest for the home screen and the result screen. */
+function extraChestLine() {
+  const extra = extraToday();
+  if (extra.chests >= EXTRA_CHESTS_PER_DAY) return "🧰 Wszystkie skrzynie na dziś otwarte – jutro czekają nowe!";
+  const left = EXTRA_CHEST_EVERY - extra.exercises;
+  return `🧰 Skrzynia skarbów ${extra.chests + 1}/${EXTRA_CHESTS_PER_DAY}: jeszcze ${left} ${exercisesWord(left)} i dostaniesz 💎 ${EXTRA_CHEST_GEMS}`;
 }
 
 // ====================================================================
@@ -216,7 +253,8 @@ function renderShop() {
     ${boughtRiddle ? riddleCardHtml(boughtRiddle, true) : ""}
     <section class="card">
       ${cards.length ? `<div class="shelf">${cards.join("")}</div>` : `<p class="muted">Masz już wszystkie nagrody z tego poziomu. Brawo! 🏆</p>`}
-      <p class="muted small">Klejnoty zdobywasz za <b>Zadanie dnia</b>. Kolejne nagrody odblokowują się, gdy robisz ćwiczenia. Gierkę kupujesz raz – po każdym zagraniu ładuje się i znów zagrasz po ${GAME_RECHARGE_EXERCISES} ukończonych ćwiczeniach.</p>
+      ${unlockLeftToday() === 0 ? `<p class="banner">🌙 Na dziś odblokowałeś już wszystko, co się dało. Kolejne kłódki otworzą się jutro!</p>` : ""}
+      <p class="muted small">Klejnoty zdobywasz za <b>Zadanie dnia</b> i za skrzynie z dodatkowego treningu. Kolejne nagrody odblokowują się, gdy robisz ćwiczenia. Gierkę kupujesz raz – po każdym zagraniu ładuje się i znów zagrasz po ${GAME_RECHARGE_EXERCISES} ukończonych ćwiczeniach.</p>
     </section>`;
 }
 
@@ -377,7 +415,10 @@ function dailyTaskHtml(goal, answersCount) {
     <div class="row dt-links">
       <button class="btn" data-action="openShop">🛍️ Sklepik</button>
       <button class="btn" data-action="openCalendar">📅 Kalendarz</button>
-      <button class="link" data-action="startExtra">Dodatkowy trening</button>
+    </div>
+    <div class="extra-chest">
+      <p class="small">${extraChestLine()}</p>
+      <button class="btn" data-action="startExtra">💪 Dodatkowy trening</button>
     </div>`;
 }
 
@@ -387,11 +428,14 @@ function dailyTaskHtml(goal, answersCount) {
 function renderRewards() {
   const monthPrefix = todayIso().slice(0, 7);
   const rewardDays = Object.keys(state.calendar).filter((key) => key.startsWith(monthPrefix)).length;
-  const nextUnlockIn = UNLOCK_EVERY_EXERCISES - (state.games.exercises % UNLOCK_EVERY_EXERCISES);
+  const nextUnlockIn = UNLOCK_EVERY_EXERCISES - (state.games.unlockProgress % UNLOCK_EVERY_EXERCISES);
+  const unlockBadge = unlockLeftToday() === 0
+    ? `<span class="badge" title="Dziennie do odblokowania liczy się ${UNLOCK_DAILY_MAX} ćwiczeń">🔓 Nowe nagrody jutro</span>`
+    : `<span class="badge" title="Co ${UNLOCK_EVERY_EXERCISES} ukończone ćwiczenia odblokowują się ${UNLOCK_PER_STEP} nowe nagrody">🔓 Nowe nagrody za ${nextUnlockIn} ${exercisesWord(nextUnlockIn)}</span>`;
   app.innerHTML = `
     <section class="card hero">
-      ${rychuBubble("cheer", "Tu zbierasz nagrody! Klejnoty dostajesz za Zadanie dnia, a w sklepiku kupisz za nie dowcipy, zagadki i gierki.", 84)}
-      <div class="badges"><span class="badge">💎 ${state.gems}</span><span class="badge">🔥 Seria: ${currentStreak()}</span><span class="badge" title="Co ${UNLOCK_EVERY_EXERCISES} ukończone ćwiczenia odblokowują się ${UNLOCK_PER_STEP} nowe nagrody">🔓 Nowe nagrody za ${nextUnlockIn} ${exercisesWord(nextUnlockIn)}</span></div>
+      ${rychuBubble("cheer", "Tu zbierasz nagrody! Klejnoty dostajesz za Zadanie dnia i za skrzynie z dodatkowego treningu, a w sklepiku kupisz za nie dowcipy, zagadki i gierki.", 84)}
+      <div class="badges"><span class="badge">💎 ${state.gems}</span><span class="badge">🔥 Seria: ${currentStreak()}</span>${unlockBadge}</div>
     </section>
     <section class="grid reward-tiles">
       <button class="reward-tile" data-action="openShop"><span class="ico">🛍️</span><b>Sklepik</b><small>Dowcipy i zagadki po ${JOKE_PRICE} 💎, gierki po ${GAME_PRICE} 💎</small></button>

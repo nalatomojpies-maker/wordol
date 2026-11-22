@@ -42,8 +42,9 @@ const gameById = (id) => GAMES.find((game) => game.id === id);
 // ====================================================================
 const isGameOwned = (id) => state.games.owned.includes(id);
 
-// ---------- slow unlocking: every 3 finished exercises open 2 more rewards ----------
+// ---------- slow unlocking: every 3 finished exercises open 2 more rewards, at most 9 exercises a day count ----------
 const UNLOCK_EVERY_EXERCISES = 3;
+const UNLOCK_DAILY_MAX = 9;
 const UNLOCK_PER_STEP = 2;
 const UNLOCK_AT_START = 2;
 /** Order in which reward "slots" open; games are the rarest. */
@@ -52,7 +53,7 @@ const UNLOCK_PATTERN = ["joke", "riddle", "joke", "riddle", "game"];
 const unlockedSlots = (exercises) => UNLOCK_AT_START + UNLOCK_PER_STEP * Math.floor(exercises / UNLOCK_EVERY_EXERCISES);
 
 /** How many rewards of a type ("joke" | "riddle" | "game") are unlocked after a number of exercises. */
-function unlockedCount(type, exercises = state.games.exercises) {
+function unlockedCount(type, exercises = state.games.unlockProgress) {
   const slots = unlockedSlots(exercises);
   let count = 0;
   for (let slot = 0; slot < slots; slot++) if (UNLOCK_PATTERN[slot % UNLOCK_PATTERN.length] === type) count++;
@@ -62,9 +63,9 @@ function unlockedCount(type, exercises = state.games.exercises) {
 /** Exercises still needed until at least `needed` rewards of the type are unlocked. */
 function exercisesUntilUnlocked(type, needed) {
   if (state.testUnlock) return 0;
-  let exercises = state.games.exercises;
+  let exercises = state.games.unlockProgress;
   while (unlockedCount(type, exercises) < needed) exercises++;
-  return exercises - state.games.exercises;
+  return exercises - state.games.unlockProgress;
 }
 
 /** May the pupil buy one more reward of this type? */
@@ -97,6 +98,23 @@ const isGameReady = (id) => state.testUnlock || (isGameOwned(id) && exercisesToR
 /** Called after every finished exercise (also learning-path steps) – recharges the games. */
 function countExerciseForGames() {
   state.games.exercises++;
+}
+
+/** Exercises that may still count towards unlocking today (0 = today's limit reached). */
+function unlockLeftToday() {
+  const today = state.games.unlockToday;
+  return today.day === todayIso() ? Math.max(0, UNLOCK_DAILY_MAX - today.count) : UNLOCK_DAILY_MAX;
+}
+
+/** Called after every finished exercise: moves unlocking on (within the daily limit). Returns true when new rewards opened. */
+function countExerciseForUnlock() {
+  if (unlockLeftToday() === 0) return false;
+  const day = todayIso();
+  if (state.games.unlockToday.day !== day) state.games.unlockToday = { day, count: 0 };
+  state.games.unlockToday.count++;
+  const before = unlockedSlots(state.games.unlockProgress);
+  state.games.unlockProgress++;
+  return unlockedSlots(state.games.unlockProgress) > before;
 }
 
 function buyGame(id) {

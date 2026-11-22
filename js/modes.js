@@ -812,7 +812,10 @@ function finishSession() {
   stats.sessions.push({ t: Date.now(), mode: session.mode, total, correct: session.correct, grade: mark });
   stats.sessions = stats.sessions.slice(-MAX_SAVED_SESSIONS);
   touchStreak();
-  if (session.done >= session.items.length) countExerciseForGames(); // finished exercises recharge the mini-games
+  if (session.done >= session.items.length) {
+    countExerciseForGames(); // finished exercises recharge the mini-games
+    session.unlocked = countExerciseForUnlock(); // …and slowly open new rewards in the shop
+  }
 
   const bonus = percent >= 85 ? 20 : percent >= 50 ? 10 : 5;
   stats.xp += bonus;
@@ -832,6 +835,8 @@ function finishSession() {
   if (workout && workout.daily) {
     if (session.done < session.items.length) workout = null; // left early: no reward
     else recordDailyResult(session);
+  } else if (session.done >= session.items.length) {
+    recordExtraExercise(session); // extra training fills the treasure chest
   }
   if (workout) workout.results.push({ mode: session.mode, correct: session.correct, done: total });
   saveState();
