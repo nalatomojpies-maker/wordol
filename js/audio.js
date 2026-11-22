@@ -73,7 +73,7 @@ function ensureAudio() {
 
 function applyMusicGain(fast = false) {
   if (!audioCtx || !musicGain) return;
-  const target = state.settings.music && !state.settings.noSound && musicWanted ? state.settings.musicVolume * MUSIC_BASE_GAIN * musicDuck : 0;
+  const target = state.settings.music && !isQuiet() && musicWanted ? state.settings.musicVolume * MUSIC_BASE_GAIN * musicDuck : 0;
   try {
     musicGain.gain.setTargetAtTime(target, audioCtx.currentTime, fast ? 0.05 : 0.8);
   } catch {
@@ -84,8 +84,10 @@ function applyMusicGain(fast = false) {
 // ====================================================================
 // Sound effects
 // ====================================================================
-/** Effects (answer jingles, clicks, rewards) play only with "Efekty dźwiękowe" on and "Brak dźwięku" off. */
-const effectsOn = () => state.settings.sound && !state.settings.noSound;
+/** Quiet mode (the speaker button in the top bar) or "Brak dźwięku" in Profil: nothing makes a sound. */
+const isQuiet = () => Boolean(state.settings.quiet || state.settings.noSound);
+/** Effects (answer jingles, clicks, rewards, games) play only with "Efekty dźwiękowe" on and no quiet mode. */
+const effectsOn = () => state.settings.sound && !isQuiet();
 
 /** One enveloped tone on the effects bus. */
 function tone(frequency, delay, duration, type, volume) {
@@ -402,7 +404,7 @@ function scheduleMusic() {
 }
 
 function startMusic() {
-  if (!state.settings.music || state.settings.noSound) return;
+  if (!state.settings.music || isQuiet()) return;
   const ctx = ensureAudio();
   if (!ctx) return;
   if (!musicTimer) {
@@ -427,35 +429,43 @@ function setMusicForView(viewName) {
   applyMusicGain();
 }
 
+/** The speaker button in the top bar shows whether quiet mode is on. */
 function updateMusicButton() {
   const button = $("#musicBtn");
   if (!button) return;
-  const playing = state.settings.music && !state.settings.noSound;
-  button.textContent = playing ? "🎵" : "🔇";
-  button.classList.toggle("off", !playing);
-  button.setAttribute("aria-pressed", String(playing));
-  button.title = playing && musicTimer ? `Muzyka: ${MUSIC_TRACKS[musicTrackIndex].name}` : "Muzyka w tle";
+  const quiet = isQuiet();
+  button.textContent = quiet ? "🔇" : "🔊";
+  button.classList.toggle("off", quiet);
+  button.setAttribute("aria-pressed", String(quiet));
+  button.setAttribute("aria-label", quiet ? "Tryb cichy włączony – włącz dźwięk" : "Włącz tryb cichy");
+  button.title = quiet ? "Tryb cichy: wszystkie dźwięki wyłączone" : "Tryb cichy (wyłącz wszystkie dźwięki)";
 }
 
 /** First user gesture: browsers allow audio only after it. */
 function unlockAudio() {
+  if (isQuiet()) return;
   ensureAudio();
   loadAnswerSounds(); // ready before the first answer
   if (state.settings.music) startMusic();
 }
 
-function toggleMusic() {
+/** Quiet mode: music, answer jingles, effects, games and the reader all go silent at once. */
+function toggleQuiet() {
   if (state.settings.noSound) {
-    toast("Włączony jest tryb „Brak dźwięku”. Wyłącz go w Profilu, aby słuchać muzyki.");
+    toast("Włączony jest tryb „Brak dźwięku”. Wyłącz go w Profilu, aby włączyć dźwięk.");
     return;
   }
-  state.settings.music = !state.settings.music;
+  state.settings.quiet = !state.settings.quiet;
   saveState();
-  if (state.settings.music) {
-    startMusic();
-    applyMusicGain();
-  } else {
+  if (state.settings.quiet) {
     stopMusic();
+    if (speechAvailable()) speechSynthesis.cancel();
+    if (audioCtx) audioCtx.suspend(); // cuts off anything still playing
+    toast("🔇 Tryb cichy – wszystkie dźwięki wyłączone");
+  } else {
+    if (audioCtx) audioCtx.resume();
+    unlockAudio();
+    toast("🔊 Dźwięk włączony");
   }
   updateMusicButton();
 }
@@ -463,14 +473,21 @@ function toggleMusic() {
 function pauseAudioWhenHidden() {
   if (!audioCtx) return;
   if (document.hidden) audioCtx.suspend();
-  else if (state.settings.music || state.settings.sound) audioCtx.resume();
+  else if (!isQuiet() && (state.settings.music || state.settings.sound)) audioCtx.resume();
 }
 
 // ====================================================================
 // Speech: English words (Polish messages are deliberately not read aloud)
 // ====================================================================
+let quietHintAt = 0;
+
 function speakText(text, lang, rate) {
   if (!speechAvailable() || !text) return;
+  if (state.settings.quiet) {
+    if (Date.now() - quietHintAt > 20000) toast("🔇 Tryb cichy – lektor milczy. Włącz dźwięk przyciskiem 🔇 u góry.");
+    quietHintAt = Date.now();
+    return;
+  }
   try {
     speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
