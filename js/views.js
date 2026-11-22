@@ -254,6 +254,7 @@ function renderSettings() {
     <section class="card danger-zone">
       <h2>Zacznij od nowa</h2>
       <p class="muted">Usuwa imię, klasę, postępy, XP, odznaki, własne słowa i ustawienia z tego urządzenia. Nie da się tego cofnąć.</p>
+      <button class="btn" data-action="startTutorial">🧭 Pokaż samouczek</button>
       <button class="btn danger" data-action="resetProfile">🗑️ Wyczyść profil</button>
     </section>`;
 }

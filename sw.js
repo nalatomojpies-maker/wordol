@@ -7,7 +7,7 @@ const APP_SHELL = [
   "./", "index.html", "styles.css", "manifest.webmanifest", "icon.svg", "icon-192.png", "icon-512.png",
   "js/data.js", "js/emoji.js", "js/art.js", "js/sentences.js", "js/path-young.js", "js/path-mid.js", "js/path-upper.js",
   "js/dictionary.js", "js/ocr.js", "js/core.js", "js/rychu.js", "js/modes.js", "js/learn.js", "js/audio.js", "js/support.js", "js/jokes.js", "js/riddles.js", "js/games.js", "js/shop.js", "js/views.js",
-  "js/addwords.js", "js/app.js",
+  "js/addwords.js", "js/tutorial.js", "js/app.js",
 ];
 
 self.addEventListener("install", (event) => {

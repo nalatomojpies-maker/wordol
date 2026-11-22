@@ -222,7 +222,7 @@ const SUPPORT_TRIGGERS = [
 ];
 
 function maybeShowSupport() {
-  if (supportStatus() || $("#supportModal") || $("#legalModal") || $("#introModal") || SUPPORT_QUIET_VIEWS.includes(view)) return;
+  if (supportStatus() || $("#supportModal") || $("#legalModal") || $("#introModal") || $("#tutorial") || SUPPORT_QUIET_VIEWS.includes(view)) return;
   const due = SUPPORT_TRIGGERS.filter((trigger) => !state.support.fired[trigger.id] && trigger.test());
   const repeatDue = state.support.nextHourAt > 0 && state.support.seconds >= state.support.nextHourAt;
   if (due.length === 0 && !repeatDue) return;
