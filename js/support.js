@@ -3,8 +3,8 @@
 /**
  * "Buy me a coffee" invitation, footer and legal information. Addressed to parents and guardians, never to children.
  *
- * - A banner under the title bar on every second app launch from the 3rd on (3, 5, 7…; in menus only, never during an exercise).
- *   "Nie postawię kawy" hides it until the next of those launches; "Już postawiłem" hides it for good.
+ * - A banner under the title bar after 6, 16, 40, 60 and 90 finished exercises (in menus only, never during an exercise).
+ *   After 6 only "Dalej"; later "Postaw kawę" / "Już postawiłem" / "Nie postawię kawy". "Już postawiłem" hides it for good.
  * The answer and the launch count are kept under their own key, so "Wyczyść profil" does not remove them.
  * The phone number is stored encoded and is drawn on a canvas only after a click, so simple scrapers cannot read it.
  */
@@ -12,8 +12,10 @@ const SUPPORT_KEY = "wordol.support.v1";
 const SUPPORT_TICK_MS = 15000;
 const SUPPORT_IDLE_LIMIT_MS = 60000;
 const SUPPORT_CHECK_DELAY_MS = 1200;
-/** The banner shows on every second launch, starting with the 3rd: 3, 5, 7, 9… */
-const isBannerLaunch = (launches) => launches >= 3 && launches % 2 === 1;
+/** The banner shows after this many finished exercises (counted on this device, also across "Wyczyść profil"). */
+const SUPPORT_BANNER_AT = [6, 16, 40, 60, 90];
+/** The first time it is only a "thank you" with "Dalej" – no request yet. */
+const SUPPORT_BANNER_INFO_ONLY = 6;
 const SUPPORT_QUIET_VIEWS = ["session", "result", "step", "welcome"];
 const AUTHOR_LINE = "Bartek SP5EOE";
 /** The author's invitation – in the welcome notice and in the banner that shows up now and then under the title bar. */
@@ -215,13 +217,34 @@ const footerHtml = () => `
 // ====================================================================
 // When to ask
 // ====================================================================
-let bannerDueThisLaunch = false;
-
-/** Called once when the app starts: counts launches; on some of them the banner will show. */
+/** Called once when the app starts: counts launches (used by the install suggestion). */
 function countLaunch() {
   const launches = (Number(readSupportStore().launches) || 0) + 1;
   writeSupportStore({ launches });
-  bannerDueThisLaunch = isBannerLaunch(launches);
+}
+
+/** Called after every finished exercise. Older saves start from the exercises already done. */
+function countExerciseForSupport() {
+  const store = readSupportStore();
+  const done = Number.isFinite(store.exercises) ? store.exercises : Math.max(0, state.games.exercises - 1);
+  writeSupportStore({ exercises: done + 1 });
+}
+
+/** The highest threshold reached and not answered yet (or null). */
+function dueBannerThreshold() {
+  const store = readSupportStore();
+  const exercises = Number.isFinite(store.exercises) ? store.exercises : state.games.exercises;
+  const answered = Array.isArray(store.bannerDone) ? store.bannerDone : [];
+  const due = SUPPORT_BANNER_AT.filter((threshold) => exercises >= threshold && !answered.includes(threshold));
+  return due.length ? due[due.length - 1] : null;
+}
+
+/** "Dalej" / "Nie postawię kawy": this threshold (and any lower one) is done. */
+function markBannerAnswered() {
+  const threshold = dueBannerThreshold();
+  if (threshold === null) return;
+  const answered = Array.isArray(readSupportStore().bannerDone) ? readSupportStore().bannerDone : [];
+  writeSupportStore({ bannerDone: [...new Set([...answered, ...SUPPORT_BANNER_AT.filter((value) => value <= threshold)])] });
 }
 
 /** After every screen change: shows the banner in menus (on the chosen launches); hides it elsewhere. */
@@ -231,25 +254,28 @@ function checkSupport() {
     removeSupportBanner();
     return;
   }
-  if (bannerDueThisLaunch) showSupportBanner();
+  const threshold = dueBannerThreshold();
+  if (threshold !== null) showSupportBanner(threshold);
+  else removeSupportBanner();
 }
 
-function showSupportBanner() {
+function showSupportBanner(threshold) {
   if ($("#supportBanner")) return;
   const topbar = $(".topbar");
   if (!topbar) return;
   topbar.insertAdjacentHTML("afterend", `
     <div class="support-banner" id="supportBanner" role="status">
       <p>☕ ${SHARE_TEXT} ❤️</p>
-      <div class="support-banner-actions">
-        <button class="btn primary" data-action="openSupport">❤️ Postaw kawę</button>
+      <div class="support-banner-actions">${threshold === SUPPORT_BANNER_INFO_ONLY
+        ? `<button class="btn primary" data-action="supportDeclined">Dalej →</button>`
+        : `<button class="btn primary" data-action="openSupport">❤️ Postaw kawę</button>
         <button class="btn" data-action="supportDonated">✔ Już postawiłem</button>
-        <button class="btn ghost" data-action="supportDeclined">Nie postawię kawy</button>
+        <button class="btn ghost" data-action="supportDeclined">Nie postawię kawy</button>`}
       </div>
     </div>`);
   $("#supportBanner").style.top = `${topbar.getBoundingClientRect().height}px`;
-  // "Postaw kawę" is the default choice (Enter presses it).
-  $("#supportBanner [data-action='openSupport']").focus({ preventScroll: true });
+  // the first button is the default choice ("Postaw kawę", or "Dalej" the first time): Enter presses it
+  $("#supportBanner .btn.primary").focus({ preventScroll: true });
 }
 
 function removeSupportBanner() {
@@ -257,9 +283,9 @@ function removeSupportBanner() {
   if (banner) banner.remove();
 }
 
-/** "Nie postawię kawy": closes the banner until its next launch. */
+/** "Dalej" / "Nie postawię kawy": closes the banner until the next number of exercises is reached. */
 function declineSupport() {
-  bannerDueThisLaunch = false;
+  markBannerAnswered();
   closeModal("supportModal");
   removeSupportBanner();
 }
