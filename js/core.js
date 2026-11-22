@@ -194,6 +194,7 @@ function defaultState() {
     riddles: { owned: [] },
     testUnlock: false,
     games: { owned: [], exercises: 0, charge: {}, plays: {}, scores: {} },
+    extra: { day: "", exercises: 0, chests: 0 },
     shop: { day: "", ids: [] },
     path: {},
     stats: { words: {}, sessions: [], lastDay: "", streak: 0, xp: 0, correctTotal: 0, daily: { day: "", count: 0 }, badges: {} },
@@ -219,6 +220,7 @@ function loadState() {
       testUnlock: parsed.testUnlock === true,
       riddles: { owned: isObject(parsed.riddles) && Array.isArray(parsed.riddles.owned) ? parsed.riddles.owned : [] },
       games: { ...defaults.games, ...(isObject(parsed.games) ? parsed.games : {}) },
+      extra: { ...defaults.extra, ...(isObject(parsed.extra) ? parsed.extra : {}) },
       shop: { ...defaults.shop, ...(isObject(parsed.shop) ? parsed.shop : {}) },
       stats: { ...defaults.stats, ...(isObject(parsed.stats) ? parsed.stats : {}) },
     };
@@ -235,6 +237,9 @@ if (!state.settings.scopeV2) {
   state.settings.scopeV2 = true;
 }
 if (!Array.isArray(state.games.owned)) state.games = defaultState().games;
+// Unlock progress is counted separately from game recharging (it has a daily limit); existing players keep what they unlocked.
+if (!Number.isFinite(state.games.unlockProgress)) state.games.unlockProgress = state.games.exercises || 0;
+if (!state.games.unlockToday || typeof state.games.unlockToday !== "object") state.games.unlockToday = { day: "", count: 0 };
 
 function saveState() {
   try {

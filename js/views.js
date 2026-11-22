@@ -381,6 +381,9 @@ function renderResult() {
       <p>Poprawnie: <b>${session.correct}/${session.done}</b> (${percent}%) · <span class="xp-pill">+${session.xp} XP</span></p>
       ${session.gemsEarned ? `<div class="banner">💎 +${session.gemsEarned}${session.dailyBonus ? ` (w tym bonus ${session.dailyBonus})` : ""}</div>` : ""}
       ${session.dailyDone ? `<div class="banner">🎉 Zadanie dnia ukończone! Nagroda zapisana w kalendarzu.</div>` : ""}
+      ${session.chestOpened ? `<div class="banner">🧰 Skrzynia skarbów otwarta!</div>` : ""}
+      ${session.chestProgress && !session.chestOpened ? `<div class="banner">${extraChestLine()}</div>` : ""}
+      ${session.unlocked ? `<div class="banner">🔓 W sklepiku odblokowała się nowa nagroda!</div>` : ""}
       ${session.goalReached ? `<div class="banner">${esc(rychuLine("goalDone"))}</div>` : ""}
       ${session.earned.length > 0 ? `<div class="banner badge-banner">Nowa odznaka: ${session.earned.map((badge) => `${badge.icon} ${esc(badge.name)}`).join(", ")}</div>` : ""}
       ${workoutSummary}
