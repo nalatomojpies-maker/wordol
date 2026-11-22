@@ -183,7 +183,7 @@ function defaultState() {
   return {
     settings: {
       name: "", grade: 5, onboarded: false, theme: "light", sessionLength: 0, dailyGoal: 0, difficulty: "medium",
-      direction: "mix", sound: true, quiet: false, music: true, musicVolume: 0.3, noSound: false, autoSpeak: false, termsAccepted: 0, wordScope: "upto", status: "all", topics: [], grammarTopics: [],
+      direction: "mix", sound: true, quiet: false, gender: "auto", music: true, musicVolume: 0.3, noSound: false, autoSpeak: false, termsAccepted: 0, wordScope: "upto", status: "all", topics: [], grammarTopics: [],
     },
     custom: [],
     cache: {},

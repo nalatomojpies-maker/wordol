@@ -236,7 +236,6 @@ function handleSettingChange(element) {
 
 document.addEventListener("change", (event) => {
   if (event.target.dataset.setting) handleSettingChange(event.target);
-  if (event.target.id === "imageInput") handleImage(event.target.files[0]);
 });
 document.addEventListener("input", (event) => {
   if (["name", "musicVolume"].includes(event.target.dataset.setting)) handleSettingChange(event.target);

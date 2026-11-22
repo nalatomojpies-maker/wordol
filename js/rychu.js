@@ -35,10 +35,36 @@ function rychuSvg(mood = "happy", size = 96) {
   </svg>`;
 }
 
+// ====================================================================
+// Talking to a girl or a boy (Polish verbs and adjectives change with it)
+// ====================================================================
+/** Boys' names that end in -a, and girls' names that do not. */
+const BOY_NAMES_IN_A = new Set(["kuba", "barnaba", "bonawentura", "kosma", "jarema", "zawisza", "juda", "saba", "nikita", "misza", "kuźma", "dyzma", "luca", "luka", "ilja", "aleksiej", "andrea", "jonasza"]);
+const GIRL_NAMES_NOT_IN_A = new Set(["noemi", "miriam", "abigail", "nicole", "karmen", "carmen", "doris", "ingrid", "rut", "ruth", "mercedes", "inez", "dolores", "beatrycze", "lili", "nel", "elif", "ester", "estera", "rachel", "zoe", "chloe", "kim", "jasmin", "megi", "nikol", "iris", "agnes", "maribel", "ines", "liv", "mia", "lea", "nela"]);
+
+/** "f", "m" or null (no name yet). Profil → "Zwracaj się do mnie" overrides the guess from the name. */
+function playerGender() {
+  const choice = state.settings.gender;
+  if (choice === "f" || choice === "m") return choice;
+  const first = (state.settings.name || "").trim().split(/\s+/)[0].toLocaleLowerCase("pl");
+  if (!first) return null;
+  if (BOY_NAMES_IN_A.has(first)) return "m";
+  if (GIRL_NAMES_NOT_IN_A.has(first) || first.endsWith("a")) return "f";
+  return "m";
+}
+
+/** Picks the right form: g("Wygrałeś", "Wygrałaś", "Ta partia dla Ciebie") – the third one when the name is not known yet. */
+function g(boy, girl, neutral) {
+  const gender = playerGender();
+  if (gender === "f") return girl;
+  if (gender === "m") return boy;
+  return neutral === undefined ? `${boy}/${girl}` : neutral;
+}
+
 const RYCHU_LINES = {
-  greet: ["Cześć{name}! Gotowy na trening słówek?", "Hej{name}! Rozgrzewka czeka!", "Witaj{name}! Dziś zrobimy kilka serii słówek!"],
+  greet: ["Cześć{name}! {Gotowy na trening słówek?|Gotowa na trening słówek?|Zaczynamy trening słówek?}", "Hej{name}! Rozgrzewka czeka!", "Witaj{name}! Dziś zrobimy kilka serii słówek!"],
   greetKids: ["Cześć{name}! Bawimy się w słówka?", "Hej{name}! Ćwiczymy razem!", "Witaj{name}! Zaczynamy zabawę!"],
-  great: ["Mistrzowska forma{name}! 🏆", "Super! Tak trzymać{name}!", "Rewelacja{name}! Jestem z Ciebie dumny!"],
+  great: ["Mistrzowska forma{name}! 🏆", "Super! Tak trzymać{name}!", "Rewelacja{name}! Jestem z Ciebie dumny!", "Brawo{name}! {Zasłużyłeś na medal!|Zasłużyłaś na medal!|To było na medal!}"],
   good: ["Dobra robota{name}! Jeszcze jedna seria?", "Całkiem nieźle{name}! Ćwiczymy dalej!", "Idzie Ci coraz lepiej{name}!"],
   retry: ["Nic się nie stało{name}. Trening czyni mistrza!", "Spokojnie{name}, powtórzymy trudne słowa.", "Każdy mistrz zaczynał od błędów{name}!"],
   stepPass: ["Krok zaliczony{name}! Idziemy dalej!", "Brawo{name}! Następny krok odblokowany!"],
@@ -46,11 +72,14 @@ const RYCHU_LINES = {
   goalDone: ["Dzienny cel zaliczony{name}! 🎉"],
 };
 
+/** "{boy|girl|neutral}" in a text becomes the right form (see g). */
+const genderize = (text) => text.replace(/\{([^|{}]+)\|([^|{}]+)(?:\|([^|{}]*))?\}/g, (_, boy, girl, neutral) => g(boy, girl, neutral));
+
 /** Random Rychu line of the given kind; {name} becomes ", Ania" or an empty string. */
 function rychuLine(kind) {
   const options = RYCHU_LINES[kind];
   const name = state.settings.name ? `, ${state.settings.name}` : "";
-  return options[Math.floor(Math.random() * options.length)].replace("{name}", name);
+  return genderize(options[Math.floor(Math.random() * options.length)].replace("{name}", name));
 }
 
 const rychuBubble = (mood, text, size = 84) =>

@@ -212,6 +212,12 @@ function renderSettings() {
       <h2>Profil</h2>
       <label class="field" for="nameInput">Imię</label>
       <input type="text" id="nameInput" data-setting="name" maxlength="20" value="${esc(settings.name)}" placeholder="Jak masz na imię?">
+      <label class="field" for="genderSelect">Rychu zwraca się do Ciebie jak do</label>
+      <select id="genderSelect" data-setting="gender" data-rerender="1">
+        <option value="auto" ${!["f", "m"].includes(settings.gender) ? "selected" : ""}>Automatycznie – po imieniu (${playerGender() === "f" ? "dziewczynki" : playerGender() === "m" ? "chłopca" : "jeszcze nie wiem"})</option>
+        <option value="f" ${settings.gender === "f" ? "selected" : ""}>Dziewczynki („zrobiłaś”, „gotowa”)</option>
+        <option value="m" ${settings.gender === "m" ? "selected" : ""}>Chłopca („zrobiłeś”, „gotowy”)</option>
+      </select>
       <label class="field">Klasa</label>
       <div class="grade-grid">${gradeButtons(currentGrade(), "setGrade")}</div>
       <p class="muted small">Zmiana klasy zmienia zakres słów, dostępne ćwiczenia i ścieżkę nauki.</p>

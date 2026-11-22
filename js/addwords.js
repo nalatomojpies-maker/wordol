@@ -1,11 +1,11 @@
 "use strict";
 
 // ====================================================================
-// Adding words (text box + OCR + dictionary)
+// Adding words (text box + dictionary)
 // ====================================================================
 let addDraft = { text: "", rows: [], busy: false };
 
-// Experimental features (OCR) are hidden behind a password that is asked every time the section is opened.
+// Experimental features (reward test mode) are hidden behind a password that is asked every time the section is opened.
 let labOpen = false;
 let labUnlocked = false;
 
@@ -20,13 +20,6 @@ function experimentalSection() {
       </form></section>`;
   }
   return `<section class="card">${toggle}
-    <h2>Wczytaj zdjęcie (OCR)</h2>
-    <div class="dropzone">
-      <input type="file" id="imageInput" accept="image/*">
-      <div id="imagePreview"></div>
-      <div class="ocr-bar hidden" id="ocrBar"><div id="ocrProgress"></div></div>
-      <p class="muted" id="ocrStatus">OCR działa w przeglądarce (Tesseract.js). Przy pierwszym użyciu pobiera moduł z internetu.</p>
-    </div>
     <h2>🎁 Test nagród</h2>
     <p class="muted small">Odblokowuje wszystkie dowcipy, zagadki i gierki, a gierki nie muszą się ładować. Do sprawdzania aplikacji. ${state.testUnlock ? "<b>Teraz: włączony.</b>" : ""}</p>
     ${state.testUnlock
@@ -97,7 +90,7 @@ function renderCustomList() {
     </div></section>`;
 }
 
-/** Turns raw text (typed or from OCR) into entries: {a, b?}. */
+/** Turns raw text into entries: {a, b?}. */
 function parseEntries(text) {
   const entries = [];
   const seen = new Set();
@@ -234,26 +227,4 @@ function addSelectedRows() {
   setTimeout(announceBadges, 1500);
 }
 
-async function handleImage(file) {
-  if (!file) return;
-  const status = $("#ocrStatus");
-  const bar = $("#ocrBar");
-  const progress = $("#ocrProgress");
-  const previewUrl = URL.createObjectURL(file);
-  $("#imagePreview").innerHTML = `<img src="${previewUrl}" alt="Wczytane zdjęcie">`;
-  bar.classList.remove("hidden");
-  progress.style.width = "0";
-  status.textContent = "Rozpoznaję tekst… (pierwszy raz może potrwać dłużej)";
-  try {
-    const text = await recognizeText(file, (value) => { progress.style.width = `${Math.round(value * 100)}%`; });
-    const textarea = $("#wordsText");
-    textarea.value = (textarea.value.trim() ? `${textarea.value.trim()}\n` : "") + text.trim();
-    addDraft.text = textarea.value;
-    status.textContent = "Gotowe! Tekst trafił do pola powyżej – popraw go i kliknij „Przygotuj listę”.";
-  } catch (error) {
-    status.textContent = `Nie udało się: ${error.message}`;
-  } finally {
-    bar.classList.add("hidden");
-  }
-}
 

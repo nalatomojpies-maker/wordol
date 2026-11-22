@@ -174,7 +174,7 @@ function renderStepCard() {
         const base = BUILT_IN_WORDS.find((entry) => normalize(entry.en) === normalize(word));
         return `<button class="vocab-tile" data-action="speak" data-text="${esc(word)}" aria-label="Posłuchaj: ${esc(word)}">
           ${emoji ? `<span class="vt-emoji">${emoji}</span>` : ""}<span class="vt-word">${esc(word)}</span>${base ? `<small>${esc(base.pl)}</small>` : ""}<span class="vt-speak">🔊</span></button>`;
-      }).join("")}</div><p class="muted center-text">Dotknij kafelka, aby posłuchać. Potem sprawdź, co zapamiętałeś!</p>` : "";
+      }).join("")}</div><p class="muted center-text">Dotknij kafelka, aby posłuchać. Potem sprawdź, ile już pamiętasz!</p>` : "";
 
   const table = cardData.table
     ? `<div class="table-wrap"><table class="ltable"><thead><tr>${cardData.table.head.map((cell) => `<th>${richText(cell)}</th>`).join("")}</tr></thead>

@@ -345,10 +345,6 @@ body.kids .rules li { font-size: 1.2rem; }
 .example { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
 
 /* ================= Add words ================= */
-.dropzone { border: 2px dashed var(--border); border-radius: 16px; padding: 14px; text-align: center; background: var(--bg); }
-.dropzone img { max-width: 100%; max-height: 180px; border-radius: 10px; margin-top: 8px; }
-.ocr-bar { height: 8px; border-radius: 99px; background: var(--border); overflow: hidden; margin-top: 8px; }
-.ocr-bar > div { height: 100%; width: 0; background: var(--primary); transition: width .2s; }
 .preview-row { display: grid; grid-template-columns: 28px 1fr 1fr auto; gap: 8px; align-items: center; margin-bottom: 8px; }
 .preview-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); }
 .src { font-size: .7rem; padding: 2px 8px; border-radius: 99px; background: var(--border); white-space: nowrap; }
