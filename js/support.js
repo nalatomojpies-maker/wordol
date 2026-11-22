@@ -15,6 +15,11 @@ const SUPPORT_IDLE_LIMIT_MS = 60000;
 const SUPPORT_CHECK_DELAY_MS = 1200;
 const SUPPORT_QUIET_VIEWS = ["session", "result", "step", "welcome"];
 const AUTHOR_LINE = "Bartek SP5EOE";
+/** The author's invitation – in the welcome notice and in the banner that shows up now and then under the title bar. */
+const SHARE_TEXT = "Używaj, rozpowszechniaj, dziel się z innymi, a jeśli spodoba Ci się moja praca i chciałbyś zobaczyć więcej moich projektów, możesz postawić mi kawę";
+const SUPPORT_BANNER_FIRST_S = 300;
+const SUPPORT_BANNER_EVERY_S = 900;
+const SUPPORT_BANNER_SHOWN_MS = 15000;
 const COPYRIGHT_YEAR = 2026;
 
 // ====================================================================
@@ -232,6 +237,40 @@ function maybeShowSupport() {
   openSupportModal();
 }
 
+/** The invitation banner under the title bar: first after 5 minutes of use, then every 15 minutes; hides itself after 15 s. */
+function maybeShowSupportBanner() {
+  if (supportStatus() === "donated" || $("#supportBanner") || $(".modal-backdrop") || $("#tutorial") || SUPPORT_QUIET_VIEWS.includes(view)) return;
+  if (!state.support.nextBannerAt) state.support.nextBannerAt = SUPPORT_BANNER_FIRST_S;
+  if (state.support.seconds < state.support.nextBannerAt) return;
+  state.support.nextBannerAt = state.support.seconds + SUPPORT_BANNER_EVERY_S;
+  saveState();
+  showSupportBanner();
+}
+
+function showSupportBanner() {
+  if ($("#supportBanner")) return;
+  const topbar = $(".topbar");
+  if (!topbar) return;
+  topbar.insertAdjacentHTML("afterend", `
+    <div class="support-banner" id="supportBanner" role="status">
+      <p>☕ ${SHARE_TEXT} ❤️</p>
+      <div class="support-banner-actions">
+        <button class="btn primary" data-action="openSupportFromBanner">❤️ Postaw kawę</button>
+        <button class="icon-btn" data-action="closeSupportBanner" aria-label="Zamknij">✕</button>
+      </div>
+    </div>`);
+  const banner = $("#supportBanner");
+  banner.style.top = `${topbar.getBoundingClientRect().height}px`;
+  setTimeout(closeSupportBanner, SUPPORT_BANNER_SHOWN_MS);
+}
+
+function closeSupportBanner() {
+  const banner = $("#supportBanner");
+  if (!banner) return;
+  banner.classList.add("hiding");
+  setTimeout(() => banner.remove(), 300);
+}
+
 /** Counts only real use: the page is visible and the user touched it within the last minute. */
 let lastActivityAt = Date.now();
 
@@ -248,6 +287,7 @@ function startSupportTimer() {
     state.support.seconds += SUPPORT_TICK_MS / 1000;
     saveState();
     maybeShowSupport();
+    maybeShowSupportBanner();
   }, SUPPORT_TICK_MS);
 }
 
@@ -287,7 +327,7 @@ function openIntroModal() {
             </ul>
           </li>
           <li>🔇 <b>Nie masz dźwięku?</b> W <i>Profil → Brak dźwięku</i> włączysz tryb, w którym gra dostosuje się do tej opcji i ukryje ćwiczenia wymagające słuchania.</li>
-          <li>☕ <b>Podoba Ci się?</b> Możesz postawić mi kawę BLIKIEM na numer telefonu. To zupełnie dobrowolne.
+          <li>☕ ${SHARE_TEXT} ❤️
             <div id="blikBox" class="blik-box"><button class="btn" data-action="showBlik">📱 Pokaż numer BLIK</button></div>
           </li>
         </ul>

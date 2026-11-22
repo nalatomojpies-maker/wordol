@@ -186,7 +186,7 @@ function defaultState() {
     },
     custom: [],
     cache: {},
-    support: { seconds: 0, fired: {}, nextHourAt: 0 },
+    support: { seconds: 0, fired: {}, nextHourAt: 0, nextBannerAt: 0 },
     gems: 0,
     daily: { day: "", grade: -1, modes: [], results: [], done: false },
     calendar: {},

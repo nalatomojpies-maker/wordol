@@ -693,3 +693,12 @@ body.kids .mode-group .mode .ico { width: 54px; height: 54px; font-size: 2rem; }
 .tutorial-text { margin: 0; font-weight: 600; line-height: 1.4; }
 .tutorial-actions { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 @media (prefers-reduced-motion: reduce) { .tutorial-hole { transition: none; } }
+
+/* ---------- invitation banner under the title bar ---------- */
+.support-banner { position: sticky; z-index: 9; display: flex; align-items: center; gap: 10px; margin: 0 auto; max-width: 760px; padding: 10px 12px; border-radius: 0 0 16px 16px; background: var(--card); color: var(--text); border: 2px solid var(--border); border-top: 0; box-shadow: 0 8px 20px rgba(0, 0, 0, .12); animation: bannerIn .35s ease; }
+.support-banner p { margin: 0; flex: 1; font-size: .85rem; line-height: 1.35; }
+.support-banner-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.support-banner .btn { padding: 8px 12px; white-space: nowrap; }
+.support-banner.hiding { opacity: 0; transform: translateY(-12px); transition: opacity .3s, transform .3s; }
+@keyframes bannerIn { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: none; } }
+@media (max-width: 459px) { .support-banner { flex-direction: column; align-items: stretch; text-align: center; } .support-banner-actions { justify-content: center; } }
