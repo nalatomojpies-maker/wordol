@@ -216,8 +216,8 @@ function renderSettings() {
       <p class="muted small">Zmiana klasy zmienia zakres słów, dostępne ćwiczenia i ścieżkę nauki.</p>
     </section>
     <section class="card">
-      <h2>Moje słowa</h2>
-      <p class="muted">Własne słowa (${state.custom.length}) ćwiczysz razem z resztą, w zbiorze „Moje słowa”.</p>
+      <h2>⭐ Dodane słowa</h2>
+      <p class="muted">Własne słowa (${state.custom.length}) ćwiczysz razem z resztą, w zbiorze „Dodane słowa” (pierwszy na liście zbiorów w Treningu).</p>
       <button class="btn" data-action="nav" data-view="add">➕ Dodaj lub usuń własne słowa</button>
     </section>
     <section class="card">

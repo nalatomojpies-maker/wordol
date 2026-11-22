@@ -78,9 +78,20 @@ function renderAdd() {
   if (addDraft.rows.length > 0) drawPreview();
 }
 
+/** "Ćwicz dodane słowa": only the own words set is chosen, back to the training screen. */
+function practiceCustomWords() {
+  state.settings.topics = [CUSTOM_TOPIC.id];
+  state.settings.status = "all";
+  saveState();
+  goTo("home");
+  toast(`Wybrany zbiór: ⭐ Dodane słowa (${state.custom.length}). Wybierz ćwiczenie!`);
+}
+
 function renderCustomList() {
   if (state.custom.length === 0) return "";
-  return `<section class="card" style="margin-top:16px"><h2>Moje słowa (${state.custom.length})</h2>
+  return `<section class="card" style="margin-top:16px" id="customList"><h2>⭐ Zbiór „Dodane słowa” (${state.custom.length})</h2>
+    <p class="muted small">Ten zbiór znajdziesz w Treningu → Ustawienia treningu → Zbiory tematyczne (jest pierwszy na liście).</p>
+    <button class="btn primary" data-action="practiceCustom">🎯 Ćwicz dodane słowa</button>
     <div class="word-list">
       ${state.custom.map((word) => `<div class="word-item"><span><b>${esc(word.en)}</b> – ${esc(word.pl)}</span><button data-action="deleteCustom" data-id="${word.id}" aria-label="Usuń">✕</button></div>`).join("")}
     </div></section>`;
@@ -186,7 +197,7 @@ function drawPreview() {
   preview.classList.remove("hidden");
   preview.innerHTML = `
     <h2>Sprawdź i popraw</h2>
-    <p class="muted">Zaznacz, co dodać do zbioru „Moje słowa”. Możesz edytować pola.</p>
+    <p class="muted">Zaznacz, co dodać do zbioru „Dodane słowa”. Możesz edytować pola.</p>
     ${addDraft.rows.map((row, index) => `
       <div class="preview-row" data-row="${index}">
         <input type="checkbox" ${row.en && row.pl ? "checked" : ""} aria-label="Dodaj">
@@ -216,8 +227,10 @@ function addSelectedRows() {
   }
   saveState();
   addDraft = { text: "", rows: [], busy: false };
-  toast(`Dodano słów: ${added} ✔️`);
+  toast(`Dodano słów: ${added} do zbioru „Dodane słowa” ⭐`);
   renderAdd();
+  const list = $("#customList");
+  if (list) list.scrollIntoView({ behavior: "smooth", block: "start" });
   setTimeout(announceBadges, 1500);
 }
 

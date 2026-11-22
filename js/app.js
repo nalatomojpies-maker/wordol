@@ -154,6 +154,7 @@ const actions = {
   speechWarnQuiet: () => { closeQuietModal("speechWarn"); setQuietMode(true); toast("🔇 Tryb cichy włączony"); },
   speechWarnKeep: () => closeQuietModal("speechWarn"),
   testSpeech: () => testSpeech(),
+  practiceCustom: () => practiceCustomWords(),
   quietCancel: () => closeQuietModal("quietAsk"),
   quietNoticeOk: () => closeQuietModal("quietNotice"),
   quietNoticeSound: () => { closeQuietModal("quietNotice"); setQuietMode(false); toast("🔊 Dźwięk włączony"); },
