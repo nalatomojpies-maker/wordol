@@ -3,7 +3,7 @@
 /**
  * "Buy me a coffee" invitation, footer and legal information. Addressed to parents and guardians, never to children.
  *
- * - A banner under the title bar on the 2nd, 8th, 16th and 30th app launch (in menus only, never during an exercise).
+ * - A banner under the title bar on every second app launch from the 3rd on (3, 5, 7…; in menus only, never during an exercise).
  *   "Nie postawię kawy" hides it until the next of those launches; "Już postawiłem" hides it for good.
  * The answer and the launch count are kept under their own key, so "Wyczyść profil" does not remove them.
  * The phone number is stored encoded and is drawn on a canvas only after a click, so simple scrapers cannot read it.
@@ -12,7 +12,8 @@ const SUPPORT_KEY = "wordol.support.v1";
 const SUPPORT_TICK_MS = 15000;
 const SUPPORT_IDLE_LIMIT_MS = 60000;
 const SUPPORT_CHECK_DELAY_MS = 1200;
-const SUPPORT_BANNER_LAUNCHES = [2, 8, 16, 30];
+/** The banner shows on every second launch, starting with the 3rd: 3, 5, 7, 9… */
+const isBannerLaunch = (launches) => launches >= 3 && launches % 2 === 1;
 const SUPPORT_QUIET_VIEWS = ["session", "result", "step", "welcome"];
 const AUTHOR_LINE = "Bartek SP5EOE";
 /** The author's invitation – in the welcome notice and in the banner that shows up now and then under the title bar. */
@@ -220,7 +221,7 @@ let bannerDueThisLaunch = false;
 function countLaunch() {
   const launches = (Number(readSupportStore().launches) || 0) + 1;
   writeSupportStore({ launches });
-  bannerDueThisLaunch = SUPPORT_BANNER_LAUNCHES.includes(launches);
+  bannerDueThisLaunch = isBannerLaunch(launches);
 }
 
 /** After every screen change: shows the banner in menus (on the chosen launches); hides it elsewhere. */
@@ -247,6 +248,8 @@ function showSupportBanner() {
       </div>
     </div>`);
   $("#supportBanner").style.top = `${topbar.getBoundingClientRect().height}px`;
+  // "Postaw kawę" is the default choice (Enter presses it).
+  $("#supportBanner [data-action='openSupport']").focus({ preventScroll: true });
 }
 
 function removeSupportBanner() {
@@ -254,7 +257,7 @@ function removeSupportBanner() {
   if (banner) banner.remove();
 }
 
-/** "Nie postawię kawy": closes the banner until the next of the chosen launches. */
+/** "Nie postawię kawy": closes the banner until its next launch. */
 function declineSupport() {
   bannerDueThisLaunch = false;
   closeModal("supportModal");
