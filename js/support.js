@@ -184,6 +184,7 @@ function openLegalModal() {
           <li><b>Hosting:</b> aplikacja jest udostępniana przez GitHub Pages (GitHub, Inc.), który może zapisywać techniczne logi, np. adres IP (zob. polityka prywatności GitHub).</li>
           <li><b>Tłumaczenie własnych słów:</b> wpisane słowa są wysyłane do usługi MyMemory (translated.net).</li>
           <li><b>OCR (funkcja eksperymentalna):</b> moduł Tesseract.js jest pobierany z sieci CDN jsDelivr; zdjęcie jest przetwarzane lokalnie w przeglądarce.</li>
+          <li><b>Dźwięki odpowiedzi:</b> melodyjki z zestawu „Music Jingles” autorstwa Kenney (kenney.nl), licencja CC0 (domena publiczna).</li>
           <li><b>Czytanie słów:</b> korzysta z syntezatora mowy przeglądarki lub urządzenia. Niektóre głosy (np. w Chrome) mogą działać przez internet.</li>
         </ul>
         <h3>Wsparcie autora</h3>

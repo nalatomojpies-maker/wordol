@@ -84,6 +84,9 @@ function applyMusicGain(fast = false) {
 // ====================================================================
 // Sound effects
 // ====================================================================
+/** Effects (answer jingles, clicks, rewards) play only with "Efekty dźwiękowe" on and "Brak dźwięku" off. */
+const effectsOn = () => state.settings.sound && !state.settings.noSound;
+
 /** One enveloped tone on the effects bus. */
 function tone(frequency, delay, duration, type, volume) {
   const start = audioCtx.currentTime + delay;
@@ -104,7 +107,7 @@ const NOTE = { C5: 523.25, E5: 659.25, G5: 783.99, C6: 1046.5, E6: 1318.5, G6: 1
 
 /** A soft bell note (used by the "Powtórz melodię" game). */
 function playNote(frequency, duration = 0.4) {
-  if (!state.settings.sound || !ensureAudio()) return;
+  if (!effectsOn() || !ensureAudio()) return;
   try {
     tone(frequency, 0, duration, "sine", 0.16);
     tone(frequency * 2, 0, duration * 0.5, "sine", 0.035);
@@ -115,7 +118,7 @@ function playNote(frequency, duration = 0.4) {
 
 /** @param {"click"|"flip"|"ok"|"bad"|"pass"|"fanfare"|"badge"|"goal"|"gem"} name */
 function sfx(name) {
-  if (!state.settings.sound) return;
+  if (!effectsOn()) return;
   const ctx = ensureAudio();
   if (!ctx) return;
   try {
@@ -161,8 +164,60 @@ function sfx(name) {
   }
 }
 
-/** Correct / wrong answer sound (kept under the old name used by the exercises). */
-const beep = (isCorrect) => sfx(isCorrect ? "ok" : "bad");
+// ====================================================================
+// Answer jingles (short instrument melodies: Kenney "Music Jingles", CC0 – kenney.nl)
+// ====================================================================
+const ANSWER_SOUND_FILES = {
+  good: ["sounds/good-1.mp3", "sounds/good-2.mp3", "sounds/good-3.mp3", "sounds/good-4.mp3", "sounds/good-5.mp3"],
+  bad: ["sounds/bad-1.mp3", "sounds/bad-2.mp3", "sounds/bad-3.mp3", "sounds/bad-4.mp3", "sounds/bad-5.mp3"],
+};
+const ANSWER_SOUND_GAIN = 0.55;
+const answerBuffers = { good: [], bad: [] };
+const lastAnswerSound = { good: -1, bad: -1 };
+let answerSoundsLoading = false;
+
+/** Downloads and decodes the jingles once (after the first sound, when audio is allowed). */
+function loadAnswerSounds() {
+  if (answerSoundsLoading || !audioCtx) return;
+  answerSoundsLoading = true;
+  Object.entries(ANSWER_SOUND_FILES).forEach(([kind, files]) => files.forEach((file, index) => {
+    fetch(file)
+      .then((response) => (response.ok ? response.arrayBuffer() : Promise.reject(new Error(file))))
+      .then((data) => new Promise((resolve, reject) => audioCtx.decodeAudioData(data, resolve, reject)))
+      .then((buffer) => { answerBuffers[kind][index] = buffer; })
+      .catch(() => { /* missing file: the synthesised sound is used instead */ });
+  }));
+}
+
+/** Plays a random jingle of the kind (never the same one twice in a row); false when none is ready yet. */
+function playAnswerJingle(kind) {
+  const ready = answerBuffers[kind].map((buffer, index) => (buffer ? index : -1)).filter((index) => index >= 0);
+  if (ready.length === 0) return false;
+  const choices = ready.length > 1 ? ready.filter((index) => index !== lastAnswerSound[kind]) : ready;
+  const index = choices[Math.floor(Math.random() * choices.length)];
+  lastAnswerSound[kind] = index;
+  const source = audioCtx.createBufferSource();
+  const level = audioCtx.createGain();
+  source.buffer = answerBuffers[kind][index];
+  level.gain.value = ANSWER_SOUND_GAIN;
+  source.connect(level);
+  level.connect(sfxGain);
+  source.start();
+  return true;
+}
+
+/** Answer in an exercise: a happy jingle for a correct one, a sad one for a wrong one (random from five each). */
+function beep(isCorrect) {
+  if (!effectsOn()) return;
+  if (!ensureAudio()) return;
+  loadAnswerSounds();
+  try {
+    if (playAnswerJingle(isCorrect ? "good" : "bad")) return;
+  } catch {
+    /* fall back to the short synthesised sound below */
+  }
+  sfx(isCorrect ? "ok" : "bad");
+}
 
 // ====================================================================
 // Background music – five calm chill-out tracks (no bells, no percussion, slow and warm)
@@ -385,6 +440,7 @@ function updateMusicButton() {
 /** First user gesture: browsers allow audio only after it. */
 function unlockAudio() {
   ensureAudio();
+  loadAnswerSounds(); // ready before the first answer
   if (state.settings.music) startMusic();
 }
 
