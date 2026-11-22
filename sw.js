@@ -8,6 +8,8 @@ const APP_SHELL = [
   "js/data.js", "js/emoji.js", "js/art.js", "js/sentences.js", "js/path-young.js", "js/path-mid.js", "js/path-upper.js",
   "js/dictionary.js", "js/ocr.js", "js/core.js", "js/rychu.js", "js/modes.js", "js/learn.js", "js/audio.js", "js/support.js", "js/jokes.js", "js/riddles.js", "js/games.js", "js/shop.js", "js/views.js",
   "js/addwords.js", "js/tutorial.js", "js/app.js",
+  "sounds/good-1.mp3", "sounds/good-2.mp3", "sounds/good-3.mp3", "sounds/good-4.mp3", "sounds/good-5.mp3",
+  "sounds/bad-1.mp3", "sounds/bad-2.mp3", "sounds/bad-3.mp3", "sounds/bad-4.mp3", "sounds/bad-5.mp3",
 ];
 
 self.addEventListener("install", (event) => {
