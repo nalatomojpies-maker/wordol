@@ -216,7 +216,10 @@ function renderStats() {
   const rangeLabel = statsRange === 7 ? "7 dni" : `${statsRange} dni`;
 
   app.innerHTML = `
-    <section class="card hero">${rychuBubble("happy", `Poziom ${level.level}: ${level.title}. Do następnego poziomu brakuje ${level.need - level.into} XP.`, 84)}
+    <section class="card hero">${rychuBubble("cheer", state.games.exercises > 0
+      ? `Masz się czym pochwalić rodzicom lub opiekunom! Pokaż im swoje wyniki. 🌟`
+      : `Tu zobaczysz swoje postępy. Zrób pierwsze ćwiczenie, a potem pochwal się rodzicom lub opiekunom! 🌟`, 84)}
+      <p class="hero-level">⚡ Poziom ${level.level}: <b>${level.title}</b> · do następnego poziomu brakuje ${level.need - level.into} XP</p>
       <div class="xp-bar" title="${level.into}/${level.need} XP"><div style="width:${Math.round((level.into / level.need) * 100)}%"></div></div>
     </section>
 

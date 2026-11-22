@@ -24,6 +24,7 @@ const THEMES = [
   { id: "ocean", name: "Ocean", color: "#0891b2" },
   { id: "forest", name: "Las", color: "#3f8f3f" },
   { id: "candy", name: "Cukierek", color: "#e0489b" },
+  { id: "cvd", name: "Dla daltonistów", color: "#0072B2" },
 ];
 const GRADE_INFO = [
   { id: 0, label: "Zerówka", age: "5–6 lat", emoji: "🧸" }, { id: 1, label: "Klasa 1", age: "7 lat", emoji: "🎒" },
