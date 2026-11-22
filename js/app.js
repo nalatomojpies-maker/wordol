@@ -150,6 +150,10 @@ const actions = {
   acceptTerms: () => acceptTerms(),
   startTutorial: () => startTutorial(),
   claimBadge: () => claimBadge(),
+  quietConfirm: () => confirmQuiet(),
+  quietCancel: () => closeQuietModal("quietAsk"),
+  quietNoticeOk: () => closeQuietModal("quietNotice"),
+  quietNoticeSound: () => { closeQuietModal("quietNotice"); setQuietMode(false); toast("🔊 Dźwięk włączony"); },
   tapChest: () => tapChest(),
   toggleAllBadges: () => toggleAllBadges(),
   statsRange: (element) => setStatsRange(Number(element.dataset.range)),
@@ -216,9 +220,8 @@ function handleSettingChange(element) {
     if (label) label.textContent = `${Math.round(state.settings.musicVolume * 100)}%`;
   }
   if (key === "noSound") {
-    if (state.settings.noSound) stopMusic();
-    else startMusic(); // a fresh random track
-    updateMusicButton();
+    setQuietMode(state.settings.noSound); // the same as the speaker button in the top bar
+    toast(state.settings.noSound ? "🔇 Tryb cichy włączony – ćwiczenia z lektorem są ukryte" : "🔊 Dźwięk włączony – ćwiczenia z lektorem znów są dostępne");
   }
   if (key === "sound" && state.settings.sound) sfx("ok");
   if (element.dataset.rerender) render(true);
