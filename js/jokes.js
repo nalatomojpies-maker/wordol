@@ -133,6 +133,24 @@ const JOKE_DATA = `
 7|Why did the student bring a pillow to the history lesson?|The teacher said it would be about the Dark Ages!|Dlaczego uczeń przyniósł poduszkę na historię?|Pani mówiła, że lekcja będzie o „ciemnych wiekach”! (Dark Ages = wczesne średniowiecze)
 8|Why don't scientists trust atoms?|Because they make up everything!|Dlaczego naukowcy nie ufają atomom?|Bo one wszystko zmyślają! (make up = tworzyć i zmyślać)
 8|What did the triangle say to the circle?|You're pointless!|Co trójkąt powiedział do koła?|Jesteś bez sensu! (pointless = bezsensowny, dosł. „bez rogów”)
+0|What is black and white and eats bamboo?|A panda!|Kto jest czarno-biały i je bambus?|Panda!
+0|Who says oink?|A pig!|Kto mówi „chrum”?|Świnka!
+0|What is green and long and lives in a river?|A crocodile!|Kto jest zielony, długi i mieszka w rzece?|Krokodyl!
+1|What has four wheels and goes beep beep?|A car!|Co ma cztery koła i robi „bip bip”?|Samochód!
+1|Who sleeps all winter?|A bear!|Kto śpi całą zimę?|Niedźwiedź!
+1|What has keys but no doors?|A piano!|Co ma klawisze, ale nie ma drzwi?|Pianino! (key = klucz i klawisz)
+2|What is a frog's favourite drink?|Croak-a-cola!|Jaki jest ulubiony napój żaby?|Rechot-cola! (croak = rechotać, brzmi jak „coca-cola”)
+3|Why did the cow cross the road?|To get to the udder side!|Dlaczego krowa przeszła przez drogę?|Żeby dostać się na drugą stronę! (udder = wymię, brzmi jak „other” = drugi)
+4|Why are piggy banks so wise?|They are full of common cents!|Dlaczego świnki-skarbonki są takie mądre?|Bo są pełne zdrowego rozsądku! (cents = centy, brzmi jak „sense” = rozsądek)
+5|What do you call a dog that can tell the time?|A watchdog!|Jak nazwać psa, który zna się na zegarku?|Pies-zegarek! (watchdog = pies stróżujący, watch = zegarek)
+6|What has four wheels and flies?|A rubbish truck!|Co ma cztery koła i muchy?|Śmieciarka! (flies = lata i muchy)
+7|What did the paper say to the pencil?|Write on!|Co kartka powiedziała do ołówka?|Pisz dalej! (write on brzmi jak „right on” = świetnie)
+7|What do you call a pile of cats?|A meowtain!|Jak nazwać górę kotów?|Miaukowa góra! (meow + mountain = góra)
+7|Why was the computer cold?|It left its Windows open!|Dlaczego komputer zmarzł?|Zostawił otwarte okna! (Windows = system komputera i okna)
+8|What do you call a number that cannot keep still?|A roamin' numeral!|Jak nazwać liczbę, która nie usiedzi w miejscu?|Wędrowna liczba! (roaming = wędrujący, brzmi jak „Roman numeral” = cyfra rzymska)
+8|Why are spiders great at the internet?|They know how to build websites!|Dlaczego pająki świetnie znają się na internecie?|Bo umieją budować strony! (web = pajęczyna i sieć, website = strona internetowa)
+8|Why can't a nose be twelve inches long?|Because then it would be a foot!|Dlaczego nos nie może mieć dwunastu cali?|Bo wtedy byłby stopą! (12 cali to 1 stopa, a foot to też stopa)
+8|What is a computer's favourite snack?|Microchips!|Jaka jest ulubiona przekąska komputera?|Mikrochipsy! (microchip = układ scalony, chips = chipsy)
 `;
 
 /** @type {Array<{id: string, level: number, enQuestion: string, enAnswer: string, plQuestion: string, plAnswer: string}>} */
