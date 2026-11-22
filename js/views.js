@@ -303,11 +303,7 @@ function renderStats() {
       <div class="card stat"><b>${currentStreak()}</b>dni z rzędu</div>
       <div class="card stat"><b>${words.filter(isMastered).length}</b>opanowanych słów</div>
     </section>
-    <section class="card"><h2>Odznaki</h2>
-      <div class="badge-grid">
-        ${BADGES.map((badge) => `<div class="medal ${state.stats.badges[badge.id] ? "earned" : ""}" title="${esc(badge.name)}"><span>${badge.icon}</span><small>${esc(badge.name)}</small></div>`).join("")}
-      </div>
-    </section>
+    ${badgeSectionHtml()}
     <section class="card"><h2>Ostatnie oceny</h2>
       ${bars ? `<div class="bars">${bars}</div>` : `<p class="muted">Zrób pierwsze ćwiczenie, a pojawi się tu wykres.</p>`}
     </section>
@@ -386,7 +382,8 @@ function renderResult() {
       ${session.chestProgress && !session.chestOpened ? `<div class="banner">${extraChestLine()}</div>` : ""}
       ${session.unlocked ? `<div class="banner">🔓 W sklepiku odblokowała się nowa nagroda!</div>` : ""}
       ${session.goalReached ? `<div class="banner">${esc(rychuLine("goalDone"))}</div>` : ""}
-      ${session.earned.length > 0 ? `<div class="banner badge-banner">Nowa odznaka: ${session.earned.map((badge) => `${badge.icon} ${esc(badge.name)}`).join(", ")}</div>` : ""}
+      ${session.earned.length > 0 ? `<div class="banner badge-banner">🏅 ${session.earned.length === 1 ? "Nowa odznaka" : "Nowe odznaki"}: ${session.earned.slice(0, 3).map((badge) => `${badge.icon} ${esc(badge.name)}`).join(", ")}${session.earned.length > 3 ? ` i jeszcze ${session.earned.length - 3}` : ""}
+        <button class="link" data-action="nav" data-view="stats">Zobacz</button></div>` : ""}
       ${workoutSummary}
       ${mistakes.length > 0 ? `<h3>Do powtórki:</h3><ul class="mistakes">${mistakes.map((item) => `<li>${mistakeLabel(item)}</li>`).join("")}</ul>` : `<p>Bez błędów! 🌟</p>`}
       <div class="row center">${buttons}</div>

@@ -706,3 +706,17 @@ body.kids .mode-group .mode .ico { width: 54px; height: 54px; font-size: 2rem; }
 .session-rychu.kb { margin-top: 6px; scroll-margin-bottom: 10px; }
 .session-rychu.kb .session-rychu-owl svg { width: 64px; height: 64px; }
 @media (max-width: 759px) { .kb-open .nav { display: none; } .kb-open .app { padding-bottom: 16px; } }
+
+/* ---------- badges ---------- */
+.badge-count { font-size: .9rem; color: var(--muted); font-weight: 700; margin-left: 6px; }
+.badge-total { margin: 6px 0 12px; }
+.badge-group { margin: 16px 0 8px; font-size: 1rem; }
+.medal em { display: block; font-style: normal; font-size: .62rem; color: var(--muted); margin-top: 2px; }
+.medal.earned em { color: var(--ok); font-weight: 700; }
+.next-badges { display: grid; gap: 8px; margin-bottom: 6px; }
+.next-badge { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border-radius: 14px; background: var(--bg); }
+.next-badge > div { flex: 1; min-width: 0; }
+.next-badge small { display: block; margin: 2px 0 6px; }
+.next-badge-icon { font-size: 2rem; }
+.next-badge .xp-bar, .xp-bar.badge-total { background: var(--border); margin-top: 0; }
+.next-badge .xp-bar > div, .xp-bar.badge-total > div { background: linear-gradient(90deg, var(--ok), var(--accent)); }

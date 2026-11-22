@@ -218,6 +218,7 @@ function addSelectedRows() {
   addDraft = { text: "", rows: [], busy: false };
   toast(`Dodano słów: ${added} ✔️`);
   renderAdd();
+  setTimeout(announceBadges, 1500);
 }
 
 async function handleImage(file) {

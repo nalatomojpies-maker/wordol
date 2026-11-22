@@ -483,27 +483,6 @@ function touchStreak() {
   stats.lastDay = today;
 }
 
-const BADGES = [
-  { id: "first", icon: "🥉", name: "Pierwszy trening", test: () => state.stats.sessions.length >= 1 },
-  { id: "ten", icon: "🥈", name: "10 treningów", test: () => state.stats.sessions.length >= 10 },
-  { id: "fifty", icon: "🥇", name: "50 treningów", test: () => state.stats.sessions.length >= 50 },
-  { id: "streak3", icon: "🔥", name: "3 dni z rzędu", test: () => state.stats.streak >= 3 },
-  { id: "streak7", icon: "🌟", name: "7 dni z rzędu", test: () => state.stats.streak >= 7 },
-  { id: "perfect", icon: "💯", name: "Bezbłędny trening", test: (context) => Boolean(context.perfect) },
-  { id: "answers100", icon: "🎯", name: "100 dobrych odpowiedzi", test: () => state.stats.correctTotal >= 100 },
-  { id: "answers500", icon: "🚀", name: "500 dobrych odpowiedzi", test: () => state.stats.correctTotal >= 500 },
-  { id: "words50", icon: "🧠", name: "50 opanowanych słów", test: () => allWords().filter(isMastered).length >= 50 },
-  { id: "unit", icon: "🎓", name: "Ukończony temat", test: () => PATH_UNITS.some(isUnitDone) },
-  { id: "steps20", icon: "🪜", name: "20 kroków zaliczonych", test: () => Object.values(state.path).filter((entry) => entry.passed).length >= 20 },
-];
-
-/** @returns {Array<{id: string, icon: string, name: string}>} badges earned just now */
-function checkBadges(context = {}) {
-  const earned = BADGES.filter((badge) => !state.stats.badges[badge.id] && badge.test(context));
-  earned.forEach((badge) => { state.stats.badges[badge.id] = Date.now(); });
-  return earned;
-}
-
 // ====================================================================
 // Sound & speech
 // ====================================================================
