@@ -75,10 +75,10 @@ function recordDailyResult(finishedSession) {
 // ====================================================================
 // Shop
 // ====================================================================
-/** Rewards still to win, each kind in a fixed order for the class (shuffled once, so it does not change day to day). */
+/** Rewards still to win: only the pupil's own class level, each kind in a fixed order (shuffled once, so it does not change day to day). */
 function shopQueue(grade) {
-  const jokes = seededShuffle(jokesForGrade(grade), `shop|jokes|${grade}`).filter((joke) => !state.jokes.owned.includes(joke.id));
-  const riddles = seededShuffle(riddlesForGrade(grade), `shop|riddles|${grade}`).filter((riddle) => !state.riddles.owned.includes(riddle.id));
+  const jokes = seededShuffle(JOKES.filter((joke) => joke.level === grade), `shop|jokes|${grade}`).filter((joke) => !state.jokes.owned.includes(joke.id));
+  const riddles = seededShuffle(RIDDLES.filter((riddle) => riddle.level === grade), `shop|riddles|${grade}`).filter((riddle) => !state.riddles.owned.includes(riddle.id));
   const games = GAMES.filter((game) => !isGameOwned(game.id)); // games unlock in this order
   return { jokes, riddles, games };
 }
