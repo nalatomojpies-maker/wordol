@@ -855,3 +855,7 @@ html[data-theme="lowvision"] body, html[data-theme="lowvision"] body.kids { font
   .cel-rays, .cel-hint { animation: none !important; }
   .celebrate.claimed .cel-badge, .celebrate.open .cel-chest { animation: none !important; opacity: .4; }
 }
+
+/* ---------- install guide ---------- */
+.install-steps { text-align: left; margin: 12px 0 0; padding-left: 22px; line-height: 1.6; }
+.install-key { display: inline-block; min-width: 1.6em; padding: 0 4px; border: 2px solid var(--border); border-radius: 6px; text-align: center; background: var(--bg); }

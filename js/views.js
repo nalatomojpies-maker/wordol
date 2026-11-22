@@ -47,6 +47,7 @@ function render(keepScroll = false) {
   if (view !== "session" && view !== "game") app.insertAdjacentHTML("beforeend", footerHtml());
   scheduleSupportCheck();
   setTimeout(maybeShowQuietNotice, 700);
+  setTimeout(maybeSuggestInstall, 1800);
   setMusicForView(view);
   updateMusicButton();
   window.scrollTo(0, keepScroll === true ? scrollY : 0);
@@ -240,6 +241,10 @@ function renderSettings() {
       <select id="goalSelect" data-setting="dailyGoal">
         ${goalOptions.map((n) => `<option value="${n}" ${settings.dailyGoal === n ? "selected" : ""}>${n === 0 ? `Automatycznie (${DAILY_GOAL_BY_GRADE[currentGrade()]})` : n}</option>`).join("")}
       </select>
+    </section>
+    <section class="card">
+      <h2>📲 Aplikacja na telefonie</h2>
+      ${installSectionHtml()}
     </section>
     <section class="card">
       <h2>Dźwięk</h2>
