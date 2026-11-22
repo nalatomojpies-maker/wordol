@@ -84,6 +84,9 @@ function applyMusicGain(fast = false) {
 // ====================================================================
 // Sound effects
 // ====================================================================
+/** Effects (answer jingles, clicks, rewards) play only with "Efekty dźwiękowe" on and "Brak dźwięku" off. */
+const effectsOn = () => state.settings.sound && !state.settings.noSound;
+
 /** One enveloped tone on the effects bus. */
 function tone(frequency, delay, duration, type, volume) {
   const start = audioCtx.currentTime + delay;
@@ -104,7 +107,7 @@ const NOTE = { C5: 523.25, E5: 659.25, G5: 783.99, C6: 1046.5, E6: 1318.5, G6: 1
 
 /** A soft bell note (used by the "Powtórz melodię" game). */
 function playNote(frequency, duration = 0.4) {
-  if (!state.settings.sound || !ensureAudio()) return;
+  if (!effectsOn() || !ensureAudio()) return;
   try {
     tone(frequency, 0, duration, "sine", 0.16);
     tone(frequency * 2, 0, duration * 0.5, "sine", 0.035);
@@ -115,7 +118,7 @@ function playNote(frequency, duration = 0.4) {
 
 /** @param {"click"|"flip"|"ok"|"bad"|"pass"|"fanfare"|"badge"|"goal"|"gem"} name */
 function sfx(name) {
-  if (!state.settings.sound) return;
+  if (!effectsOn()) return;
   const ctx = ensureAudio();
   if (!ctx) return;
   try {
@@ -205,7 +208,7 @@ function playAnswerJingle(kind) {
 
 /** Answer in an exercise: a happy jingle for a correct one, a sad one for a wrong one (random from five each). */
 function beep(isCorrect) {
-  if (!state.settings.sound) return;
+  if (!effectsOn()) return;
   if (!ensureAudio()) return;
   loadAnswerSounds();
   try {
