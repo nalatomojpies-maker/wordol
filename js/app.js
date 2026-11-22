@@ -149,6 +149,7 @@ const actions = {
   lockLab: () => { labUnlocked = false; labOpen = false; rerenderAdd(); },
   acceptTerms: () => acceptTerms(),
   startTutorial: () => startTutorial(),
+  toggleAllBadges: () => toggleAllBadges(),
   tutorialNext: () => nextTutorialStep(),
   tutorialSkip: () => closeTutorial(true),
   openSupport: () => openSupportModal(),
@@ -231,6 +232,7 @@ document.addEventListener("input", (event) => {
 startSupportTimer();
 const brandMascot = $("#brandMascot");
 if (brandMascot) brandMascot.innerHTML = rychuSvg("happy", 38);
+backfillBadges(); // first start with the new badges: the ones already deserved, quietly
 render();
 showIntroIfNeeded();
 

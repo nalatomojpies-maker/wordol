@@ -273,6 +273,7 @@ function record(item, isCorrect) {
     session.mistakes.push(item);
   }
   session.done++;
+  trackAnswerForBadges(isCorrect);
   rychuReact(isCorrect);
   countAnswerToday();
   updateProgressBar();
@@ -839,6 +840,7 @@ function finishSession() {
   const stats = state.stats;
   stats.sessions.push({ t: Date.now(), mode: session.mode, total, correct: session.correct, grade: mark });
   stats.sessions = stats.sessions.slice(-MAX_SAVED_SESSIONS);
+  const previousDay = stats.lastDay;
   touchStreak();
   if (session.done >= session.items.length) {
     countExerciseForGames(); // finished exercises recharge the mini-games
@@ -854,10 +856,10 @@ function finishSession() {
     const previous = state.path[session.stepId] || { best: 0, attempts: 0, passed: false };
     state.path[session.stepId] = { best: Math.max(previous.best, percent), attempts: previous.attempts + 1, passed: previous.passed || passed };
     session.passed = passed;
+    session.phoenix = passed && !previous.passed && previous.attempts > 0; // passed after an earlier failed try
   }
   const goal = dailyGoal();
   session.goalReached = answersToday() >= goal && answersToday() - total < goal;
-  session.earned = checkBadges({ perfect: percent === 100 && total >= 4 });
   session.percent = percent;
   session.mark = mark;
   if (workout && workout.daily) {
@@ -866,6 +868,11 @@ function finishSession() {
   } else if (session.done >= session.items.length) {
     recordExtraExercise(session); // extra training fills the treasure chest
   }
+  // badges last, so that gems and chests from this exercise already count
+  const finished = session.done >= session.items.length;
+  session.earned = checkBadges(trackSessionForBadges({
+    finished, perfect: percent === 100 && total >= 4, total, goalReached: session.goalReached, phoenix: Boolean(session.phoenix), previousDay,
+  }));
   if (workout) workout.results.push({ mode: session.mode, correct: session.correct, done: total });
   saveState();
   view = "result";

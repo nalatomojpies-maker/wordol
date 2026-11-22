@@ -62,12 +62,12 @@ function recordDailyResult(finishedSession) {
   if (task.done || finishedSession.done < finishedSession.items.length) return;
   const gems = exerciseGems(finishedSession.percent);
   task.results.push({ mode: finishedSession.mode, percent: finishedSession.percent, gems });
-  state.gems += gems;
+  addGems(gems);
   let bonus = 0;
   if (task.results.length >= task.modes.length) {
     task.done = true;
     bonus = DAILY_BONUS_GEMS + Math.min(currentStreak(), DAILY_STREAK_BONUS_MAX);
-    state.gems += bonus;
+    addGems(bonus);
     state.calendar[todayIso()] = { gems: task.results.reduce((sum, entry) => sum + entry.gems, 0) + bonus, at: Date.now() };
   }
   finishedSession.gemsEarned = gems + bonus;
@@ -93,7 +93,8 @@ function recordExtraExercise(finishedSession) {
   if (extra.exercises >= EXTRA_CHEST_EVERY) {
     extra.exercises = 0;
     extra.chests++;
-    state.gems += EXTRA_CHEST_GEMS;
+    addGems(EXTRA_CHEST_GEMS);
+    badgeStats().chests++;
     finishedSession.gemsEarned = EXTRA_CHEST_GEMS;
     finishedSession.chestOpened = true;
   }
@@ -146,6 +147,7 @@ function buyRiddle(id) {
   lastBoughtJokeId = null;
   saveState();
   sfx("badge");
+  setTimeout(announceBadges, 900);
   renderShop();
 }
 
@@ -168,6 +170,7 @@ function buyJoke(id) {
   revealedJokes.add(id);
   saveState();
   sfx("badge");
+  setTimeout(announceBadges, 900);
   renderShop();
 }
 

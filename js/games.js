@@ -138,6 +138,7 @@ function buyGame(id) {
   saveState();
   sfx("badge");
   toast(`🎮 Masz nową gierkę: ${game.name}!`);
+  setTimeout(announceBadges, 2500);
   render(true);
 }
 
@@ -154,6 +155,7 @@ function playGame(id) {
   if (!state.testUnlock) state.games.charge[id] = state.games.exercises;
   state.games.plays[id] = (state.games.plays[id] || 0) + 1;
   saveState();
+  setTimeout(announceBadges, 600);
   currentGameId = id;
   view = "game";
   render();
