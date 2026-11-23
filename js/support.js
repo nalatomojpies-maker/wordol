@@ -18,7 +18,7 @@ const SUPPORT_BANNER_AT = [6, 16, 40, 60, 90];
 /** The first two times only "Pokaż numer" and "Dalej"; from 40 on also "Już postawiłem" / "Może później…". */
 const SUPPORT_WINDOW_SIMPLE = [6, 16];
 const SUPPORT_QUIET_VIEWS = ["session", "result", "step", "welcome"];
-const AUTHOR_LINE = "Bartek SP5EOE";
+const AUTHOR_LINE = "Bartek";
 /** The author's invitation – in the welcome notice and in the banner that shows up now and then under the title bar. */
 const SHARE_TEXT = "Używaj, rozpowszechniaj, dziel się z innymi, a jeśli spodoba Ci się moja praca i chcesz zobaczyć więcej moich projektów, Twój rodzic lub opiekun może postawić mi kawę";
 const COPYRIGHT_YEAR = 2026;
@@ -152,7 +152,7 @@ function openSupportModal() {
         <p>${text}</p>
         <div id="blikBox" class="blik-box"><button class="btn" data-action="showBlik">📱 Pokaż numer BLIK</button></div>
         <div class="modal-actions">${actions}</div>
-        <p class="small muted center-text">– Bartek SP5EOE</p>
+        <p class="small muted center-text">– ${AUTHOR_LINE}</p>
       </div>
     </div>`);
   const first = $("#supportModal .btn.primary");
@@ -273,7 +273,7 @@ function showSupportWindow(threshold) {
           : `<button class="btn" data-action="supportDonated">✔ Już postawiłem</button>
              <button class="btn ghost" data-action="supportDeclined">Może później…</button>`}
         </div>
-        <p class="small muted center-text">– Bartek SP5EOE</p>
+        <p class="small muted center-text">– ${AUTHOR_LINE}</p>
       </div>
     </div>`);
   setPageInert(true);
