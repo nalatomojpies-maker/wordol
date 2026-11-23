@@ -73,7 +73,7 @@ function showBadWordsWarning() {
       <div class="modal bad-words">
         <div class="modal-rychu">${rychuSvg("sad", 90)}</div>
         <div class="bad-words-face" aria-hidden="true">😢</div>
-        <h2 id="badWordsTitle">Nie ładnie, próbujesz zakazanych słów. Przestań proszę.</h2>
+        <h2 id="badWordsTitle">Nieładnie, próbujesz zakazanych słów. Przestań, proszę.</h2>
         <div class="modal-actions"><button class="btn primary" data-action="badWordsOk">OK</button></div>
       </div>
     </div>`);

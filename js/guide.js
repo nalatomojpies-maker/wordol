@@ -5,103 +5,123 @@
  * The children's tutorial stays short; this page is for adults.
  * Screenshots live in assets/guide/ and are loaded only when the page is opened.
  */
+/* Small building blocks, so that the text is split into short, airy pieces. */
+const gTip = (text) => `<p class="guide-tip">💡 ${text}</p>`;
+const gBoxes = (items) => `<div class="guide-boxes">${items.map(([icon, title, body]) =>
+  `<div class="guide-box"><h4><span aria-hidden="true">${icon}</span> ${title}</h4>${body}</div>`).join("")}</div>`;
+const gOptions = (items) => `<ul class="guide-options">${items.map(([name, text]) => `<li><b>${name}</b><span>${text}</span></li>`).join("")}</ul>`;
+const gFacts = (items) => `<table class="guide-facts"><tbody>${items.map(([label, value]) => `<tr><th scope="row">${label}</th><td>${value}</td></tr>`).join("")}</tbody></table>`;
+const gChips = (items) => `<div class="guide-chips">${items.map((item) => `<span>${item}</span>`).join("")}</div>`;
+const gList = (items) => `<ul class="guide-list">${items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
+
 const GUIDE_SECTIONS = [
   {
     id: "start", icon: "👋", title: "Czym jest WORD4ALL",
-    html: `<p>WORD4ALL to darmowa aplikacja do nauki angielskich słówek i gramatyki dla dzieci od zerówki do 8. klasy. Prowadzi je trener – sowa <b>Rychu</b>.</p>
-      <ul>
-        <li><b>Bez kont i reklam.</b> Imię, klasa i postępy są zapisane tylko na tym urządzeniu (w przeglądarce). Nic nie jest wysyłane.</li>
-        <li><b>Działa bez internetu</b> po pierwszym otwarciu, także po instalacji na telefonie lub komputerze (Profil → „Aplikacja na telefonie i komputerze”).</li>
-        <li><b>Dopasowuje się do klasy:</b> słówka, rodzaje ćwiczeń, długość ćwiczeń i lekcje gramatyki zależą od klasy wybranej przy starcie (zmienisz ją w Profilu).</li>
-        <li>Rychu zwraca się do dziecka w formie żeńskiej lub męskiej – rozpoznaje to po imieniu, a w Profilu można to zmienić.</li>
-      </ul>`,
+    html: `<p class="guide-lead">Darmowa aplikacja do nauki angielskich słówek i gramatyki dla dzieci <b>od zerówki do 8. klasy</b>. Prowadzi je trener – sowa <b>Rychu</b>.</p>
+      ${gBoxes([
+        ["🔒", "Bez kont i reklam", "<p>Imię, klasa i postępy są zapisane tylko na tym urządzeniu. Nic nie jest wysyłane.</p>"],
+        ["📶", "Działa bez internetu", "<p>Po pierwszym otwarciu – także po instalacji na telefonie lub komputerze.</p>"],
+        ["🎒", "Dopasowana do klasy", "<p>Słówka, ćwiczenia, ich długość i lekcje zależą od klasy. Zmienisz ją w Profilu.</p>"],
+        ["🦉", "Mówi do dziecka po imieniu", "<p>W formie żeńskiej lub męskiej – rozpoznaje to po imieniu; w Profilu można to zmienić.</p>"],
+      ])}`,
   },
   {
     id: "training", icon: "🏋️", title: "Trening – codzienna nauka", shot: "home",
-    html: `<p><b>🎯 Zadanie dnia</b> to 3 krótkie ćwiczenia po 5 pytań, codziennie inne. Za każde ćwiczenie dziecko dostaje klejnoty 💎 (3 za wynik od 85%, 2 od 50%, 1 poniżej), za całe zadanie +3 premii i do +3 za serię dni z rzędu – razem do 15 💎 dziennie. Wykonane dni zapisują się w Kalendarzu.</p>
-      <p><b>🧰 Dodatkowy trening</b> – każde ćwiczenie poza zadaniem dnia napełnia Skrzynię skarbów: co 3 ćwiczenia skrzynia z 2 💎 (najwyżej 2 skrzynie dziennie). Dziecko otwiera ją, stukając 3 razy.</p>
-      <p><b>Lista ćwiczeń</b> (12 rodzajów): Wskaż obrazek, Memory, Fiszki, Obrazki, Łączenie par, Układanka z liter, Test wyboru, Wpisywanie, Układanie zdań, Dyktando, Brakujące litery i Czasowniki nieregularne. Młodsze klasy widzą tylko te, które są dla nich odpowiednie (np. bez pisania w zerówce).</p>
-      <p><b>Cel dnia</b> – liczba odpowiedzi, którą warto zrobić dziennie (zależy od klasy, np. 15 w klasie 3).</p>
-      <p>Po dobrej odpowiedzi gra wesoła melodyjka, po złej – smutna; Rychu skacze z radości albo kręci głową. Na końcu jest ocena od 1 do 6 i słowa do powtórki.</p>`,
+    html: `${gBoxes([
+        ["🎯", "Zadanie dnia", `<p>3 krótkie ćwiczenia po 5 pytań – codziennie inne. Za wykonanie dziecko dostaje klejnoty 💎:</p>
+          ${gFacts([["wynik od 85%", "3 💎 za ćwiczenie"], ["wynik od 50%", "2 💎"], ["poniżej 50%", "1 💎"], ["całe zadanie", "+3 💎"], ["seria dni z rzędu", "do +3 💎"], ["razem", "<b>do 15 💎 dziennie</b>"]])}`],
+        ["🧰", "Dodatkowy trening", "<p>Ćwiczenia poza zadaniem dnia napełniają <b>Skrzynię skarbów</b>: co 3 ćwiczenia skrzynia z 2 💎, najwyżej 2 skrzynie dziennie.</p>"],
+        ["🥅", "Cel dnia", "<p>Liczba odpowiedzi, którą warto zrobić dziennie – zależy od klasy (np. 15 w klasie 3).</p>"],
+      ])}
+      <h3>12 rodzajów ćwiczeń</h3>
+      ${gChips(["👂 Wskaż obrazek", "🧠 Memory", "🎴 Fiszki", "🖼️ Obrazki", "🔗 Łączenie par", "🔤 Układanka z liter", "✅ Test wyboru", "⌨️ Wpisywanie", "🧩 Układanie zdań", "🎧 Dyktando", "🔡 Brakujące litery", "⏪ Czasowniki nieregularne"])}
+      <p>Młodsze klasy widzą tylko ćwiczenia dla siebie – np. w zerówce nie ma pisania.</p>
+      ${gTip("Po dobrej odpowiedzi gra wesoła melodyjka, po złej – smutna. Na końcu ćwiczenia jest ocena od 1 do 6 i lista słów do powtórki.")}`,
   },
   {
-    id: "settings", icon: "⚙️", title: "Ustawienia treningu – co i jak ćwiczyć", shot: "options",
-    html: `<p>Na ekranie Treningu, pod listą ćwiczeń, jest rozwijana karta <b>„⚙️ Ustawienia treningu”</b>. Ustawienia dotyczą ćwiczeń ze słówkami.</p>
-      <dl class="guide-dl">
-        <dt>🌱🔥🚀 Poziom trudności</dt>
-        <dd><b>Łatwy</b> – 3 odpowiedzi do wyboru z różnych tematów, obrazki, podpowiedziana pierwsza litera, mało luk, 3 pary w Memory. <b>Średni</b> – 4 podobne odpowiedzi, przy wpisywaniu widać tylko liczbę liter, 5 par. <b>Trudny</b> – 6 bardzo podobnych odpowiedzi, bez podpowiedzi, litery-pułapki, 8 par i dłuższe ćwiczenia.</dd>
-        <dt>📏 Zakres słów</dt>
-        <dd><b>„Tylko klasa X”</b> – słówka wyłącznie z klasy dziecka. <b>„Od początku do: klasa X”</b> – także z niższych klas, czyli powtórka starszego materiału (ustawienie domyślne).</dd>
-        <dt>📖 Podejrzyj materiał</dt>
-        <dd>Okno ze wszystkimi słówkami, zwrotami i lekcjami z wybranego zakresu – opisane niżej.</dd>
-        <dt>🔎 Które słowa</dt>
-        <dd><b>Wszystkie</b>, <b>Nowe</b> (jeszcze nie ćwiczone), <b>Uczę się</b> (ćwiczone, ale jeszcze nie opanowane), <b>Trudne</b> (ponad 25% błędnych odpowiedzi) albo <b>Opanowane</b> (co najmniej 3 dobre odpowiedzi i 80% skuteczności). Dobre do powtórek przed kartkówką.</dd>
-        <dt>🔁 Tłumaczę (od klasy 4)</dt>
-        <dd><b>Z angielskiego na polski</b> – łatwiej, ćwiczy rozumienie („dog” → pies). <b>Z polskiego na angielski</b> – trudniej, ćwiczy samodzielne przypominanie i pisownię („pies” → dog). <b>Na zmianę</b> – oba kierunki losowo (domyślnie). W klasach 0–3 zawsze z angielskiego na polski.</dd>
-        <dt>🗂️ Zbiory tematyczne</dt>
-        <dd>Kafelki tematów (kolory, zwierzęta, jedzenie…). Wybierz jeden lub kilka, a ćwiczenia będą tylko z nich. „🌈 Wszystkie” – całe słownictwo. „⭐ Dodane słowa” – słowa dodane przez Was (niżej).</dd>
-      </dl>
-      <p>Na dole karty widać, ile słówek jest wybranych i ile pytań ma jedno ćwiczenie.</p>`,
+    id: "settings", icon: "⚙️", title: "Ustawienia treningu", shot: "options",
+    html: `<p class="guide-lead">Na ekranie Treningu, pod listą ćwiczeń, jest rozwijana karta <b>„⚙️ Ustawienia treningu”</b>. Dotyczy ćwiczeń ze słówkami.</p>
+      <h3>🌱🔥🚀 Poziom trudności</h3>
+      ${gBoxes([
+        ["🌱", "Łatwy", gList(["3 odpowiedzi do wyboru", "obrazki i pierwsza litera podpowiedziana", "3 pary w Memory"])],
+        ["🔥", "Średni", gList(["4 podobne odpowiedzi", "przy wpisywaniu widać liczbę liter", "5 par w Memory"])],
+        ["🚀", "Trudny", gList(["6 bardzo podobnych odpowiedzi", "bez podpowiedzi, litery-pułapki", "8 par, dłuższe ćwiczenia"])],
+      ])}
+      <h3>📏 Zakres słów</h3>
+      ${gOptions([["Tylko klasa X", "słówka wyłącznie z klasy dziecka"], ["Od początku do: klasa X", "także z niższych klas – powtórka (domyślnie)"]])}
+      <h3>🔎 Które słowa</h3>
+      ${gOptions([["Wszystkie", "całe słownictwo z zakresu"], ["Nowe", "jeszcze nie ćwiczone"], ["Uczę się", "ćwiczone, ale jeszcze nie opanowane"], ["Trudne", "ponad 25% błędnych odpowiedzi"], ["Opanowane", "co najmniej 3 dobre odpowiedzi i 80% skuteczności"]])}
+      ${gTip("„Trudne” i „Nowe” świetnie sprawdzają się przed kartkówką.")}
+      <h3>🔁 Tłumaczę <small class="muted">(od klasy 4)</small></h3>
+      ${gOptions([["Z angielskiego na polski", "łatwiej – ćwiczy rozumienie (dog → pies)"], ["Z polskiego na angielski", "trudniej – ćwiczy przypominanie i pisownię (pies → dog)"], ["Na zmianę", "oba kierunki losowo (domyślnie)"]])}
+      <p class="muted">W klasach 0–3 zawsze z angielskiego na polski.</p>
+      <h3>🗂️ Zbiory tematyczne</h3>
+      <p>Kafelki tematów (kolory, zwierzęta, jedzenie…). Wybierz jeden lub kilka – ćwiczenia będą tylko z nich.</p>
+      ${gOptions([["🌈 Wszystkie", "całe słownictwo"], ["⭐ Dodane słowa", "słowa dodane przez Was w Profilu"]])}
+      ${gTip("Na dole karty widać, ile słówek jest wybranych i ile pytań ma jedno ćwiczenie.")}`,
   },
   {
     id: "material", icon: "📖", title: "Podejrzyj materiał, druk i PDF", shot: "material",
-    html: `<p>Przycisk <b>„📖 Podejrzyj materiał”</b> (pod „Zakres słów”) otwiera okno z całym materiałem z wybranego zakresu i zbiorów:</p>
-      <ul>
-        <li><b>🔤 Słówka i zwroty</b> – według tematów, z wymową 🔊 i kółkiem postępu (✔ opanowane, ◐ w trakcie, ! trudne, puste – nowe). Wyszukiwarka działa po angielsku i po polsku.</li>
-        <li><b>🎯 Ćwicz ten zbiór</b> – przy każdym temacie; wybiera tylko ten temat i wraca do Treningu.</li>
-        <li><b>🎓 Lekcje</b> – tematy gramatyki z klas w zakresie, z postępem i przyciskiem „Otwórz”.</li>
-        <li><b>🎴 Ucz się fiszkami</b> – od razu fiszki z tego materiału.</li>
-        <li><b>🖨️ Drukuj / PDF</b> – czarno-biała lista słówek w dwóch kolumnach i spis lekcji. W oknie drukowania wybierz drukarkę albo „Zapisz jako PDF”. Jeśli coś wpisano w wyszukiwarce, drukują się tylko znalezione słowa.</li>
-      </ul>`,
+    html: `<p class="guide-lead">Przycisk <b>„📖 Podejrzyj materiał”</b> (pod „Zakres słów”) pokazuje cały materiał z wybranego zakresu i zbiorów.</p>
+      ${gOptions([
+        ["🔤 Słówka i zwroty", "według tematów, z wymową 🔊 i znaczkiem postępu; wyszukiwarka po polsku i po angielsku"],
+        ["🎯 Ćwicz ten zbiór", "przy każdym temacie – wybiera tylko ten temat i wraca do Treningu"],
+        ["🎓 Lekcje", "tematy gramatyki z postępem i przyciskiem „Otwórz”"],
+        ["🎴 Ucz się fiszkami", "od razu fiszki z tego materiału"],
+        ["🖨️ Drukuj / PDF", "czarno-biała lista słówek i spis lekcji"],
+      ])}
+      ${gTip("Żeby dostać PDF, w oknie drukowania wybierz „Zapisz jako PDF”. Jeśli coś wpisano w wyszukiwarce, drukują się tylko znalezione słowa.")}`,
   },
   {
     id: "learn", icon: "🎓", title: "Nauka – lekcje gramatyki", shot: "learn",
-    html: `<p>Zakładka <b>Nauka</b> to ścieżka lekcji dla każdej klasy (np. „to be”, Present Simple, czasy przeszłe). Każdy temat ma kilka <b>kroków</b>: najpierw krótka karta z wyjaśnieniem Rycha i przykładami, potem ćwiczenie.</p>
-      <ul>
-        <li>Krok jest zaliczony przy co najmniej <b>70% dobrych odpowiedzi</b>.</li>
-        <li>Kolejny krok otwiera się po zaliczeniu poprzedniego.</li>
-        <li>Można wybrać inną klasę, żeby powtórzyć wcześniejsze tematy.</li>
-      </ul>`,
+    html: `<p class="guide-lead">Zakładka <b>Nauka</b> to ścieżka lekcji dla każdej klasy – np. „to be”, Present Simple, czasy przeszłe.</p>
+      ${gFacts([["Temat", "kilka kroków"], ["Krok", "karta z wyjaśnieniem Rycha i przykładami, potem ćwiczenie"], ["Zaliczenie", "co najmniej <b>70%</b> dobrych odpowiedzi"], ["Kolejny krok", "otwiera się po zaliczeniu poprzedniego"]])}
+      ${gTip("Można wybrać niższą klasę, żeby powtórzyć wcześniejsze tematy.")}`,
   },
   {
     id: "rewards", icon: "🎁", title: "Nagrody, sklepik i tempo", shot: "shop",
-    html: `<p>Za klejnoty 💎 dziecko kupuje w <b>sklepiku</b> niespodzianki: dowcip (3 💎), zagadkę (3 💎) albo gierkę (12 💎). Co jest w środku, widać dopiero po zakupie. Zdobyte rzeczy są w zakładce <b>Nagrody</b>.</p>
-      <ul>
-        <li><b>Nagrody odblokowują się powoli:</b> co 3 ukończone ćwiczenia otwierają się 2 nowe; dziennie liczy się do tego najwyżej 9 ćwiczeń. Dzięki temu nagród starcza na dłużej.</li>
-        <li><b>Gierki</b> (krótkie, zwykle 20 sekund, spokojne i bez przemocy) po każdym zagraniu ładują się – znów można zagrać po 3 ukończonych ćwiczeniach.</li>
-        <li><b>Odznaki</b> (140) – za treningi, serie dni, opanowane słowa, bezbłędne ćwiczenia, święta i wiele innych. Nową odznakę dziecko odbiera kliknięciem.</li>
-      </ul>`,
+    html: `<p class="guide-lead">Za klejnoty 💎 dziecko kupuje w <b>sklepiku</b> niespodzianki. Co jest w środku, widać dopiero po zakupie.</p>
+      ${gFacts([["😄 Dowcip", "3 💎"], ["🧩 Zagadka", "3 💎"], ["🎮 Gierka", "12 💎"]])}
+      ${gBoxes([
+        ["🔒", "Nagrody odblokowują się powoli", "<p>Co 3 ukończone ćwiczenia – 2 nowe nagrody. Dziennie liczy się do tego najwyżej 9 ćwiczeń, więc nagród starcza na dłużej.</p>"],
+        ["🔋", "Gierki się ładują", "<p>Krótkie, spokojne, bez przemocy. Po zagraniu znów dostępne po 3 ukończonych ćwiczeniach.</p>"],
+        ["🏅", "140 odznak", "<p>Za treningi, serie dni, opanowane słowa, bezbłędne ćwiczenia, święta i więcej. Nową odznakę dziecko odbiera kliknięciem.</p>"],
+      ])}
+      <p>Wszystko, co zdobyte, jest w zakładce <b>Nagrody</b>.</p>`,
   },
   {
     id: "stats", icon: "📊", title: "Wyniki – co pokazują", shot: "stats",
-    html: `<p>Zakładka <b>Wyniki</b> to podsumowanie dla dziecka i dla Was:</p>
-      <ul>
-        <li>kafelki: ukończone ćwiczenia, dobre odpowiedzi, skuteczność, średnia ocen, seria dni, opanowane słowa, <b>czas nauki</b>, XP i poziom;</li>
-        <li>wykresy z 7, 30 lub 90 dni: <b>aktywność</b> (odpowiedzi dziennie, porównanie z poprzednim tygodniem) i <b>skuteczność</b>; kalendarz nauki z 12 tygodni;</li>
-        <li>słówka: opanowane, w trakcie, trudne i jeszcze nie ćwiczone; rekordy; rozkład ocen; tabela ćwiczeń; ścieżka nauki; odznaki; słowa do powtórki i najlepiej opanowane.</li>
-      </ul>
-      <p>Dotknięcie słupka lub punktu na wykresie pokazuje dokładne liczby.</p>`,
+    html: `<p class="guide-lead">Zakładka <b>Wyniki</b> to podsumowanie dla dziecka i dla Was.</p>
+      ${gOptions([
+        ["Kafelki", "ćwiczenia, dobre odpowiedzi, skuteczność, średnia ocen, seria dni, opanowane słowa, czas nauki, XP"],
+        ["Wykresy (7 / 30 / 90 dni)", "aktywność dzień po dniu i skuteczność; porównanie z poprzednim tygodniem"],
+        ["Kalendarz nauki", "12 ostatnich tygodni – im ciemniej, tym więcej nauki"],
+        ["Słówka", "opanowane, w trakcie, trudne i jeszcze nie ćwiczone"],
+        ["Więcej", "rekordy, oceny, tabela ćwiczeń, ścieżka nauki, odznaki, słowa do powtórki"],
+      ])}
+      ${gTip("Dotknięcie słupka lub punktu na wykresie pokazuje dokładne liczby.")}`,
   },
   {
     id: "profile", icon: "👤", title: "Profil, dźwięk i wygląd", shot: "profile",
-    html: `<ul>
-        <li><b>Imię i klasa</b>; „Rychu zwraca się do Ciebie jak do” – automatycznie po imieniu, dziewczynki albo chłopca.</li>
-        <li><b>Wygląd</b> – kilka motywów kolorów, w tym <b>„Dla niedowidzących”</b>: większy tekst, wysoki kontrast i kolory bez zestawienia czerwony–zielony.</li>
-        <li><b>🔇 Tryb cichy</b> (też przycisk 🔊 u góry) – wyłącza muzykę, efekty i lektora oraz <b>ukrywa ćwiczenia z lektorem</b> (np. Dyktando). Przydatny w szkole lub autobusie.</li>
-        <li><b>Muzyka, efekty, automatyczne czytanie słów</b> i <b>🔊 Sprawdź lektora</b> – test, czy na urządzeniu działa angielski głos.</li>
-        <li><b>Dodawanie własnych słów</b> – np. ze szkolnej kartkówki. Wpisz parę „apple - jabłko” albo samo słowo (tłumaczenie z bazy lub ze słownika online MyMemory). Trafiają do zbioru „⭐ Dodane słowa”.</li>
-        <li><b>Zacznij od nowa → Przewodniki:</b> przewodnik dla dziecka i ten przewodnik dla rodziców. Przy uruchomieniu aplikacja pyta, który pokazać – aż do zaznaczenia „Nie pokazuj więcej” (można to zmienić tutaj: „Pokazuj wybór przewodnika przy każdym uruchomieniu”).</li>
-        <li><b>Wyczyść profil</b> – usuwa wszystko z tego urządzenia; nie da się tego cofnąć.</li>
-      </ul>`,
+    html: `${gOptions([
+        ["Imię i klasa", "oraz „Rychu zwraca się do Ciebie jak do” – automatycznie, dziewczynki albo chłopca"],
+        ["Wygląd", "kilka motywów, w tym <b>„Dla niedowidzących”</b>: większy tekst, wysoki kontrast, kolory bez zestawienia czerwony–zielony"],
+        ["🔇 Tryb cichy", "wyłącza muzykę, efekty i lektora oraz ukrywa ćwiczenia z lektorem (to samo co przycisk 🔊 u góry)"],
+        ["Dźwięk", "muzyka, efekty, automatyczne czytanie słów i <b>🔊 Sprawdź lektora</b>"],
+        ["Dodaj słowa", "np. ze szkolnej kartkówki – trafiają do zbioru „⭐ Dodane słowa”"],
+        ["Zacznij od nowa", "przewodnik dla dziecka, ten przewodnik, przełącznik „Pokazuj wybór przewodnika przy każdym uruchomieniu” i „Wyczyść profil” (usuwa wszystko z urządzenia)"],
+      ])}
+      ${gTip("Wulgaryzmy w dodawanych słowach i w imieniu są blokowane – Rychu prosi wtedy, żeby przestać.")}`,
   },
   {
     id: "privacy", icon: "🔒", title: "Prywatność i bezpieczeństwo",
-    html: `<ul>
-        <li>Bez kont, ciasteczek, reklam, analityki i śledzenia.</li>
-        <li>Dane (imię, klasa, postępy) są tylko w pamięci przeglądarki na tym urządzeniu.</li>
-        <li>Jedyne połączenie z zewnętrzną usługą: przy dodawaniu własnych słów bez tłumaczenia wpisane słowa trafiają do słownika MyMemory (translated.net). Lektor korzysta z syntezatora mowy urządzenia (niektóre głosy działają przez internet).</li>
-        <li>Prośba o „kawę” dla autora jest dobrowolna, skierowana do rodzica lub opiekuna i nic nie odblokowuje.</li>
-      </ul>`,
+    html: gList([
+      "Bez kont, ciasteczek, reklam, analityki i śledzenia.",
+      "Dane (imię, klasa, postępy) są tylko w pamięci przeglądarki na tym urządzeniu.",
+      "Przy dodawaniu własnych słów bez tłumaczenia słowa trafiają do słownika online MyMemory (translated.net).",
+      "Lektor korzysta z syntezatora mowy urządzenia (niektóre głosy działają przez internet).",
+      "Prośba o „kawę” dla autora jest dobrowolna, skierowana do rodzica lub opiekuna i nic nie odblokowuje.",
+    ]),
   },
 ];
 
