@@ -158,6 +158,8 @@ const actions = {
   installNow: () => installNow(),
   materialOpen: () => openMaterial(),
   materialClose: () => closeMaterial(),
+  materialPrint: () => printMaterial(),
+  materialPracticeTopic: (element) => practiceMaterialTopic(element.dataset.id),
   materialTab: (element) => { materialTab = element.dataset.tab; renderMaterial(); },
   materialPractice: () => { closeMaterial(); workout = null; startSession("cards"); },
   materialOpenUnit: (element) => { closeMaterial(); session = null; currentUnitId = element.dataset.id; view = "unit"; render(); },

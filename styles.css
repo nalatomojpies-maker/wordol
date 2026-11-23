@@ -882,3 +882,5 @@ html[data-theme="lowvision"] body, html[data-theme="lowvision"] body.kids { font
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .mat-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 0 0 8px; }
 .mat-legend .mat-status { display: inline-grid; width: 18px; height: 18px; }
+.mat-practice-topic { width: 100%; margin: 2px 0 8px; }
+.mat-foot { flex-wrap: wrap; }
