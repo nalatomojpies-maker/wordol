@@ -156,3 +156,45 @@ document.addEventListener("keydown", (event) => {
   if (!$("#tutorial")) return;
   if (event.key === "Escape") closeTutorial(true);
 });
+
+// ====================================================================
+// Which tutorial? (after the welcome screen, then at every start until "Nie pokazuj więcej")
+// ====================================================================
+let tutorialChooserShown = false;
+
+/** force = right after the welcome screen (shown even if the parent has not decided yet). */
+function showTutorialChooser(force = false) {
+  if ($("#tutorialChooser") || $("#tutorial")) return;
+  if (!force && (tutorialChooserShown || state.settings.tutorialChooserOff || !state.settings.onboarded)) return;
+  if (!force && (["welcome", "session", "game", "result"].includes(view) || $(".modal-backdrop") || $("#celebrate"))) return;
+  tutorialChooserShown = true;
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="modal-backdrop" id="tutorialChooser" role="dialog" aria-modal="true" aria-labelledby="tutorialChooserTitle">
+      <div class="modal">
+        <div class="modal-rychu">${rychuSvg("cheer", 76)}</div>
+        <h2 id="tutorialChooserTitle">🧭 Pokazać, jak działa WORD4ALL?</h2>
+        <div class="modal-actions">
+          <button class="btn primary big" data-action="chooseTutorialKids">🧒 Samouczek dla dzieci</button>
+          <button class="btn big" data-action="chooseTutorialParents">📘 Przewodnik dla rodziców</button>
+          <button class="btn ghost" data-action="chooseTutorialNone">Nie teraz</button>
+        </div>
+        <label class="check" style="margin-top:12px"><input type="checkbox" id="tutorialChooserOff"> Nie pokazuj więcej</label>
+        <p class="small muted center-text">Oba samouczki znajdziesz zawsze w <b>Profilu</b>, w sekcji <b>„Zacznij od nowa”</b>.</p>
+      </div>
+    </div>`);
+  setPageInert(true);
+  $("#tutorialChooser .btn.primary").focus();
+}
+
+/** Closes the chooser and remembers "Nie pokazuj więcej"; then runs the choice. */
+function chooseTutorial(choice) {
+  const off = $("#tutorialChooserOff");
+  if (off && off.checked) {
+    state.settings.tutorialChooserOff = true;
+    saveState();
+  }
+  closeModal("tutorialChooser");
+  setPageInert(false);
+  if (choice === "kids") startTutorial();
+  else if (choice === "parents") goTo("guide");
+}

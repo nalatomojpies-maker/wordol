@@ -39,7 +39,7 @@ const actions = {
     state.settings.onboarded = true;
     saveState();
     goTo("home");
-    if (!state.settings.tutorialDone) startTutorial(); // Rychu shows where everything is
+    showTutorialChooser(true); // children's tutorial or the guide for parents
   },
   setGrade: (element) => {
     applyGradeDefaults(Number(element.dataset.grade));
@@ -149,6 +149,9 @@ const actions = {
   lockLab: () => { labUnlocked = false; labOpen = false; rerenderAdd(); },
   acceptTerms: () => acceptTerms(),
   startTutorial: () => startTutorial(),
+  chooseTutorialKids: () => chooseTutorial("kids"),
+  chooseTutorialParents: () => chooseTutorial("parents"),
+  chooseTutorialNone: () => chooseTutorial("none"),
   claimBadge: () => claimBadge(),
   quietConfirm: () => confirmQuiet(),
   speechWarnQuiet: () => { closeQuietModal("speechWarn"); setQuietMode(true); toast("🔇 Tryb cichy włączony"); },
@@ -232,6 +235,11 @@ function handleSettingChange(element) {
     applyMusicGain(true);
     const label = $("#volumeLabel");
     if (label) label.textContent = `${Math.round(state.settings.musicVolume * 100)}%`;
+  }
+  if (key === "tutorialChooser") {
+    state.settings.tutorialChooserOff = !state.settings.tutorialChooser;
+    delete state.settings.tutorialChooser;
+    saveState();
   }
   if (key === "noSound") {
     setQuietMode(state.settings.noSound); // the same as the speaker button in the top bar
