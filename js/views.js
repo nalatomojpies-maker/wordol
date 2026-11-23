@@ -195,7 +195,7 @@ function trainingOptionsHtml() {
         <button class="chip ${settings.grammarTopics.length === 0 ? "active" : ""}" data-action="allGrammar">Wszystkie</button>
         ${sentenceUnits().map((unit) => `<button class="chip ${settings.grammarTopics.includes(unit.id) ? "active" : ""}" data-action="toggleGrammar" data-id="${unit.id}">${unit.icon} ${esc(unit.title)}</button>`).join("")}
       </div>` : ""}
-    <p class="muted">Wybrano słów: <b>${getPool().length}</b> · długość ćwiczenia: ${sessionLength()}</p>`;
+    <p class="muted" id="poolInfo">Wybrano słów: <b>${getPool().length}</b> · długość ćwiczenia: ${sessionLength()}</p>`;
 }
 
 // ---------- Settings ----------
@@ -249,7 +249,7 @@ function renderSettings() {
       </select>
     </section>
     <section class="card">
-      <h2>📲 Aplikacja na telefonie</h2>
+      <h2>📲 Aplikacja na telefonie i komputerze</h2>
       ${installSectionHtml()}
     </section>
     <section class="card">
