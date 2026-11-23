@@ -249,7 +249,7 @@ function renderSettings() {
       </select>
     </section>
     <section class="card">
-      <h2>📲 Aplikacja na telefonie</h2>
+      <h2>📲 Aplikacja na telefonie i komputerze</h2>
       ${installSectionHtml()}
     </section>
     <section class="card">
