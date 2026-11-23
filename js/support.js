@@ -4,7 +4,7 @@
  * "Buy me a coffee" invitation, footer and legal information. Addressed to parents and guardians, never to children.
  *
  * - A window after 6, 16, 40, 60 and 90 finished exercises (in menus only, never during an exercise).
- *   After 6 and 16: "Pokaż numer" + "Dalej"; later "Pokaż numer" / "Już postawiłem" / "Nie postawię kawy".
+ *   After 6 and 16: "Pokaż numer" + "Dalej"; later "Pokaż numer" / "Już postawiłem" / "Może później…".
  *   "Już postawiłem" hides it for good.
  * The answer and the launch count are kept under their own key, so "Wyczyść profil" does not remove them.
  * The phone number is stored encoded and is drawn on a canvas only after a click, so simple scrapers cannot read it.
@@ -15,7 +15,7 @@ const SUPPORT_IDLE_LIMIT_MS = 60000;
 const SUPPORT_CHECK_DELAY_MS = 1200;
 /** The banner shows after this many finished exercises (counted on this device, also across "Wyczyść profil"). */
 const SUPPORT_BANNER_AT = [6, 16, 40, 60, 90];
-/** The first two times only "Pokaż numer" and "Dalej"; from 40 on also "Już postawiłem" / "Nie postawię kawy". */
+/** The first two times only "Pokaż numer" and "Dalej"; from 40 on also "Już postawiłem" / "Może później…". */
 const SUPPORT_WINDOW_SIMPLE = [6, 16];
 const SUPPORT_QUIET_VIEWS = ["session", "result", "step", "welcome"];
 const AUTHOR_LINE = "Bartek SP5EOE";
@@ -240,7 +240,7 @@ function dueBannerThreshold() {
   return due.length ? due[due.length - 1] : null;
 }
 
-/** "Dalej" / "Nie postawię kawy": this threshold (and any lower one) is done. */
+/** "Dalej" / "Może później…": this threshold (and any lower one) is done. */
 function markBannerAnswered() {
   const threshold = dueBannerThreshold();
   if (threshold === null) return;
@@ -256,7 +256,7 @@ function checkSupport() {
   if (threshold !== null) showSupportWindow(threshold);
 }
 
-/** The coffee window: after 6 and 16 exercises "Pokaż numer" + "Dalej"; later also "Już postawiłem" / "Nie postawię kawy". */
+/** The coffee window: after 6 and 16 exercises "Pokaż numer" + "Dalej"; later also "Już postawiłem" / "Może później…". */
 function showSupportWindow(threshold) {
   if ($("#supportAsk")) return;
   const firstTimes = SUPPORT_WINDOW_SIMPLE.includes(threshold);
@@ -266,11 +266,12 @@ function showSupportWindow(threshold) {
         <div class="modal-rychu">${rychuSvg("cheer", 76)}</div>
         <h2 id="supportAskTitle">Podoba Ci się WORD4ALL? ☕</h2>
         <p>${SHARE_TEXT} ❤️</p>
+        <p class="support-note">👨‍👩‍👧 To <b>dobrowolna i niezobowiązująca propozycja</b> skierowana <b>do rodzica lub opiekuna – nie do dziecka</b>. Kawa niczego nie odblokowuje, a aplikacja zawsze pozostaje w pełni darmowa.</p>
         <div id="blikBox" class="blik-box"><button class="btn primary" data-action="showBlik">📱 Pokaż numer</button></div>
         <div class="modal-actions">${firstTimes
           ? `<button class="btn" data-action="supportDeclined">Dalej →</button>`
           : `<button class="btn" data-action="supportDonated">✔ Już postawiłem</button>
-             <button class="btn ghost" data-action="supportDeclined">Nie postawię kawy</button>`}
+             <button class="btn ghost" data-action="supportDeclined">Może później…</button>`}
         </div>
         <p class="small muted center-text">– Bartek SP5EOE</p>
       </div>
@@ -280,7 +281,7 @@ function showSupportWindow(threshold) {
   $("#supportAsk [data-action='showBlik']").focus();
 }
 
-/** "Dalej" / "Nie postawię kawy": closes the window until the next number of exercises is reached. */
+/** "Dalej" / "Może później…": closes the window until the next number of exercises is reached. */
 function declineSupport() {
   markBannerAnswered();
   closeModal("supportModal");
