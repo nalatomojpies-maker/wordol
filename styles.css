@@ -435,6 +435,7 @@ input, textarea { -webkit-user-select: text; user-select: text; }
   .nav { order: 1; margin: 0 auto; }
   #fsBtn { order: 2; margin-left: 0; }
   #musicBtn { order: 3; }
+  .no-nav #fsBtn { margin-left: auto; } /* welcome screen: no menu in the middle, so keep both buttons together on the right */
 }
 
 /* ================= Footer, support prompt, legal dialog ================= */
