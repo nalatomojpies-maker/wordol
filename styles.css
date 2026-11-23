@@ -884,3 +884,19 @@ html[data-theme="lowvision"] body, html[data-theme="lowvision"] body.kids { font
 .mat-legend .mat-status { display: inline-grid; width: 18px; height: 18px; }
 .mat-practice-topic { width: 100%; margin: 2px 0 8px; }
 .mat-foot { flex-wrap: wrap; }
+
+/* ---------- guide for parents ---------- */
+.guide-section { scroll-margin-top: 72px; }
+.guide-section ul, .guide-toc ol { padding-left: 20px; line-height: 1.55; }
+.guide-section li { margin: 4px 0; }
+.guide-toc a { color: var(--primary); font-weight: 700; text-decoration: none; }
+.guide-toc li { margin: 6px 0; }
+.guide-dl dt { font-weight: 800; margin-top: 10px; }
+.guide-dl dd { margin: 2px 0 0 0; padding-left: 10px; border-left: 3px solid var(--border); }
+.guide-shot { margin: 14px auto 4px; max-width: 300px; text-align: center; }
+.guide-shot img { display: block; width: 100%; height: auto; border-radius: 18px; border: 2px solid var(--border); box-shadow: var(--shadow); background: var(--bg); }
+.guide-shot figcaption { font-size: .75rem; color: var(--muted); margin-top: 6px; }
+.guide-faq { border-bottom: 1px solid var(--border); padding: 8px 0; }
+.guide-faq summary { cursor: pointer; font-weight: 700; }
+.guide-faq p { margin: 6px 0 2px; }
+.mat-foot .btn.primary { flex-basis: 100%; }

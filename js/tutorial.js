@@ -10,23 +10,14 @@ const TUTORIAL_STEPS = [
   { target: ".card.daily", text: "🎯 To jest Zadanie dnia: 3 krótkie ćwiczenia. Za każde dostajesz klejnoty 💎, a za całe zadanie – bonus!" },
   { target: ".extra-chest", text: "🧰 Chcesz więcej? Dodatkowy trening napełnia Skrzynię skarbów. Co 3 ćwiczenia – nowe klejnoty!" },
   { target: ".mode-group", text: "📚 Tu wybierasz ćwiczenie: fiszki, memory, dyktando, układanki i wiele innych. Każde uczy trochę inaczej." },
-  // the training settings, field by field (the tutorial opens and closes them itself)
-  { target: ".options-toggle", options: false, text: "⚙️ To są Ustawienia treningu – tu wybierasz, czego się uczysz. Dotknij ich, żeby je rozwinąć. Teraz rozwinę je za Ciebie!" },
-  { target: ".options-card .segmented", options: true, text: "🌱🔥🚀 Poziom trudności: na Łatwym jest dużo podpowiedzi, na Trudnym prawie wcale. Na początek wybierz Średni." },
-  { target: ".opts-row > .grow:nth-child(1)", options: true, text: () => {
-    const grade = GRADE_INFO[currentGrade()].label.toLowerCase();
-    return `📏 Zakres słów: „Tylko ${grade}” – słówka tylko z Twojej klasy. „Od początku do: ${grade}” – także z niższych klas, żeby powtarzać starsze słówka.`;
-  } },
-  { target: ".mat-open", options: true, text: "📖 Podejrzyj materiał: zobaczysz wszystkie słówka, zwroty i lekcje z wybranego zakresu – z wymową. Przy każdym zbiorze jest „Ćwicz ten zbiór”, a listę możesz wydrukować albo zapisać jako PDF." },
-  { target: ".opts-row > .grow:nth-child(2)", options: true, text: "🔎 Które słowa: wszystkie, nowe (jeszcze nie ćwiczone), te, których się uczysz, trudne (z błędami) albo opanowane – do powtórki." },
-  { target: ".opts-row > .grow:nth-child(3)", options: true, when: () => currentGrade() >= 4, text: "🔁 Kierunek: z polskiego na angielski, z angielskiego na polski albo na zmianę." },
-  { target: ".options-card .topic-grid", options: true, text: "🗂️ Zbiory tematyczne: dotknij jednego albo kilku tematów (np. zwierzęta, jedzenie), a ćwiczenia będą tylko z nich. „🌈 Wszystkie” to całe słownictwo, a „⭐ Dodane słowa” – Twoje własne słówka." },
-  { target: "#poolInfo", options: true, text: "✅ Tu widać, ile słówek {wybrałeś|wybrałaś|jest wybranych} i ile pytań ma jedno ćwiczenie. Gotowe – zwijam ustawienia!" },
+  // the training settings – kept short for children (the details are in the guide for parents)
+  { target: ".options-toggle", options: false, text: "⚙️ Tu są Ustawienia treningu. Możesz w nich dokładnie wybrać, których słówek się uczysz – na przykład tylko zwierzęta. Rozwinę je na chwilę!" },
+  { target: ".mat-open", options: true, text: "📖 A tu podejrzysz cały materiał: wszystkie słówka i lekcje. Możesz ich posłuchać i od razu poćwiczyć. Teraz zwijam ustawienia." },
   { target: ".badge-btn[data-action='openShop']", text: "💎 Tu widzisz swoje klejnoty. Kliknij, a przeniesiesz się do sklepiku." },
   { target: ".nav [data-view='learn']", text: "🎓 Nauka – lekcje gramatyki krok po kroku. Najpierw krótka karta, potem ćwiczenie." },
   { target: ".nav [data-view='rewards']", text: "🎁 Nagrody – sklepik z niespodziankami oraz Twoje dowcipy, zagadki i gierki." },
   { target: ".nav [data-view='stats']", text: "📊 Wyniki – Twoje postępy, odznaki i słówka do powtórki." },
-  { target: ".nav [data-view='settings']", text: "👤 Profil – imię, klasa, dźwięk i wygląd. Tu też możesz jeszcze raz obejrzeć ten samouczek." },
+  { target: ".nav [data-view='settings']", text: "👤 Profil – imię, klasa, dźwięk i wygląd. Tu obejrzysz jeszcze raz ten samouczek, a rodzice znajdą swój przewodnik." },
   { target: "#musicBtn", text: "🔇 To tryb cichy: wyłącza wszystkie dźwięki – muzykę, melodyjki i lektora – i ukrywa ćwiczenia z lektorem. Muzykę samą wyłączysz w Profilu." },
   { text: "To wszystko! Zacznij od Zadania dnia. Powodzenia{name}! 🦉" },
 ];
