@@ -34,7 +34,13 @@ const actions = {
     });
   },
   finishWelcome: () => {
-    state.settings.name = $("#welcomeName").value.trim();
+    const typedName = $("#welcomeName").value.trim();
+    if (containsBadWord(typedName)) {
+      $("#welcomeName").value = "";
+      showBadWordsWarning();
+      return;
+    }
+    state.settings.name = typedName;
     applyGradeDefaults(welcomeDraft.grade);
     state.settings.onboarded = true;
     saveState();
@@ -153,6 +159,7 @@ const actions = {
   chooseTutorialParents: () => chooseTutorial("parents"),
   chooseTutorialNone: () => chooseTutorial("none"),
   claimBadge: () => claimBadge(),
+  badWordsOk: () => closeBadWordsWarning(),
   quietConfirm: () => confirmQuiet(),
   speechWarnQuiet: () => { closeQuietModal("speechWarn"); setQuietMode(true); toast("🔇 Tryb cichy włączony"); },
   speechWarnKeep: () => closeQuietModal("speechWarn"),
@@ -224,6 +231,11 @@ document.addEventListener("submit", (event) => {
 function handleSettingChange(element) {
   const key = element.dataset.setting;
   const value = element.type === "checkbox" ? element.checked : element.type === "text" ? element.value.trim() : element.value;
+  if (key === "name" && containsBadWord(value)) { // a rude name is not saved
+    element.value = state.settings.name;
+    showBadWordsWarning();
+    return;
+  }
   state.settings[key] = ["sessionLength", "dailyGoal"].includes(key) ? Number(value) : key === "musicVolume" ? Number(value) / 100 : value;
   saveState();
   if (key === "music") {

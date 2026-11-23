@@ -162,6 +162,10 @@ async function prepareList() {
   if (addDraft.busy) return;
   addDraft.text = $("#wordsText").value;
   const languageMode = $("#inputLang").value;
+  if (containsBadWord(addDraft.text)) {
+    showBadWordsWarning();
+    return;
+  }
   const entries = parseEntries(addDraft.text);
   if (entries.length === 0) {
     toast("Wpisz lub wczytaj jakieś słowa.");
@@ -177,12 +181,15 @@ async function prepareList() {
     button.textContent = `Szukam tłumaczeń… ${index + 1}/${Math.min(entries.length, MAX_IMPORT_ENTRIES)}`;
     rows.push(await resolveEntry(entry, languageMode, onlineAllowed));
   }
-  addDraft.rows = rows;
+  // a translation from the dictionary could also be rude: such rows are dropped
+  addDraft.rows = rows.filter((row) => !containsBadWord(`${row.en || ""} ${row.pl || ""}`));
+  const droppedRude = rows.length - addDraft.rows.length;
   addDraft.busy = false;
   button.disabled = false;
   button.textContent = "Przygotuj listę";
   drawPreview();
   if (onlineAllowed.error) toast(`${onlineAllowed.error} Uzupełnij tłumaczenia ręcznie.`);
+  if (droppedRude) showBadWordsWarning();
 }
 
 function drawPreview() {
@@ -204,16 +211,23 @@ function drawPreview() {
 function addSelectedRows() {
   const existing = new Set(state.custom.map((word) => `${normalize(word.en)}|${normalize(word.pl)}`));
   let added = 0;
+  let rude = false;
   document.querySelectorAll("#preview [data-row]").forEach((row) => {
     if (!$('input[type="checkbox"]', row).checked) return;
     const en = $('[data-field="en"]', row).value.trim();
     const pl = $('[data-field="pl"]', row).value.trim();
+    if (containsBadWord(`${en} ${pl}`)) { // typed into the fields after preparing the list
+      rude = true;
+      return;
+    }
     const key = `${normalize(en)}|${normalize(pl)}`;
     if (!en || !pl || existing.has(key)) return;
     existing.add(key);
     state.custom.push({ id: `custom:${Date.now()}-${added}`, en, pl, topic: CUSTOM_TOPIC.id, grade: currentGrade() });
     added++;
   });
+  if (rude) showBadWordsWarning();
+  if (added === 0 && rude) return;
   if (added === 0) {
     toast("Nic nie dodano – uzupełnij oba pola i zaznacz wiersze.");
     return;
