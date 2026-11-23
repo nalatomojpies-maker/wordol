@@ -36,7 +36,7 @@ const RIDDLE_DATA = `
 4|logic|Wchodzi po schodach, ale nigdy nie schodzi. Co to?|Twój wiek.|
 4|nature|Czy przy biegunie północnym żyją pingwiny?|Nie – pingwiny żyją na południu Ziemi.|Przy biegunie północnym spotkasz za to niedźwiedzia polarnego.
 4|english|Zamień pierwszą literę w słowie CAT tak, żeby powstał nietoperz.|BAT.|CAT – kot, BAT – nietoperz.
-4|maths|Ile kwadratów jest na planszy do kółka i krzyżyka (3 × 3), jeśli liczysz też te większe?|14.|9 małych + 4 średnie (2 × 2) + 1 duży = 14.
+4|maths|Ile rogów mają razem 3 trójkąty?|9 rogów.|Każdy trójkąt ma 3 rogi: 3 × 3 = 9.
 5|logic|Ola jest wyższa od Kasi, a Kasia wyższa od Zosi. Kto jest najniższy?|Zosia.|
 5|maths|Kot zjada mysz w minutę. Ile minut potrzebują 3 koty na 3 myszy?|Jedną minutę.|Każdy kot je swoją mysz w tym samym czasie.
 5|english|Które angielskie słowo znaczy i „zegarek”, i „oglądać”?|Watch.|
@@ -45,19 +45,19 @@ const RIDDLE_DATA = `
 5|english|Co ma klucze (keys), ale nie otwiera drzwi?|Klawiatura albo pianino (keyboard, piano keys).|
 5|maths|Pociąg ma 10 wagonów. Każdy wagon ma 4 koła z każdej strony. Ile kół ma razem?|80 kół.|10 × (4 + 4) = 80.
 6|logic|Lekarz ma brata, ale brat lekarza nie ma brata. Jak to możliwe?|Lekarz to kobieta – siostra tego brata.|
-6|maths|Jeśli 3 kury znoszą 3 jajka w 3 dni, ile jajek zniesie 6 kur w 6 dni?|12 jajek.|Jedna kura znosi 1 jajko w 3 dni, więc w 6 dni – 2 jajka. 6 kur × 2 = 12.
+6|maths|Na urodzinach było 12 babeczek. Każde z 4 dzieci zjadło po 2. Ile babeczek zostało?|4 babeczki.|Dzieci zjadły 4 × 2 = 8, a 12 − 8 = 4.
 6|english|What has an eye but cannot see?|A needle – igła.|Eye to oko, ale też ucho igielne.
 6|logic|Co można złamać, nawet tego nie dotykając?|Obietnicę (albo ciszę).|
 6|nature|Dlaczego niebo w dzień jest niebieskie?|Bo powietrze najmocniej rozprasza niebieskie światło słońca.|
 6|english|What has a head and a tail but no body?|A coin – moneta.|Po angielsku strony monety to head (orzeł) i tail (reszka) – a ciała moneta nie ma!
-6|maths|Ile razy w ciągu doby wskazówki zegara pokrywają się ze sobą?|22 razy.|Nie 24 – raz na mniej więcej 65 minut.
+6|maths|Ile nóg mają razem 2 psy i 3 kury?|14 nóg.|Psy: 2 × 4 = 8, kury: 3 × 2 = 6, razem 14.
 7|logic|Stoisz przed dwojgiem drzwi. Przy jednych strażnik zawsze mówi prawdę, przy drugich zawsze kłamie. Nie wiesz, który jest który. Jakim jednym pytaniem znajdziesz drzwi do wyjścia?|Zapytaj dowolnego: „Które drzwi wskazałby drugi strażnik?” i wybierz te przeciwne.|Kłamca przekręci prawdę, prawdomówny powtórzy kłamstwo – obaj wskażą złe drzwi.
 7|maths|Rower i kask kosztują razem 110 zł. Rower jest o 100 zł droższy od kasku. Ile kosztuje kask?|5 zł.|Kask 5 zł, rower 105 zł – razem 110 zł.
 7|english|What can travel around the world while staying in a corner?|A stamp – znaczek pocztowy.|
 7|logic|Ma miasta bez domów, lasy bez drzew i rzeki bez wody. Co to?|Mapa.|
 7|english|What word becomes shorter when you add two letters to it?|SHORT → SHORTER.|
 7|nature|Które zwierzę ma niebieską krew i trzy serca?|Ośmiornica.|
-7|maths|Jaka jest najmniejsza liczba całkowita, która dzieli się przez 2, 3, 4, 5 i 6?|60.|To najmniejsza wspólna wielokrotność tych liczb.
+7|maths|Pizzę pokrojono na 8 kawałków. Zjedliście 3. Ile kawałków zostało?|5 kawałków.|8 − 3 = 5, czyli pięć ósmych pizzy.
 8|logic|Ojciec i syn mają razem 36 lat. Ojciec jest o 30 lat starszy od syna. Ile lat ma syn?|3 lata.|Syn 3, ojciec 33 – razem 36.
 8|maths|Nenufar na stawie co dzień podwaja swoją powierzchnię. Po 30 dniach pokrywa cały staw. Po ilu dniach pokrywał połowę?|Po 29 dniach.|Dzień później podwoił się i zakrył cały staw.
 8|english|I speak without a mouth and hear without ears. I have no body, but I come alive with the wind. What am I?|An echo – echo.|
@@ -123,7 +123,7 @@ const RIDDLE_DATA = `
 5|english|Jakie angielskie słowo powstanie, gdy przeczytasz STOP od tyłu?|POTS – garnki.|
 5|nature|Jakie zwierzę jest największe na świecie?|Płetwal błękitny.|Jest większy nawet od dinozaurów.
 5|maths|Jaka liczba jest następna: 1, 2, 4, 8, 16…?|32.|Każda liczba jest dwa razy większa od poprzedniej.
-6|maths|Mama jest 4 razy starsza od córki. Za 20 lat będzie od niej 2 razy starsza. Ile lat ma córka?|10 lat.|Teraz: córka 10, mama 40. Za 20 lat: 30 i 60.
+6|maths|Jeśli wczoraj był piątek, to jaki dzień będzie jutro?|Niedziela.|Dziś jest sobota, więc jutro niedziela.
 6|english|What has legs but cannot walk?|A table – stół.|Stół ma cztery nogi (legs), ale nigdzie nie pójdzie.
 6|logic|Pan wyszedł na deszcz bez parasola i bez czapki, a ani jeden włos na jego głowie nie zmókł. Jak to możliwe?|Był łysy.|
 6|nature|Ile kości ma dorosły człowiek?|206.|
@@ -131,25 +131,25 @@ const RIDDLE_DATA = `
 6|logic|Ile razy można odjąć 10 od 100?|Raz – potem odejmujesz już od 90.|
 6|english|What has words but never speaks?|A book – książka.|
 6|nature|Jaki gaz rośliny pobierają z powietrza, żeby rosnąć?|Dwutlenek węgla (CO₂).|W zamian oddają tlen.
-6|maths|Ile to jest 1 + 2 + 3 + … + 10?|55.|Pary 1 + 10, 2 + 9… dają 5 × 11 = 55.
+6|maths|Ile to jest połowa z połowy ze 100?|25.|Połowa ze 100 to 50, a połowa z 50 to 25.
 7|logic|Biegniesz w wyścigu i wyprzedzasz osobę na drugim miejscu. Na którym miejscu jesteś?|Na drugim.|Zająłeś jej miejsce, a pierwszy wciąż jest przed tobą.
-7|maths|Ile to jest 2 do potęgi 10?|1024.|
+7|maths|Ile palców (u rąk i nóg) mają razem 3 osoby?|60 palców.|Każda osoba ma 20 palców: 3 × 20 = 60.
 7|english|What has a thumb and four fingers but is not alive?|A glove – rękawiczka.|
 7|logic|Wszystkie cztery ściany domu wychodzą na południe. Obok przechodzi niedźwiedź. Jakiego jest koloru?|Biały – to niedźwiedź polarny.|Taki dom może stać tylko na biegunie północnym.
 7|nature|Która planeta Układu Słonecznego jest największa?|Jowisz.|
-7|maths|Prostokąt ma obwód 20 cm, a jeden bok 6 cm. Jakie ma pole?|24 cm².|Drugi bok: (20 − 12) : 2 = 4 cm, pole: 6 × 4 = 24.
+7|maths|Ile minut trwa półtorej godziny?|90 minut.|Godzina to 60 minut, pół godziny to 30: 60 + 30 = 90.
 7|english|What English word means „południe” and reads the same backwards?|NOON – południe.|N-O-O-N od tyłu to wciąż NOON.
 7|nature|Dlaczego latem jest cieplej niż zimą?|Bo oś Ziemi jest nachylona i latem słońce świeci na naszą półkulę bardziej z góry.|O porach roku nie decyduje odległość od Słońca!
 7|logic|Zegar wybija 6 uderzeń w 5 sekund. Ile czasu zajmie mu wybicie 12 uderzeń?|11 sekund.|Między 6 uderzeniami jest 5 przerw po sekundzie, a między 12 – 11 przerw.
-8|maths|Ile przekątnych ma sześciokąt?|9.|n · (n − 3) : 2 = 6 · 3 : 2 = 9.
+8|maths|Ile dni mają razem 3 tygodnie i 3 dni?|24 dni.|3 × 7 = 21, a 21 + 3 = 24.
 8|logic|Dwóch ojców i dwóch synów złowiło 3 ryby – każdy po jednej. Jak to możliwe?|To dziadek, ojciec i syn.|Ojciec jest jednocześnie synem.
 8|english|What comes once in a minute, twice in a moment, but never in a thousand years?|The letter M – litera M.|
 8|nature|Jak szybko porusza się światło?|Około 300 000 km na sekundę.|Ze Słońca do Ziemi leci około 8 minut.
-8|maths|Jaka jest jedyna parzysta liczba pierwsza?|2.|Każda inna liczba parzysta dzieli się przez 2.
+8|maths|Ile miesięcy w roku ma 30 dni?|11 – wszystkie oprócz lutego.|Luty ma tylko 28 albo 29 dni, a każdy inny miesiąc ma 30. dzień.
 8|logic|W szufladzie leży 10 czarnych i 10 białych skarpet. Ile musisz wyjąć po ciemku, żeby mieć pewność, że masz parę?|3 skarpety.|Spośród trzech skarpet dwie muszą być tego samego koloru.
 8|english|What building has the most stories?|A library – biblioteka.|Story to historia, a w Ameryce także piętro.
 8|nature|Z czego składa się woda?|Z wodoru i tlenu (H₂O).|
-8|maths|Średnia trzech liczb wynosi 10. Dwie z nich to 8 i 9. Jaka jest trzecia?|13.|Suma to 30, więc 30 − 8 − 9 = 13.
+8|maths|Masz 3 jabłka i zabierasz 2. Ile masz jabłek?|2 – te, które zabierasz!|Pozostałe jabłko zostaje na stole.
 8|logic|Masz dwie klepsydry: 4-minutową i 7-minutową. Jak odmierzyć dokładnie 9 minut?|Włącz obie. Po 4 min odwróć małą. Po 7 min odwróć dużą. Po 8 min (mała się skończyła) odwróć dużą jeszcze raz – przesypie się 1 minuta, razem 9.|
 `;
 

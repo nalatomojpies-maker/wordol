@@ -91,8 +91,8 @@ const actions = {
   testLock: () => { setTestUnlock(false); rerenderAdd(); },
   openCalendar: () => { calendarMonth = null; view = "calendar"; render(); },
   buyJoke: (element) => buyJoke(element.dataset.id),
-  revealJoke: (element) => { revealedJokes.add(element.dataset.id); render(); },
-  jokeLang: (element) => { const id = element.dataset.id; if (jokeOtherLanguage.has(id)) jokeOtherLanguage.delete(id); else jokeOtherLanguage.add(id); render(); },
+  revealJoke: (element) => { revealedJokes.add(element.dataset.id); render(true); }, // keep the scroll position
+  jokeLang: (element) => { const id = element.dataset.id; if (jokeOtherLanguage.has(id)) jokeOtherLanguage.delete(id); else jokeOtherLanguage.add(id); render(true); },
   speakJoke: (element) => speakJoke(element.dataset.id),
   calMonth: (element) => {
     const next = new Date(calendarMonth.year, calendarMonth.month + Number(element.dataset.dir), 1);
