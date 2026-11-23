@@ -41,7 +41,7 @@ function render(keepScroll = false) {
     welcome: renderWelcome, home: renderHome, learn: renderLearn, unit: renderUnit, step: renderStepCard, add: renderAdd,
     stats: renderStats, settings: renderSettings, session: renderSessionFrame, result: renderResult,
     rewards: renderRewards, shop: renderShop, jokes: renderJokes, calendar: renderCalendar,
-    riddles: renderRiddles, games: renderGamesList, game: renderGame,
+    riddles: renderRiddles, games: renderGamesList, game: renderGame, guide: renderGuide,
   };
   renderers[view]();
   if (view !== "session" && view !== "game") app.insertAdjacentHTML("beforeend", footerHtml());
@@ -174,12 +174,13 @@ function trainingOptionsHtml() {
         <select id="statusSelect" data-setting="status" data-rerender="1">
           ${STATUS_FILTERS.map((entry) => `<option value="${entry.id}" ${settings.status === entry.id ? "selected" : ""}>${entry.name}</option>`).join("")}
         </select></div>
-      ${grade >= 4 ? `<div class="grow"><label class="field" for="dirSelect">Kierunek</label>
+      ${grade >= 4 ? `<div class="grow"><label class="field" for="dirSelect">Tłumaczę</label>
         <select id="dirSelect" data-setting="direction" data-rerender="1">
-          <option value="mix" ${settings.direction === "mix" ? "selected" : ""}>Mieszany</option>
-          <option value="pl-en" ${settings.direction === "pl-en" ? "selected" : ""}>Polski → angielski</option>
-          <option value="en-pl" ${settings.direction === "en-pl" ? "selected" : ""}>Angielski → polski</option>
-        </select></div>` : ""}
+          <option value="mix" ${settings.direction === "mix" ? "selected" : ""}>Na zmianę</option>
+          <option value="en-pl" ${settings.direction === "en-pl" ? "selected" : ""}>Z angielskiego na polski</option>
+          <option value="pl-en" ${settings.direction === "pl-en" ? "selected" : ""}>Z polskiego na angielski</option>
+        </select>
+        <p class="muted small dir-hint">${settings.direction === "en-pl" ? "Łatwiej: widzisz angielskie słowo i mówisz, co znaczy." : settings.direction === "pl-en" ? `Trudniej: widzisz polskie słowo i ${g("sam", "sama", "samodzielnie")} przypominasz sobie angielskie.` : "Raz tak, raz tak – ćwiczysz rozumienie i przypominanie słów."}</p></div>` : ""}
     </div>
     <h3>Zbiory tematyczne</h3>
     <div class="topic-grid">
@@ -269,6 +270,7 @@ function renderSettings() {
       <h2>Zacznij od nowa</h2>
       <p class="muted">Usuwa imię, klasę, postępy, XP, odznaki, własne słowa i ustawienia z tego urządzenia. Nie da się tego cofnąć.</p>
       <button class="btn" data-action="startTutorial">🧭 Pokaż samouczek</button>
+      <button class="btn" data-action="nav" data-view="guide">📘 Przewodnik dla rodziców</button>
       <button class="btn danger" data-action="resetProfile">🗑️ Wyczyść profil</button>
     </section>`;
 }
