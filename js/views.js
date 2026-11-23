@@ -46,6 +46,7 @@ function render(keepScroll = false) {
   renderers[view]();
   if (view !== "session" && view !== "game") app.insertAdjacentHTML("beforeend", footerHtml());
   scheduleSupportCheck();
+  setTimeout(showTutorialChooser, 450); // at every start, until "Nie pokazuj więcej"
   setTimeout(maybeShowQuietNotice, 700);
   setTimeout(maybeSuggestInstall, 1800);
   setMusicForView(view);
@@ -268,9 +269,14 @@ function renderSettings() {
     </section>
     <section class="card danger-zone">
       <h2>Zacznij od nowa</h2>
+      <h3>🧭 Samouczki</h3>
+      <div class="row">
+        <button class="btn" data-action="startTutorial">🧒 Samouczek dla dzieci</button>
+        <button class="btn" data-action="nav" data-view="guide">📘 Przewodnik dla rodziców</button>
+      </div>
+      <label class="check" style="margin-top:10px"><input type="checkbox" data-setting="tutorialChooser" ${settings.tutorialChooserOff ? "" : "checked"}> Pokazuj wybór samouczka przy każdym uruchomieniu</label>
+      <h3>🗑️ Wyczyść profil</h3>
       <p class="muted">Usuwa imię, klasę, postępy, XP, odznaki, własne słowa i ustawienia z tego urządzenia. Nie da się tego cofnąć.</p>
-      <button class="btn" data-action="startTutorial">🧭 Pokaż samouczek</button>
-      <button class="btn" data-action="nav" data-view="guide">📘 Przewodnik dla rodziców</button>
       <button class="btn danger" data-action="resetProfile">🗑️ Wyczyść profil</button>
     </section>`;
 }
