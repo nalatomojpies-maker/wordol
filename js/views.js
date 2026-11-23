@@ -195,7 +195,7 @@ function trainingOptionsHtml() {
         <button class="chip ${settings.grammarTopics.length === 0 ? "active" : ""}" data-action="allGrammar">Wszystkie</button>
         ${sentenceUnits().map((unit) => `<button class="chip ${settings.grammarTopics.includes(unit.id) ? "active" : ""}" data-action="toggleGrammar" data-id="${unit.id}">${unit.icon} ${esc(unit.title)}</button>`).join("")}
       </div>` : ""}
-    <p class="muted">Wybrano słów: <b>${getPool().length}</b> · długość ćwiczenia: ${sessionLength()}</p>`;
+    <p class="muted" id="poolInfo">Wybrano słów: <b>${getPool().length}</b> · długość ćwiczenia: ${sessionLength()}</p>`;
 }
 
 // ---------- Settings ----------
