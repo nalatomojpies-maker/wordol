@@ -849,3 +849,38 @@ html[data-theme="lowvision"] body, html[data-theme="lowvision"] body.kids { font
 .install-steps { text-align: left; margin: 12px 0 0; padding-left: 22px; line-height: 1.6; }
 .install-key { display: inline-block; min-width: 1.6em; padding: 0 4px; border: 2px solid var(--border); border-radius: 6px; text-align: center; background: var(--bg); }
 @media (max-width: 459px) { .opts-row { flex-direction: column; align-items: stretch; } .opts-row > .grow { width: 100%; } }
+
+/* ---------- "Podejrzyj materiał" ---------- */
+.mat-open { width: 100%; margin-top: 8px; }
+.material-backdrop { padding: 10px; align-items: stretch; }
+.modal.material { max-width: 720px; max-height: none; height: 100%; display: flex; flex-direction: column; padding: 14px; margin: 0 auto; }
+.mat-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.mat-head h2 { margin: 0; text-align: left; }
+.mat-tabs { margin: 4px 0 8px; }
+.mat-search { display: block; margin-bottom: 8px; }
+.mat-search input { width: 100%; }
+.mat-body { flex: 1; overflow-y: auto; min-height: 0; padding-right: 2px; }
+.mat-foot { display: flex; gap: 8px; padding-top: 10px; border-top: 1px solid var(--border); margin-top: 8px; }
+.mat-foot .btn { flex: 1; }
+.mat-topic { border: 1px solid var(--border); border-radius: 14px; margin-bottom: 8px; background: var(--card); }
+.mat-topic summary { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 12px; cursor: pointer; list-style: none; }
+.mat-topic summary::-webkit-details-marker { display: none; }
+.mat-topic summary::after { content: "▼"; font-size: .7rem; color: var(--muted); margin-left: 6px; }
+.mat-topic[open] summary::after { content: "▲"; }
+.mat-topic summary > span { flex: 1; }
+.mat-words { padding: 0 12px 8px; }
+.mat-word { display: grid; grid-template-columns: 22px minmax(0, 1fr) minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 6px 0; border-top: 1px solid var(--border); }
+.mat-en, .mat-pl { overflow-wrap: anywhere; }
+.mat-status { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: .72rem; font-weight: 800; color: #fff; background: var(--border); }
+.mat-status.s-mastered { background: var(--st-mastered); }
+.mat-status.s-learning { background: var(--st-learning); }
+.mat-status.s-hard { background: var(--st-hard); }
+.mat-word .speak { width: 34px; height: 34px; }
+.mat-grade { margin: 12px 0 6px; }
+.mat-lesson { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--border); }
+.mat-lesson small { display: block; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.mat-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 0 0 8px; }
+.mat-legend .mat-status { display: inline-grid; width: 18px; height: 18px; }
+.mat-practice-topic { width: 100%; margin: 2px 0 8px; }
+.mat-foot { flex-wrap: wrap; }

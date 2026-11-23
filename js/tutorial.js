@@ -17,6 +17,7 @@ const TUTORIAL_STEPS = [
     const grade = GRADE_INFO[currentGrade()].label.toLowerCase();
     return `📏 Zakres słów: „Tylko ${grade}” – słówka tylko z Twojej klasy. „Od początku do: ${grade}” – także z niższych klas, żeby powtarzać starsze słówka.`;
   } },
+  { target: ".mat-open", options: true, text: "📖 Podejrzyj materiał: zobaczysz wszystkie słówka, zwroty i lekcje z wybranego zakresu – z wymową. Przy każdym zbiorze jest „Ćwicz ten zbiór”, a listę możesz wydrukować albo zapisać jako PDF." },
   { target: ".opts-row > .grow:nth-child(2)", options: true, text: "🔎 Które słowa: wszystkie, nowe (jeszcze nie ćwiczone), te, których się uczysz, trudne (z błędami) albo opanowane – do powtórki." },
   { target: ".opts-row > .grow:nth-child(3)", options: true, when: () => currentGrade() >= 4, text: "🔁 Kierunek: z polskiego na angielski, z angielskiego na polski albo na zmianę." },
   { target: ".options-card .topic-grid", options: true, text: "🗂️ Zbiory tematyczne: dotknij jednego albo kilku tematów (np. zwierzęta, jedzenie), a ćwiczenia będą tylko z nich. „🌈 Wszystkie” to całe słownictwo, a „⭐ Dodane słowa” – Twoje własne słówka." },

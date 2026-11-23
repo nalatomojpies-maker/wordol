@@ -168,7 +168,8 @@ function trainingOptionsHtml() {
         <select id="scopeSelect" data-setting="wordScope" data-rerender="1">
           <option value="own" ${settings.wordScope === "own" ? "selected" : ""}>Tylko ${esc(GRADE_INFO[grade].label.toLowerCase())}</option>
           <option value="upto" ${settings.wordScope === "upto" ? "selected" : ""}>Od początku do: ${esc(GRADE_INFO[grade].label.toLowerCase())}</option>
-        </select></div>
+        </select>
+        <button class="btn mat-open" data-action="materialOpen">📖 Podejrzyj materiał</button></div>
       <div class="grow"><label class="field" for="statusSelect">Które słowa</label>
         <select id="statusSelect" data-setting="status" data-rerender="1">
           ${STATUS_FILTERS.map((entry) => `<option value="${entry.id}" ${settings.status === entry.id ? "selected" : ""}>${entry.name}</option>`).join("")}
