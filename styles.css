@@ -923,3 +923,4 @@ html[data-theme="lowvision"] body, html[data-theme="lowvision"] body.kids { font
 .mat-foot .btn.primary { flex-basis: 100%; }
 .bad-words h2 { font-size: 1.25rem; line-height: 1.4; }
 .bad-words-face { text-align: center; font-size: 3.2rem; line-height: 1; margin: -6px 0 4px; }
+.support-note { margin: 4px 0 12px; padding: 10px 12px; border-radius: 12px; background: var(--bg); border: 1px solid var(--border); font-size: .9rem; line-height: 1.45; }
