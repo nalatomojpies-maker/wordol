@@ -28,7 +28,7 @@ const JOKE_DATA = `
 2|What is a cat's favourite colour?|Purr-ple!|Jaki jest ulubiony kolor kota?|Fioletowy! (purr = mruczeć, purple = fioletowy)
 2|Why do birds fly south?|Because it is too far to walk!|Dlaczego ptaki lecą na południe?|Bo to za daleko, żeby iść pieszo!
 2|What do you call a fish with no eyes?|A fsh!|Jak nazwać rybę bez oczu?|Rba! (w słowie „fish” nie ma litery „i”, która brzmi jak „eye”, czyli oko)
-2|Why are frogs so happy?|They eat whatever bugs them!|Dlaczego żaby są takie wesołe?|Bo zjadają wszystko, co je męczy! (bug = owad, a „to bugs me” = to mnie męczy)
+2|What do you call a sleeping cat?|A cat-nap!|Jak nazwać śpiącego kota?|Kocia drzemka! (catnap = krótka drzemka, cat = kot, nap = drzemka)
 2|What did the big flower say to the little flower?|Hi, bud!|Co duży kwiat powiedział małemu?|Cześć, pączku! (bud = pączek kwiatu, ale też „kolego”)
 2|Why did the pencil go to school?|To get sharp!|Dlaczego ołówek poszedł do szkoły?|Żeby się zaostrzyć! (sharp = ostry i bystry)
 2|What do cows drink?|Moo-lk!|Co piją krowy?|Muu-leko! (moo + milk)
@@ -59,7 +59,7 @@ const JOKE_DATA = `
 5|Why do bananas never feel lonely?|Because they hang around in bunches!|Dlaczego banany nigdy nie są samotne?|Bo zawsze trzymają się w kiści! (bunch = kiść i paczka przyjaciół)
 5|What did one wall say to the other?|I will meet you at the corner!|Co jedna ściana powiedziała drugiej?|Spotkamy się na rogu!
 5|Why did the tomato turn red?|Because it saw the salad dressing!|Dlaczego pomidor się zaczerwienił?|Bo zobaczył sos sałatkowy! (dressing = sos i ubieranie się)
-5|What do you call an elephant that doesn't matter?|An irrelephant!|Jak nazwać słonia, który nie ma znaczenia?|Nieistotnosłoń! (irrelevant = nieistotny + elephant = słoń)
+5|What do you call a cold dog?|A chili dog!|Jak nazwać zmarzniętego psa?|Chili-dog! (chilly = zmarznięty, a chili dog to hot dog z ostrym sosem)
 5|What do you call a fake noodle?|An impasta!|Jak nazwać fałszywy makaron?|Makaronowy oszust! (impasta brzmi jak „impostor” = oszust, pasta = makaron)
 5|Why did the girl put sugar under her pillow?|To have sweet dreams!|Dlaczego dziewczynka włożyła cukier pod poduszkę?|Żeby mieć słodkie sny! (sweet dreams = słodkich snów)
 5|What do you call a bear in the rain?|A drizzly bear!|Jak nazwać niedźwiedzia w deszczu?|Mżawkowy miś! (drizzly = mżawkowy, brzmi jak „grizzly” = niedźwiedź grizzly)
@@ -86,13 +86,13 @@ const JOKE_DATA = `
 8|Why did the scientist take a ladder to the lab?|He wanted to reach a higher level of knowledge!|Dlaczego naukowiec zabrał drabinę do laboratorium?|Chciał osiągnąć wyższy poziom wiedzy!
 8|What did the zero say to the eight?|Nice belt!|Co zero powiedziało ósemce?|Ładny pasek! (ósemka wygląda jak zero z paskiem)
 8|What do you call a belt made of watches?|A waist of time!|Jak nazwać pasek zrobiony z zegarków?|Strata czasu! (waist = talia, brzmi jak „waste” = strata)
-8|What do you call a group of musical whales?|An orca-stra!|Jak nazwać grupę muzykalnych wielorybów?|Orka-strą! (orca = orka, orchestra = orkiestra)
+8|What did the stamp say to the envelope?|Stick with me and we will go places!|Co znaczek powiedział do koperty?|Trzymaj się mnie, a daleko zajdziemy! (stick = przykleić się i trzymać się razem)
 8|How do you make seven an even number?|Take away the 's'!|Jak zrobić z siódemki liczbę parzystą?|Zabierz „s”! (seven bez „s” to even = parzysta)
 8|Why did the student study on an airplane?|He wanted a higher education!|Dlaczego uczeń uczył się w samolocie?|Chciał wyższego wykształcenia! (higher = wyżej i wyższe)
 8|What is the best way to talk to a giant?|Use big words!|Jak najlepiej rozmawiać z olbrzymem?|Używać wielkich słów!
 8|Why did the electrician start a band?|He had great connections!|Dlaczego elektryk założył zespół?|Miał świetne połączenia! (connections = połączenia i znajomości)
-8|What do you call a magician who has lost his magic?|Ian!|Jak nazwać magika, który stracił magię?|Ian! (magician bez „magic” to „ian”)
-8|What do you call a dinosaur that knows lots of words?|A thesaurus!|Jak nazwać dinozaura, który zna mnóstwo słów?|Tezaurus! (thesaurus = słownik wyrazów bliskoznacznych, brzmi jak nazwa dinozaura)
+8|Why did the kid cross the playground?|To get to the other slide!|Dlaczego dziecko przeszło przez plac zabaw?|Żeby dojść do drugiej zjeżdżalni! (other slide brzmi jak „other side” = druga strona)
+8|Why is Cinderella bad at football?|Because she runs away from the ball!|Dlaczego Kopciuszek nie umie grać w piłkę?|Bo ucieka od piłki! (ball = piłka i bal)
 0|What has a long neck and spots?|A giraffe!|Kto ma długą szyję i łaty?|Żyrafa!
 0|What is orange and long and rabbits love it?|A carrot!|Co jest pomarańczowe, długie i uwielbiają to króliki?|Marchewka!
 0|What is round and you kick it?|A ball!|Co jest okrągłe i można to kopać?|Piłka!
@@ -147,7 +147,7 @@ const JOKE_DATA = `
 7|What did the paper say to the pencil?|Write on!|Co kartka powiedziała do ołówka?|Pisz dalej! (write on brzmi jak „right on” = świetnie)
 7|What do you call a pile of cats?|A meowtain!|Jak nazwać górę kotów?|Miaukowa góra! (meow + mountain = góra)
 7|Why was the computer cold?|It left its Windows open!|Dlaczego komputer zmarzł?|Zostawił otwarte okna! (Windows = system komputera i okna)
-8|Why are skeletons so calm?|Because nothing gets under their skin!|Dlaczego szkielety są takie spokojne?|Bo nic nie zalazło im za skórę! (get under someone's skin = denerwować kogoś)
+8|What do you get if you cross a fish and an elephant?|Swimming trunks!|Co powstanie ze skrzyżowania ryby i słonia?|Kąpielówki! (trunk = trąba słonia, a swimming trunks = kąpielówki)
 8|Why are spiders great at the internet?|They know how to build websites!|Dlaczego pająki świetnie znają się na internecie?|Bo umieją budować strony! (web = pajęczyna i sieć, website = strona internetowa)
 8|What do you call a bear with no socks on?|Bare-foot!|Jak nazwać misia bez skarpetek?|Bosy miś! (bear = niedźwiedź brzmi jak bare = goły, a barefoot = boso)
 8|What is a computer's favourite snack?|Microchips!|Jaka jest ulubiona przekąska komputera?|Mikrochipsy! (microchip = układ scalony, chips = chipsy)
