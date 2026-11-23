@@ -13,7 +13,7 @@ const RIDDLE_DATA = `
 0|logic|Co rośnie, gdy pada deszcz, i znika, gdy świeci słońce?|Kałuża.|
 0|nature|Jest biały, zimny i można z niego ulepić bałwana. Co to?|Śnieg.|
 1|logic|Ile nóg mają razem dwa koty?|Osiem.|Każdy kot ma cztery łapy: 4 + 4 = 8.
-1|english|Jakie angielskie słowo czytane od końca nadal brzmi tak samo: MUM czy DOG?|MUM.|M-U-M od tyłu to wciąż M-U-M.
+1|english|Co po angielsku znaczy „dog”: pies czy kot?|Pies – dog.|
 1|nature|Ma igły, ale nie szyje. Jest zielona przez cały rok. Co to?|Choinka (świerk).|
 1|logic|Co ma zęby, ale nigdy nie gryzie?|Grzebień.|
 1|english|Liczymy po angielsku: one, two, three… Jaka liczba jest następna?|Four – cztery.|
@@ -28,18 +28,18 @@ const RIDDLE_DATA = `
 3|english|Co znaczy po polsku „butterfly”, chociaż nie ma nic wspólnego z masłem (butter) ani z muchą (fly)?|Motyl.|
 3|logic|Co należy do ciebie, ale inni używają tego częściej niż ty?|Twoje imię.|
 3|nature|Które zwierzę śpi zimą w norze i budzi się wiosną?|Niedźwiedź (albo jeż).|Zapada w sen zimowy.
-3|english|Które słowo po angielsku jest zawsze napisane źle w słowniku?|„Wrong” – bo słowo „wrong” znaczy „źle”!|
+3|english|Jaki kolor po angielsku ma banan?|Yellow – żółty.|
 3|maths|Kura na jednej nodze waży 2 kg. Ile waży na dwóch nogach?|Też 2 kg.|
 4|logic|Co ma szyję, ale nie ma głowy?|Butelka.|
 4|maths|Jaką liczbę dostaniesz, jeśli pomnożysz wszystkie cyfry na klawiaturze telefonu?|Zero.|Wśród cyfr jest 0, a wszystko razy 0 daje 0.
-4|english|Jakie angielskie słowo ma trzy podwójne litery pod rząd: zaczyna się na B i jest to osoba, która prowadzi księgi rachunkowe?|Bookkeeper (oo, kk, ee).|
+4|english|Ułóż z liter T, A, C angielską nazwę zwierzęcia.|CAT – kot.|
 4|logic|Wchodzi po schodach, ale nigdy nie schodzi. Co to?|Twój wiek.|
 4|nature|Czy przy biegunie północnym żyją pingwiny?|Nie – pingwiny żyją na południu Ziemi.|Przy biegunie północnym spotkasz za to niedźwiedzia polarnego.
 4|english|Zamień pierwszą literę w słowie CAT tak, żeby powstał nietoperz.|BAT.|CAT – kot, BAT – nietoperz.
 4|maths|Ile kwadratów jest na planszy do kółka i krzyżyka (3 × 3), jeśli liczysz też te większe?|14.|9 małych + 4 średnie (2 × 2) + 1 duży = 14.
 5|logic|Ola jest wyższa od Kasi, a Kasia wyższa od Zosi. Kto jest najniższy?|Zosia.|
 5|maths|Kot zjada mysz w minutę. Ile minut potrzebują 3 koty na 3 myszy?|Jedną minutę.|Każdy kot je swoją mysz w tym samym czasie.
-5|english|Które angielskie słowo zaczyna się na E, kończy na E, a zawiera tylko jedną literę?|ENVELOPE – koperta (w kopercie jest list – letter!).|Gra słów: letter = litera i list.
+5|english|Które angielskie słowo znaczy i „zegarek”, i „oglądać”?|Watch.|
 5|logic|Masz pudełko zapałek i ciemny pokój ze świecą, lampą naftową i kominkiem. Co zapalisz najpierw?|Zapałkę!|
 5|nature|Które zwierzę ma najdłuższy język w stosunku do ciała?|Kameleon – jego język bywa dłuższy niż całe ciało.|
 5|english|Co ma klucze (keys), ale nie otwiera drzwi?|Klawiatura albo pianino (keyboard, piano keys).|
@@ -49,7 +49,7 @@ const RIDDLE_DATA = `
 6|english|What has an eye but cannot see?|A needle – igła.|Eye to oko, ale też ucho igielne.
 6|logic|Co można złamać, nawet tego nie dotykając?|Obietnicę (albo ciszę).|
 6|nature|Dlaczego niebo w dzień jest niebieskie?|Bo powietrze najmocniej rozprasza niebieskie światło słońca.|
-6|english|What has a head and a tail but no body?|A coin – moneta.|Head i tail to awers i rewers monety.
+6|english|What has a head and a tail but no body?|A coin – moneta.|Po angielsku strony monety to head (orzeł) i tail (reszka) – a ciała moneta nie ma!
 6|maths|Ile razy w ciągu doby wskazówki zegara pokrywają się ze sobą?|22 razy.|Nie 24 – raz na mniej więcej 65 minut.
 7|logic|Stoisz przed dwojgiem drzwi. Przy jednych strażnik zawsze mówi prawdę, przy drugich zawsze kłamie. Nie wiesz, który jest który. Jakim jednym pytaniem znajdziesz drzwi do wyjścia?|Zapytaj dowolnego: „Które drzwi wskazałby drugi strażnik?” i wybierz te przeciwne.|Kłamca przekręci prawdę, prawdomówny powtórzy kłamstwo – obaj wskażą złe drzwi.
 7|maths|Rower i kask kosztują razem 110 zł. Rower jest o 100 zł droższy od kasku. Ile kosztuje kask?|5 zł.|Kask 5 zł, rower 105 zł – razem 110 zł.
@@ -93,7 +93,7 @@ const RIDDLE_DATA = `
 2|maths|Ile to jest dwa razy po pięć?|Dziesięć.|
 2|english|Jak po angielsku powiesz „dzień dobry” rano?|Good morning.|
 2|nature|Jakie zwierzę wyrasta z kijanki?|Żaba.|
-2|logic|Co jest zawsze przed tobą, ale nigdy tego nie zobaczysz?|Jutro (przyszłość).|
+2|logic|Ma klawisze, ale nie otwiera nimi drzwi. Gra na nim muzyk. Co to?|Pianino.|
 2|maths|Ola ma 8 cukierków i daje po 2 każdej z trzech koleżanek. Ile jej zostaje?|2 cukierki.|8 − 3 × 2 = 2.
 2|english|Które angielskie słowo oznacza i kolor, i owoc?|Orange – pomarańczowy i pomarańcza.|
 3|logic|Biegnie dookoła podwórka, ale wcale się nie rusza. Co to?|Płot.|
@@ -124,7 +124,7 @@ const RIDDLE_DATA = `
 5|nature|Jakie zwierzę jest największe na świecie?|Płetwal błękitny.|Jest większy nawet od dinozaurów.
 5|maths|Jaka liczba jest następna: 1, 2, 4, 8, 16…?|32.|Każda liczba jest dwa razy większa od poprzedniej.
 6|maths|Mama jest 4 razy starsza od córki. Za 20 lat będzie od niej 2 razy starsza. Ile lat ma córka?|10 lat.|Teraz: córka 10, mama 40. Za 20 lat: 30 i 60.
-6|english|What begins with T, ends with T, and has T in it?|A teapot – czajniczek.|Gra słów: „tea” (herbata) brzmi jak litera T.
+6|english|What has legs but cannot walk?|A table – stół.|Stół ma cztery nogi (legs), ale nigdzie nie pójdzie.
 6|logic|Pan wyszedł na deszcz bez parasola i bez czapki, a ani jeden włos na jego głowie nie zmókł. Jak to możliwe?|Był łysy.|
 6|nature|Ile kości ma dorosły człowiek?|206.|
 6|maths|Ile wynosi suma kątów w trójkącie?|180 stopni.|
@@ -134,11 +134,11 @@ const RIDDLE_DATA = `
 6|maths|Ile to jest 1 + 2 + 3 + … + 10?|55.|Pary 1 + 10, 2 + 9… dają 5 × 11 = 55.
 7|logic|Biegniesz w wyścigu i wyprzedzasz osobę na drugim miejscu. Na którym miejscu jesteś?|Na drugim.|Zająłeś jej miejsce, a pierwszy wciąż jest przed tobą.
 7|maths|Ile to jest 2 do potęgi 10?|1024.|
-7|english|What has one head, one foot and four legs?|A bed – łóżko.|Head i foot to wezgłowie i nogi łóżka.
+7|english|What has a thumb and four fingers but is not alive?|A glove – rękawiczka.|
 7|logic|Wszystkie cztery ściany domu wychodzą na południe. Obok przechodzi niedźwiedź. Jakiego jest koloru?|Biały – to niedźwiedź polarny.|Taki dom może stać tylko na biegunie północnym.
 7|nature|Która planeta Układu Słonecznego jest największa?|Jowisz.|
 7|maths|Prostokąt ma obwód 20 cm, a jeden bok 6 cm. Jakie ma pole?|24 cm².|Drugi bok: (20 − 12) : 2 = 4 cm, pole: 6 × 4 = 24.
-7|english|Forward I am heavy, backward I am not. What am I?|TON – tona.|Od tyłu „ton” to „not” – „nie”.
+7|english|What English word means „południe” and reads the same backwards?|NOON – południe.|N-O-O-N od tyłu to wciąż NOON.
 7|nature|Dlaczego latem jest cieplej niż zimą?|Bo oś Ziemi jest nachylona i latem słońce świeci na naszą półkulę bardziej z góry.|O porach roku nie decyduje odległość od Słońca!
 7|logic|Zegar wybija 6 uderzeń w 5 sekund. Ile czasu zajmie mu wybicie 12 uderzeń?|11 sekund.|Między 6 uderzeniami jest 5 przerw po sekundzie, a między 12 – 11 przerw.
 8|maths|Ile przekątnych ma sześciokąt?|9.|n · (n − 3) : 2 = 6 · 3 : 2 = 9.
