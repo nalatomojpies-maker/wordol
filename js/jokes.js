@@ -24,7 +24,7 @@ const JOKE_DATA = `
 1|What goes up but never comes down?|Your age!|Co idzie w górę, ale nigdy nie spada?|Twój wiek!
 1|Why is the cat happy?|It has a fish!|Dlaczego kot jest szczęśliwy?|Ma rybę!
 2|Why did the dog sit in the shade?|It did not want to be a hot dog!|Dlaczego pies siedział w cieniu?|Nie chciał być hot dogiem! (hot dog = „gorący pies” i parówka w bułce)
-2|What do you call a sleeping bull?|A bulldozer!|Jak nazwać śpiącego byka?|Buldożer! (bull = byk, doze = drzemać)
+2|Where do cows go on holiday?|Moo York!|Dokąd krowy jadą na wakacje?|Do Muu Jorku! (moo = muu + New York)
 2|What is a cat's favourite colour?|Purr-ple!|Jaki jest ulubiony kolor kota?|Fioletowy! (purr = mruczeć, purple = fioletowy)
 2|Why do birds fly south?|Because it is too far to walk!|Dlaczego ptaki lecą na południe?|Bo to za daleko, żeby iść pieszo!
 2|What do you call a fish with no eyes?|A fsh!|Jak nazwać rybę bez oczu?|Rba! (w słowie „fish” nie ma litery „i”, która brzmi jak „eye”, czyli oko)
@@ -40,34 +40,34 @@ const JOKE_DATA = `
 3|Why did the banana go to the doctor?|It wasn't peeling well!|Dlaczego banan poszedł do lekarza?|Źle się czuł! (peeling = obierać się, brzmi jak „feeling” = czuć się)
 3|What kind of tree fits in your hand?|A palm!|Jakie drzewo mieści się w dłoni?|Palma! (palm = palma i dłoń)
 3|Why can't a bicycle stand up by itself?|It is two tired!|Dlaczego rower nie może stać sam?|Jest dwa-zmęczony! (two tired brzmi jak „too tired” = zbyt zmęczony)
-3|What do you call a bear with no teeth?|A gummy bear!|Jak nazwać niedźwiedzia bez zębów?|Miś z żelków! (gummy = bezzębny i żelkowy)
+3|Why did the cat sit on the computer?|To keep an eye on the mouse!|Dlaczego kot usiadł na komputerze?|Żeby pilnować myszki! (mouse = mysz i myszka komputerowa)
 3|What did the ocean say to the beach?|Nothing, it just waved!|Co ocean powiedział do plaży?|Nic, tylko pomachał! (wave = fala i machać)
-3|Why do bees have sticky hair?|Because they use honeycombs!|Dlaczego pszczoły mają lepkie włosy?|Bo używają plastrów miodu! (honeycomb = plaster miodu, comb = grzebień)
-4|Why did the cookie go to the doctor?|Because it felt crummy!|Dlaczego ciastko poszło do lekarza?|Bo czuło się okruchowo! (crummy = marnie, crumb = okruch)
+3|What did one snowman say to the other?|Do you smell carrots?|Co jeden bałwan powiedział do drugiego?|Czujesz marchewkę? (bałwany mają nosy z marchewki)
+4|What kind of key opens a banana?|A mon-key!|Jaki klucz otwiera banana?|Małpi! (monkey = małpa, a key = klucz)
 4|What is a witch's favourite subject at school?|Spelling!|Jaki jest ulubiony przedmiot czarownicy?|Czarowanie! (spelling = pisownia, spell = zaklęcie)
 4|Why did the student eat his homework?|The teacher said it was a piece of cake!|Dlaczego uczeń zjadł pracę domową?|Bo nauczyciel powiedział, że to bułka z masłem! (a piece of cake = kawałek ciasta i coś łatwego)
 4|What do you call a cow on a trampoline?|A milkshake!|Jak nazwać krowę na trampolinie?|Koktajl mleczny! (milkshake = koktajl mleczny, a shake = trząść się)
-4|Why did the scarecrow win a prize?|Because he was outstanding in his field!|Dlaczego strach na wróble dostał nagrodę?|Bo wyróżniał się w swojej dziedzinie! (field = pole i dziedzina)
+4|What is a cat's favourite dessert?|Mice cream!|Jaki deser kot lubi najbardziej?|Myszkolody! (mice = myszy, ice cream = lody)
 4|Why are fish so smart?|Because they live in schools!|Dlaczego ryby są takie mądre?|Bo żyją w szkołach! (school = szkoła i ławica ryb)
 4|What is a ghost's favourite fruit?|Boo-berries!|Jaki jest ulubiony owoc ducha?|Buu-jagody! (boo = okrzyk ducha, blueberries = jagody)
 4|What goes around the world but stays in a corner?|A stamp!|Co obiega świat, a stoi w rogu?|Znaczek pocztowy!
-4|Why did the sun not go to university?|It already had a million degrees!|Dlaczego słońce nie poszło na uniwersytet?|Miało już milion stopni! (degree = stopień i dyplom)
+4|Why did the sun go to school?|To get brighter!|Dlaczego słońce poszło do szkoły?|Żeby stać się jaśniejsze! (bright = jasny i bystry)
 4|What do you call a boomerang that does not come back?|A stick!|Jak nazwać bumerang, który nie wraca?|Patyk!
 5|Why did the computer go to the doctor?|It had a virus!|Dlaczego komputer poszedł do lekarza?|Miał wirusa!
 5|Why did the music teacher need a ladder?|To reach the high notes!|Dlaczego nauczyciel muzyki potrzebował drabiny?|Żeby sięgnąć wysokich nut!
 5|What do you call a sleeping dinosaur?|A dino-snore!|Jak nazwać śpiącego dinozaura?|Dino-chrapacz! (snore = chrapać, brzmi jak „dinosaur”)
 5|Why do bananas never feel lonely?|Because they hang around in bunches!|Dlaczego banany nigdy nie są samotne?|Bo zawsze trzymają się w kiści! (bunch = kiść i paczka przyjaciół)
 5|What did one wall say to the other?|I will meet you at the corner!|Co jedna ściana powiedziała drugiej?|Spotkamy się na rogu!
-5|Why did the tomato turn red?|Because it saw the salad dressing!|Dlaczego pomidor się zaczerwienił?|Bo zobaczył sos sałatkowy! (dressing = sos i ubieranie się)
+5|Why did the chicken join a band?|Because it had drumsticks!|Dlaczego kurczak dołączył do zespołu?|Bo miał pałeczki do perkusji! (drumstick = pałeczka i udko kurczaka)
 5|What do you call a cold dog?|A chili dog!|Jak nazwać zmarzniętego psa?|Chili-dog! (chilly = zmarznięty, a chili dog to hot dog z ostrym sosem)
-5|What do you call a fake noodle?|An impasta!|Jak nazwać fałszywy makaron?|Makaronowy oszust! (impasta brzmi jak „impostor” = oszust, pasta = makaron)
+5|Why is the sky so high?|So birds don't bump their heads!|Dlaczego niebo jest tak wysoko?|Żeby ptaki nie uderzały się w głowy!
 5|Why did the girl put sugar under her pillow?|To have sweet dreams!|Dlaczego dziewczynka włożyła cukier pod poduszkę?|Żeby mieć słodkie sny! (sweet dreams = słodkich snów)
-5|What do you call a bear in the rain?|A drizzly bear!|Jak nazwać niedźwiedzia w deszczu?|Mżawkowy miś! (drizzly = mżawkowy, brzmi jak „grizzly” = niedźwiedź grizzly)
+5|How do you catch a squirrel?|Climb a tree and act like a nut!|Jak złapać wiewiórkę?|Wejdź na drzewo i udawaj orzecha!
 6|Why did the teacher wear sunglasses?|Because her students were so bright!|Dlaczego nauczycielka nosiła okulary przeciwsłoneczne?|Bo jej uczniowie byli tacy bystrzy! (bright = jasny i bystry)
 6|What do you call a train that sneezes?|A choo-choo achoo train!|Jak nazwać pociąg, który kicha?|Pociąg apsik! (choo-choo to dźwięk pociągu, achoo = apsik)
 6|What did one pencil say to the other?|You're looking sharp!|Co jeden ołówek powiedział do drugiego?|Ale z ciebie elegant! (sharp = ostry i elegancki)
 6|Why did the cookie go to school?|To become a smart cookie!|Dlaczego ciastko poszło do szkoły?|Żeby zostać bystrzakiem! (smart cookie = bystrzak, dosłownie „mądre ciastko”)
-6|Why can't you trust stairs?|They are always up to something!|Dlaczego nie można ufać schodom?|Zawsze coś knują! (up = w górę, up to something = coś kombinować)
+6|How do trees get online?|They log in!|Jak drzewa wchodzą do internetu?|Logują się! (log = kłoda, log in = zalogować się)
 6|What did the left eye say to the right eye?|Between us, something smells!|Co lewe oko powiedziało prawemu?|Między nami, coś tu pachnie! (między oczami jest nos)
 6|How do you organise a space party?|You planet!|Jak zorganizować kosmiczną imprezę?|Planetujesz! (plan it = zaplanuj to, planet = planeta)
 6|Why did the cow go to space?|To see the Milky Way!|Dlaczego krowa poleciała w kosmos?|Żeby zobaczyć Drogę Mleczną! (milky = mleczny)
@@ -75,17 +75,17 @@ const JOKE_DATA = `
 6|What has more letters than the alphabet?|The post office!|Co ma więcej liter niż alfabet?|Poczta! (letter = litera i list)
 7|Why do programmers prefer dark mode?|Because light attracts bugs!|Dlaczego programiści wolą ciemny motyw?|Bo światło przyciąga robaki! (bug = robak i błąd w programie)
 7|Why did the smartphone need glasses?|It lost all its contacts!|Dlaczego smartfon potrzebował okularów?|Zgubił wszystkie kontakty! (contacts = kontakty i soczewki kontaktowe)
-7|What do you call a fish wearing a bow tie?|Sofishticated!|Jak nazwać rybę w muszce?|Wyrafinowana! (so-fish-ticated = sophisticated + fish)
+7|What sound does a nut make when it sneezes?|Cashew!|Jaki dźwięk wydaje orzech, kiedy kicha?|„Kaszju!” (cashew = orzech nerkowca, brzmi jak kichnięcie „achoo”)
 7|Why was the broom late?|It over-swept!|Dlaczego miotła się spóźniła?|Zaspała! (over-swept brzmi jak „overslept” = zaspać, a sweep = zamiatać)
-7|What do you call an alligator in a vest?|An investigator!|Jak nazwać aligatora w kamizelce?|Śledczy! (in-vest-igator = investigator + vest = kamizelka)
+7|Why did the robot go back to school?|Because its skills were getting rusty!|Dlaczego robot wrócił do szkoły?|Bo zardzewiał w nauce! (rusty = zardzewiały i „wyszły z wprawy”)
 7|Why did the gardener plant lightbulbs?|He wanted a power plant!|Dlaczego ogrodnik posadził żarówki?|Chciał mieć elektrownię! (power plant = elektrownia, plant = sadzić i roślina)
-7|Why did the library book go to the gym?|To work on its volume!|Dlaczego książka poszła na siłownię?|Żeby popracować nad objętością! (volume = tom, objętość i głośność)
-7|Why did the clock get sent to the principal's office?|It talked too much, or tocked too much!|Dlaczego zegar wysłano do dyrektora?|Za dużo gadał, czyli „tykał”! (tock = tyk, brzmi jak „talk” = gadać)
+7|What do lazy dogs do for fun?|Chase parked cars!|Co robią leniwe psy dla zabawy?|Gonią zaparkowane samochody!
+7|What do you call a dog that loves bubble baths?|A shampoodle!|Jak nazwać psa, który uwielbia kąpiele z pianą?|Szamponudel! (shampoo = szampon + poodle = pudel)
 7|Why can't you give Elsa a balloon?|Because she will let it go!|Dlaczego nie można dać Elsie balonika?|Bo go puści! (let it go = puść to – i piosenka z „Krainy lodu”)
 7|Why is a river rich?|Because it has two banks!|Dlaczego rzeka jest bogata?|Bo ma dwa brzegi! (bank = brzeg i bank)
 8|Why did the scientist take a ladder to the lab?|He wanted to reach a higher level of knowledge!|Dlaczego naukowiec zabrał drabinę do laboratorium?|Chciał osiągnąć wyższy poziom wiedzy!
 8|What did the zero say to the eight?|Nice belt!|Co zero powiedziało ósemce?|Ładny pasek! (ósemka wygląda jak zero z paskiem)
-8|What do you call a belt made of watches?|A waist of time!|Jak nazwać pasek zrobiony z zegarków?|Strata czasu! (waist = talia, brzmi jak „waste” = strata)
+8|What did one volcano say to the other?|I lava you!|Co jeden wulkan powiedział do drugiego?|Kocham cię! (lava = lawa, brzmi jak „love” = kochać)
 8|What did the stamp say to the envelope?|Stick with me and we will go places!|Co znaczek powiedział do koperty?|Trzymaj się mnie, a daleko zajdziemy! (stick = przykleić się i trzymać się razem)
 8|How do you make seven an even number?|Take away the 's'!|Jak zrobić z siódemki liczbę parzystą?|Zabierz „s”! (seven bez „s” to even = parzysta)
 8|Why did the student study on an airplane?|He wanted a higher education!|Dlaczego uczeń uczył się w samolocie?|Chciał wyższego wykształcenia! (higher = wyżej i wyższe)
@@ -103,7 +103,7 @@ const JOKE_DATA = `
 1|What has ears but cannot hear?|A cornfield!|Co ma kłosy-uszy, ale nic nie słyszy?|Pole kukurydzy! (ear = ucho i kłos)
 1|What do frogs order at a restaurant?|French flies!|Co żaby zamawiają w restauracji?|Frytki z muchami! (French fries = frytki, flies = muchy)
 1|Why do cows wear bells?|Because their horns don't work!|Dlaczego krowy noszą dzwonki?|Bo ich rogi nie trąbią! (horn = róg i klakson)
-2|Which animal is always at a cricket match?|A bat!|Które zwierzę zawsze jest na meczu krykieta?|Nietoperz! (bat = nietoperz i kij do krykieta)
+2|What do bees chew?|Bumble gum!|Co żują pszczoły?|Gumę do bzzzucia! (bumble bee = trzmiel, bubble gum = guma do żucia)
 2|What is a snake's favourite subject?|Hiss-tory!|Jaki jest ulubiony przedmiot węża?|Historia! (hiss = syczeć, history = historia)
 2|Why don't elephants use computers?|They are afraid of the mouse!|Dlaczego słonie nie używają komputerów?|Boją się myszki!
 2|What do you call a fly without wings?|A walk!|Jak nazwać muchę bez skrzydeł?|Spacer! (fly = mucha i latać, walk = chodzić)
@@ -123,15 +123,15 @@ const JOKE_DATA = `
 5|Why did the robot go on holiday?|It needed to recharge its batteries!|Dlaczego robot pojechał na wakacje?|Musiał naładować baterie!
 5|What do you call a snowman in summer?|A puddle!|Jak nazwać bałwana latem?|Kałuża!
 5|Why is the letter A like a flower?|Because a B comes after it!|Dlaczego litera A jest jak kwiat?|Bo zaraz za nią leci B! (B brzmi jak bee = pszczoła)
-6|What did one plate say to the other?|Dinner is on me!|Co jeden talerz powiedział do drugiego?|Obiad jest na mnie! (on me = na mnie i „ja stawiam”)
+6|What did the traffic light say to the car?|Don't look, I'm changing!|Co sygnalizator powiedział do samochodu?|Nie patrz, przebieram się! (change = zmieniać światła i przebierać się)
 6|Why are elephants so wrinkled?|Because they don't fit on the ironing board!|Dlaczego słonie są takie pomarszczone?|Bo nie mieszczą się na desce do prasowania!
 6|Why did the clock go to the doctor?|Because it was running slow!|Dlaczego zegar poszedł do lekarza?|Bo się spóźniał! (running slow = spóźniać się, dosłownie „biec wolno”)
 6|What do clouds wear?|Thunderwear!|Co noszą chmury?|Burzo-majtki! (underwear = bielizna, thunder = grzmot)
 6|Why did the barber win the race?|He knew a short cut!|Dlaczego fryzjer wygrał wyścig?|Znał skrót! (short cut = skrót i krótkie strzyżenie)
-7|I'm reading a book about anti-gravity.|It's impossible to put down!|Czytam książkę o antygrawitacji.|Nie da się jej odłożyć! (put down = odłożyć)
-7|What do you call a deer with no eyes?|No idea!|Jak nazwać jelenia bez oczu?|Nie mam pojęcia! („no idea” brzmi jak „no eye deer” = jeleń bez oka)
+7|Why don't oysters share their pearls?|Because they are shellfish!|Dlaczego ostrygi nie dzielą się perłami?|Bo są samolubne! (shellfish = skorupiaki, brzmi jak „selfish” = samolubny)
+7|Why are fish easy to weigh?|Because they have their own scales!|Dlaczego łatwo zważyć rybę?|Bo ma własną wagę! (scales = łuski i waga)
 7|Why did the student bring a pillow to the history lesson?|The teacher said it would be about the Dark Ages!|Dlaczego uczeń przyniósł poduszkę na historię?|Pani mówiła, że lekcja będzie o „ciemnych wiekach”! (Dark Ages = wczesne średniowiecze)
-8|Why don't scientists trust atoms?|Because they make up everything!|Dlaczego naukowcy nie ufają atomom?|Bo one wszystko zmyślają! (make up = tworzyć i zmyślać)
+8|Why did the bee get married?|Because it found its honey!|Dlaczego pszczoła wzięła ślub?|Bo znalazła swoje kochanie! (honey = miód i „kochanie”)
 8|What did the triangle say to the circle?|You're pointless!|Co trójkąt powiedział do koła?|Jesteś bez sensu! (pointless = bezsensowny, dosł. „bez rogów”)
 0|What is black and white and eats bamboo?|A panda!|Kto jest czarno-biały i je bambus?|Panda!
 0|Who says oink?|A pig!|Kto mówi „chrum”?|Świnka!
@@ -144,7 +144,7 @@ const JOKE_DATA = `
 4|Why are piggy banks so wise?|They are full of common cents!|Dlaczego świnki-skarbonki są takie mądre?|Bo są pełne zdrowego rozsądku! (cents = centy, brzmi jak „sense” = rozsądek)
 5|What do you call a dog that can tell the time?|A watchdog!|Jak nazwać psa, który zna się na zegarku?|Pies-zegarek! (watchdog = pies stróżujący, watch = zegarek)
 6|What has four wheels and flies?|A rubbish truck!|Co ma cztery koła i muchy?|Śmieciarka! (flies = lata i muchy)
-7|What did the paper say to the pencil?|Write on!|Co kartka powiedziała do ołówka?|Pisz dalej! (write on brzmi jak „right on” = świetnie)
+7|Why did the teacher draw on the window?|She wanted the lesson to be very clear!|Dlaczego pani rysowała na oknie?|Chciała, żeby lekcja była bardzo jasna! (clear = przezroczysty i zrozumiały)
 7|What do you call a pile of cats?|A meowtain!|Jak nazwać górę kotów?|Miaukowa góra! (meow + mountain = góra)
 7|Why was the computer cold?|It left its Windows open!|Dlaczego komputer zmarzł?|Zostawił otwarte okna! (Windows = system komputera i okna)
 8|What do you get if you cross a fish and an elephant?|Swimming trunks!|Co powstanie ze skrzyżowania ryby i słonia?|Kąpielówki! (trunk = trąba słonia, a swimming trunks = kąpielówki)
