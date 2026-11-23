@@ -42,32 +42,55 @@ const gameById = (id) => GAMES.find((game) => game.id === id);
 // ====================================================================
 const isGameOwned = (id) => state.games.owned.includes(id);
 
-// ---------- slow unlocking: every 3 finished exercises open 2 more rewards, at most 9 exercises a day count ----------
-const UNLOCK_EVERY_EXERCISES = 3;
+// ---------- unlocking rewards step by step ----------
+// The first Zadanie dnia opens the first joke, riddle and game. After that every 2 finished exercises open
+// one more reward, always in the order joke → riddle → game → joke → … At most 9 exercises a day count.
+const UNLOCK_EVERY_EXERCISES = 2;
 const UNLOCK_DAILY_MAX = 9;
-const UNLOCK_PER_STEP = 2;
-const UNLOCK_AT_START = 2;
-/** Order in which reward "slots" open; games are the rarest. */
-const UNLOCK_PATTERN = ["joke", "riddle", "joke", "riddle", "game"];
+const UNLOCK_AT_START = 3;
+const UNLOCK_PATTERN = ["joke", "riddle", "game"];
 
-const unlockedSlots = (exercises) => UNLOCK_AT_START + UNLOCK_PER_STEP * Math.floor(exercises / UNLOCK_EVERY_EXERCISES);
+/** Has the first Zadanie dnia been done (so rewards started to open)? */
+const unlockStarted = () => Boolean(state.games.unlockStarted);
 
-/** How many rewards of a type ("joke" | "riddle" | "game") are unlocked after a number of exercises. */
+/** Rewards opened so far (slots in UNLOCK_PATTERN order), counted from the moment unlocking started. */
+function unlockedSlots(exercises = state.games.unlockProgress) {
+  if (!unlockStarted()) return 0;
+  const start = state.games.unlockLegacy ? 0 : UNLOCK_AT_START; // players from the old system continue from what they had
+  return start + Math.floor(Math.max(0, exercises - (state.games.unlockBase || 0)) / UNLOCK_EVERY_EXERCISES);
+}
+
+/** How many rewards of a type ("joke" | "riddle" | "game") are open after a number of exercises. */
 function unlockedCount(type, exercises = state.games.unlockProgress) {
   const slots = unlockedSlots(exercises);
-  let count = 0;
+  let count = (state.games.unlockLegacy && state.games.unlockLegacy[type]) || 0;
   for (let slot = 0; slot < slots; slot++) if (UNLOCK_PATTERN[slot % UNLOCK_PATTERN.length] === type) count++;
   return count;
 }
 
-/** Exercises still needed until at least `needed` rewards of the type are unlocked. */
+/** Exercises still needed until at least `needed` rewards of the type are open (0 before the first Zadanie dnia). */
 function exercisesUntilUnlocked(type, needed) {
-  if (state.testUnlock) return 0;
+  if (state.testUnlock || !unlockStarted()) return 0;
   const start = Number(state.games.unlockProgress) || 0;
   let exercises = start;
   // Safety limit: needed rewards always open within a few hundred exercises; never loop forever.
   while (unlockedCount(type, exercises) < needed && exercises - start < 10000) exercises++;
   return exercises - start;
+}
+
+/** "po pierwszym Zadaniu dnia" or "za 4 ćwiczenia" – shown on padlocks and in messages. */
+function unlockWaitText(type, needed) {
+  if (!state.testUnlock && !unlockStarted()) return "po pierwszym Zadaniu dnia";
+  const missing = exercisesUntilUnlocked(type, needed);
+  return `za ${missing} ${exercisesWord(missing)}`;
+}
+
+/** Called when the first Zadanie dnia is done: the first joke, riddle and game open. */
+function startUnlocking() {
+  if (unlockStarted()) return false;
+  state.games.unlockStarted = true;
+  state.games.unlockBase = state.games.unlockProgress || 0;
+  return true;
 }
 
 /** May the pupil buy one more reward of this type? */
@@ -124,8 +147,7 @@ function buyGame(id) {
   if (!game || isGameOwned(id)) return;
   if (!isGameUnlocked(id)) {
     sfx("bad");
-    const missing = exercisesUntilUnlocked("game", gameIndex(id) + 1);
-    toast(`🔒 Ta gierka odblokuje się za ${missing} ${exercisesWord(missing)}.`);
+    toast(`🔒 Ta gierka odblokuje się ${unlockWaitText("game", gameIndex(id) + 1)}.`);
     return;
   }
   if (state.gems < GAME_PRICE) {

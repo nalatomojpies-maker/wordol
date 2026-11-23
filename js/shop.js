@@ -66,6 +66,10 @@ function recordDailyResult(finishedSession) {
   let bonus = 0;
   if (task.results.length >= task.modes.length) {
     task.done = true;
+    if (startUnlocking()) { // the very first Zadanie dnia: the first joke, riddle and game open
+      finishedSession.firstRewards = true;
+      finishedSession.unlocked = true;
+    }
     bonus = DAILY_BONUS_GEMS + Math.min(currentStreak(), DAILY_STREAK_BONUS_MAX);
     addGems(bonus);
     state.calendar[todayIso()] = { gems: task.results.reduce((sum, entry) => sum + entry.gems, 0) + bonus, at: Date.now() };
@@ -126,9 +130,8 @@ let lastBoughtRiddleId = null;
 /** Checks the slow unlocking; tells the pupil how many exercises are still needed. */
 function rewardUnlocked(type, ownedCount) {
   if (canUnlockMore(type, ownedCount)) return true;
-  const missing = exercisesUntilUnlocked(type, ownedCount + 1);
   sfx("bad");
-  toast(`🔒 Odblokujesz za ${missing} ${exercisesWord(missing)}.`);
+  toast(`🔒 Odblokujesz ${unlockWaitText(type, ownedCount + 1)}.`);
   return false;
 }
 
@@ -204,12 +207,12 @@ function speakJoke(id) {
 }
 
 /** A locked shelf item: opens after more finished exercises. */
-function lockedItemHtml(icon, title, missing) {
+function lockedItemHtml(icon, title, waitText) {
   return `
     <article class="shelf-item locked">
       <div class="shelf-icon">🔒</div>
       <b>${esc(title)}</b>
-      <small class="muted">${icon} odblokujesz za ${missing} ${exercisesWord(missing)}</small>
+      <small class="muted">${icon} odblokujesz ${esc(waitText)}</small>
       <button class="btn" disabled>Zablokowane</button>
     </article>`;
 }
@@ -234,7 +237,7 @@ function renderShop() {
   /** A hidden reward: nobody knows what is inside until it is bought. Beyond what is unlocked so far it shows a padlock. */
   const card = (type, title, icon, price, action, id, needed) => (state.testUnlock || needed <= unlockedCount(type)
     ? shelfItemHtml("🎁", title, "niespodzianka", price, action, id)
-    : lockedItemHtml(icon, title, exercisesUntilUnlocked(type, needed)));
+    : lockedItemHtml(icon, title, unlockWaitText(type, needed)));
   const jokeCards = queue.jokes.map((joke, index) => card("joke", "Dowcip", "😄", JOKE_PRICE, "buyJoke", joke.id, state.jokes.owned.length + index + 1));
   const riddleCards = queue.riddles.map((riddle, index) => card("riddle", "Zagadka", "🧩", JOKE_PRICE, "buyRiddle", riddle.id, state.riddles.owned.length + index + 1));
   const gameCards = queue.games.map((game) => card("game", "Gierka", "🎮", GAME_PRICE, "buyGame", game.id, gameIndex(game.id) + 1));
@@ -289,11 +292,10 @@ function renderRiddles() {
 // ---------- games ----------
 function gameTileHtml(game) {
   if (!isGameOwned(game.id) && !state.testUnlock && !isGameUnlocked(game.id)) {
-    const missing = exercisesUntilUnlocked("game", gameIndex(game.id) + 1);
     return `
       <article class="game-tile locked">
         <span class="game-tile-icon">🔒</span><b>${esc(game.name)}</b><small class="muted">${esc(game.desc)}</small>
-        <small>Odblokujesz za ${missing} ${exercisesWord(missing)}</small>
+        <small>Odblokujesz ${unlockWaitText("game", gameIndex(game.id) + 1)}</small>
       </article>`;
   }
   const best = bestScore(game.id);
@@ -431,10 +433,12 @@ function dailyTaskHtml(goal, answersCount) {
 function renderRewards() {
   const monthPrefix = todayIso().slice(0, 7);
   const rewardDays = Object.keys(state.calendar).filter((key) => key.startsWith(monthPrefix)).length;
-  const nextUnlockIn = UNLOCK_EVERY_EXERCISES - (state.games.unlockProgress % UNLOCK_EVERY_EXERCISES);
-  const unlockBadge = unlockLeftToday() === 0
-    ? `<span class="badge" title="Dziennie do odblokowania liczy się ${UNLOCK_DAILY_MAX} ćwiczeń">🔓 Nowe nagrody jutro</span>`
-    : `<span class="badge" title="Co ${UNLOCK_EVERY_EXERCISES} ukończone ćwiczenia odblokowują się ${UNLOCK_PER_STEP} nowe nagrody">🔓 Nowe nagrody za ${nextUnlockIn} ${exercisesWord(nextUnlockIn)}</span>`;
+  const nextUnlockIn = UNLOCK_EVERY_EXERCISES - (Math.max(0, state.games.unlockProgress - (state.games.unlockBase || 0)) % UNLOCK_EVERY_EXERCISES);
+  const unlockBadge = !unlockStarted()
+    ? `<span class="badge" title="Pierwszy dowcip, zagadka i gierka odblokują się po pierwszym Zadaniu dnia">🔓 Pierwsze nagrody po Zadaniu dnia</span>`
+    : unlockLeftToday() === 0
+      ? `<span class="badge" title="Dziennie do odblokowania liczy się ${UNLOCK_DAILY_MAX} ćwiczeń">🔓 Nowa nagroda jutro</span>`
+      : `<span class="badge" title="Co ${UNLOCK_EVERY_EXERCISES} ukończone ćwiczenia odblokowuje się kolejna nagroda: dowcip, zagadka, gierka…">🔓 Nowa nagroda za ${nextUnlockIn} ${exercisesWord(nextUnlockIn)}</span>`;
   app.innerHTML = `
     <section class="card hero">
       ${rychuBubble("cheer", "Tu zbierasz nagrody! Klejnoty dostajesz za Zadanie dnia i za skrzynie z dodatkowego treningu, a w sklepiku kupisz za nie dowcipy, zagadki i gierki.", 84)}

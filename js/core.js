@@ -247,6 +247,22 @@ if (state.settings.theme === "cvd") state.settings.theme = "lowvision";
 // quiet mode (top bar) and "Brak dźwięku" (Profil) are one option now
 if (state.settings.quiet || state.settings.noSound) { state.settings.quiet = true; state.settings.noSound = true; }
 if (!Number.isFinite(state.games.unlockProgress)) state.games.unlockProgress = Number(state.games.exercises) || 0;
+// Rewards unlock v2 (first Zadanie dnia → joke, riddle, game; then one every 2 exercises).
+// Players who already used the old system keep everything it had opened and continue from there.
+if (!state.games.unlockV2) {
+  const progress = state.games.unlockProgress;
+  const usedBefore = progress > 0 || Object.keys(state.calendar).length > 0 || state.jokes.owned.length + state.riddles.owned.length + state.games.owned.length > 0;
+  if (usedBefore) {
+    const oldSlots = 2 + 2 * Math.floor(progress / 3);
+    const oldPattern = ["joke", "riddle", "joke", "riddle", "game"];
+    const legacy = { joke: 0, riddle: 0, game: 0 };
+    for (let slot = 0; slot < oldSlots; slot++) legacy[oldPattern[slot % oldPattern.length]]++;
+    state.games.unlockLegacy = legacy;
+    state.games.unlockStarted = true;
+    state.games.unlockBase = progress;
+  }
+  state.games.unlockV2 = true;
+}
 if (!state.games.unlockToday || typeof state.games.unlockToday !== "object") state.games.unlockToday = { day: "", count: 0 };
 
 function saveState() {

@@ -346,7 +346,8 @@ function renderResult() {
       ${session.dailyDone ? `<div class="banner">🎉 Zadanie dnia ukończone! Nagroda zapisana w kalendarzu.</div>` : ""}
       ${session.chestOpened ? `<div class="banner">🧰 Skrzynia skarbów otwarta!</div>` : ""}
       ${session.chestProgress && !session.chestOpened ? `<div class="banner">${extraChestLine()}</div>` : ""}
-      ${session.unlocked ? `<div class="banner">🔓 W sklepiku odblokowała się nowa nagroda!</div>` : ""}
+      ${session.firstRewards ? `<div class="banner">🎁 W sklepiku czekają pierwsze nagrody: dowcip, zagadka i gierka!</div>`
+        : session.unlocked ? `<div class="banner">🔓 W sklepiku odblokowała się nowa nagroda!</div>` : ""}
       ${session.goalReached ? `<div class="banner">${esc(rychuLine("goalDone"))}</div>` : ""}
       ${session.earned.length > 0 ? `<div class="banner badge-banner">🏅 ${session.earned.length === 1 ? "Nowa odznaka" : "Nowe odznaki"}: ${session.earned.slice(0, 3).map((badge) => `${badge.icon} ${esc(badge.name)}`).join(", ")}${session.earned.length > 3 ? ` i jeszcze ${session.earned.length - 3}` : ""}
         <button class="link" data-action="nav" data-view="stats">Zobacz</button></div>` : ""}
@@ -357,9 +358,11 @@ function renderResult() {
   // rewards to collect: the chest (tap 3×) first, then each new badge (tap it)
   if (!session.celebrated && (session.chestOpened || session.earned.length > 0)) {
     session.celebrated = true;
-    setTimeout(() => celebrate([
+    // built now: the pupil may leave the result screen before the rewards appear
+    const rewards = [
       ...(session.chestOpened ? [{ type: "chest", gems: EXTRA_CHEST_GEMS }] : []),
       ...session.earned.map((badge) => ({ type: "badge", badge })),
-    ]), 900);
+    ];
+    setTimeout(() => celebrate(rewards), 900);
   }
 }

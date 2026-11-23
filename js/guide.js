@@ -83,7 +83,7 @@ const GUIDE_SECTIONS = [
     html: `<p class="guide-lead">Za klejnoty 💎 dziecko kupuje w <b>sklepiku</b> niespodzianki. Co jest w środku, widać dopiero po zakupie.</p>
       ${gFacts([["😄 Dowcip", "3 💎"], ["🧩 Zagadka", "3 💎"], ["🎮 Gierka", "12 💎"]])}
       ${gBoxes([
-        ["🔒", "Nagrody odblokowują się powoli", "<p>Co 3 ukończone ćwiczenia – 2 nowe nagrody. Dziennie liczy się do tego najwyżej 9 ćwiczeń, więc nagród starcza na dłużej.</p>"],
+        ["🔒", "Nagrody odblokowują się po kolei", "<p>Pierwsze <b>Zadanie dnia</b> otwiera pierwszy dowcip, pierwszą zagadkę i pierwszą gierkę. Potem co <b>2 ukończone ćwiczenia</b> otwiera się jedna kolejna nagroda – zawsze w kolejności dowcip → zagadka → gierka. Dziennie liczy się do tego najwyżej 9 ćwiczeń, więc nagród starcza na długo.</p>"],
         ["🔋", "Gierki się ładują", "<p>Krótkie, spokojne, bez przemocy. Po zagraniu znów dostępne po 3 ukończonych ćwiczeniach.</p>"],
         ["🏅", "140 odznak", "<p>Za treningi, serie dni, opanowane słowa, bezbłędne ćwiczenia, święta i więcej. Nową odznakę dziecko odbiera kliknięciem.</p>"],
       ])}
@@ -131,7 +131,7 @@ const GUIDE_FAQ = [
   ["Jak ćwiczyć tylko słówka z kartkówki?", "Profil → Dodaj słowa: wpisz słówka (np. „apple - jabłko”, każde w nowym wierszu) i kliknij „🎯 Ćwicz dodane słowa”. Możesz też w Ustawieniach treningu wybrać tylko jeden zbiór tematyczny."],
   ["Jak wydrukować słówka albo zapisać je jako PDF?", "Trening → Ustawienia treningu → 📖 Podejrzyj materiał → 🖨️ Drukuj / PDF. W oknie drukowania wybierz drukarkę albo „Zapisz jako PDF”."],
   ["Dziecko nie słyszy lektora. Co zrobić?", "Sprawdź głośność urządzenia i to, czy nie jest włączony tryb cichy (🔇 u góry). W Profilu użyj „🔊 Sprawdź lektora”. Jeśli na urządzeniu nie ma angielskiego głosu, doinstaluj go w ustawieniach systemu (mowa / zamiana tekstu na mowę) albo włącz tryb cichy – ćwiczenia z lektorem zostaną ukryte."],
-  ["Dlaczego w sklepiku są kłódki?", "Nagrody odblokowują się stopniowo: co 3 ukończone ćwiczenia 2 nowe, a dziennie liczy się do tego najwyżej 9 ćwiczeń. Na kłódce widać, ile ćwiczeń zostało."],
+  ["Dlaczego w sklepiku są kłódki?", "Nagrody otwierają się po kolei: pierwsze trzy (dowcip, zagadka, gierka) po pierwszym Zadaniu dnia, potem jedna co 2 ukończone ćwiczenia, a dziennie liczy się do tego najwyżej 9 ćwiczeń. Na kłódce widać, kiedy się otworzy."],
   ["Dlaczego gierka się nie uruchamia?", "Po zagraniu gierka się „ładuje” – można zagrać znowu po 3 ukończonych ćwiczeniach. Postęp widać w Nagrody → Moje gierki."],
   ["Co się stanie po zmianie klasy?", "Zmienia się zakres słówek, dostępne ćwiczenia i lekcje. Zdobyte postępy, nagrody i odznaki zostają."],
   ["Dziecko robi za dużo albo za mało?", "Cel dnia i Zadanie dnia są dopasowane do klasy. Tempo nagród jest celowo spokojne. W Wynikach widać czas nauki, kalendarz i wykres aktywności."],
