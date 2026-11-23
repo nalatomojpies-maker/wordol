@@ -17,7 +17,7 @@ const TUTORIAL_STEPS = [
   { target: ".nav [data-view='learn']", text: "🎓 Nauka – lekcje gramatyki krok po kroku. Najpierw krótka karta, potem ćwiczenie." },
   { target: ".nav [data-view='rewards']", text: "🎁 Nagrody – sklepik z niespodziankami oraz Twoje dowcipy, zagadki i gierki." },
   { target: ".nav [data-view='stats']", text: "📊 Wyniki – Twoje postępy, odznaki i słówka do powtórki." },
-  { target: ".nav [data-view='settings']", text: "👤 Profil – imię, klasa, dźwięk i wygląd. Tu obejrzysz jeszcze raz ten samouczek, a rodzice znajdą swój przewodnik." },
+  { target: ".nav [data-view='settings']", text: "👤 Profil – imię, klasa, dźwięk i wygląd. Tu obejrzysz jeszcze raz ten przewodnik, a rodzice znajdą swój przewodnik." },
   { target: "#musicBtn", text: "🔇 To tryb cichy: wyłącza wszystkie dźwięki – muzykę, melodyjki i lektora – i ukrywa ćwiczenia z lektorem. Muzykę samą wyłączysz w Profilu." },
   { text: "To wszystko! Zacznij od Zadania dnia. Powodzenia{name}! 🦉" },
 ];
@@ -47,7 +47,7 @@ function startTutorial() {
   tutorialIndex = 0;
   activeTutorialSteps = TUTORIAL_STEPS.filter((step) => !step.when || step.when());
   document.body.insertAdjacentHTML("beforeend", `
-    <div id="tutorial" class="tutorial" role="dialog" aria-modal="true" aria-live="polite" aria-label="Samouczek">
+    <div id="tutorial" class="tutorial" role="dialog" aria-modal="true" aria-live="polite" aria-label="Przewodnik">
       <div class="tutorial-hole"></div>
       <div class="tutorial-bubble">
         <div class="tutorial-rychu">${rychuSvg("cheer", 56)}</div>
@@ -174,12 +174,12 @@ function showTutorialChooser(force = false) {
         <div class="modal-rychu">${rychuSvg("cheer", 76)}</div>
         <h2 id="tutorialChooserTitle">🧭 Pokazać, jak działa WORD4ALL?</h2>
         <div class="modal-actions">
-          <button class="btn primary big" data-action="chooseTutorialKids">🧒 Samouczek dla dzieci</button>
+          <button class="btn primary big" data-action="chooseTutorialKids">🧒 Przewodnik dla dzieci</button>
           <button class="btn big" data-action="chooseTutorialParents">📘 Przewodnik dla rodziców</button>
           <button class="btn ghost" data-action="chooseTutorialNone">Nie teraz</button>
         </div>
         <label class="check" style="margin-top:12px"><input type="checkbox" id="tutorialChooserOff"> Nie pokazuj więcej</label>
-        <p class="small muted center-text">Oba samouczki znajdziesz zawsze w <b>Profilu</b>, w sekcji <b>„Zacznij od nowa”</b>.</p>
+        <p class="small muted center-text">Oba przewodniki znajdziesz zawsze w <b>Profilu</b>, w sekcji <b>„Zacznij od nowa”</b>.</p>
       </div>
     </div>`);
   setPageInert(true);

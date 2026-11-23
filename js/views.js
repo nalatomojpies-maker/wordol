@@ -269,12 +269,12 @@ function renderSettings() {
     </section>
     <section class="card danger-zone">
       <h2>Zacznij od nowa</h2>
-      <h3>🧭 Samouczki</h3>
+      <h3>🧭 Przewodniki</h3>
       <div class="row">
-        <button class="btn" data-action="startTutorial">🧒 Samouczek dla dzieci</button>
+        <button class="btn" data-action="startTutorial">🧒 Przewodnik dla dzieci</button>
         <button class="btn" data-action="nav" data-view="guide">📘 Przewodnik dla rodziców</button>
       </div>
-      <label class="check" style="margin-top:10px"><input type="checkbox" data-setting="tutorialChooser" ${settings.tutorialChooserOff ? "" : "checked"}> Pokazuj wybór samouczka przy każdym uruchomieniu</label>
+      <label class="check" style="margin-top:10px"><input type="checkbox" data-setting="tutorialChooser" ${settings.tutorialChooserOff ? "" : "checked"}> Pokazuj wybór przewodnika przy każdym uruchomieniu</label>
       <h3>🗑️ Wyczyść profil</h3>
       <p class="muted">Usuwa imię, klasę, postępy, XP, odznaki, własne słowa i ustawienia z tego urządzenia. Nie da się tego cofnąć.</p>
       <button class="btn danger" data-action="resetProfile">🗑️ Wyczyść profil</button>

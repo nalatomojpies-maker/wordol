@@ -90,7 +90,7 @@ const GUIDE_SECTIONS = [
         <li><b>🔇 Tryb cichy</b> (też przycisk 🔊 u góry) – wyłącza muzykę, efekty i lektora oraz <b>ukrywa ćwiczenia z lektorem</b> (np. Dyktando). Przydatny w szkole lub autobusie.</li>
         <li><b>Muzyka, efekty, automatyczne czytanie słów</b> i <b>🔊 Sprawdź lektora</b> – test, czy na urządzeniu działa angielski głos.</li>
         <li><b>Dodawanie własnych słów</b> – np. ze szkolnej kartkówki. Wpisz parę „apple - jabłko” albo samo słowo (tłumaczenie z bazy lub ze słownika online MyMemory). Trafiają do zbioru „⭐ Dodane słowa”.</li>
-        <li><b>Zacznij od nowa → Samouczki:</b> samouczek dla dziecka i ten przewodnik. Przy uruchomieniu aplikacja pyta, który pokazać – aż do zaznaczenia „Nie pokazuj więcej” (można to zmienić tutaj: „Pokazuj wybór samouczka przy każdym uruchomieniu”).</li>
+        <li><b>Zacznij od nowa → Przewodniki:</b> przewodnik dla dziecka i ten przewodnik dla rodziców. Przy uruchomieniu aplikacja pyta, który pokazać – aż do zaznaczenia „Nie pokazuj więcej” (można to zmienić tutaj: „Pokazuj wybór przewodnika przy każdym uruchomieniu”).</li>
         <li><b>Wyczyść profil</b> – usuwa wszystko z tego urządzenia; nie da się tego cofnąć.</li>
       </ul>`,
   },
