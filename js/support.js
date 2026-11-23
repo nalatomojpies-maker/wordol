@@ -264,7 +264,7 @@ function showSupportWindow(threshold) {
     <div class="modal-backdrop" id="supportAsk" role="dialog" aria-modal="true" aria-labelledby="supportAskTitle">
       <div class="modal">
         <div class="modal-rychu">${rychuSvg("cheer", 76)}</div>
-        <h2 id="supportAskTitle">Podoba Ci się WORD4ALL? ☕</h2>
+        <h2 id="supportAskTitle">Podoba Ci się aplikacja? Pokaż to rodzicowi/opiekunowi ☕</h2>
         <p>${SHARE_TEXT} ❤️</p>
         <p class="support-note">👨‍👩‍👧 To <b>dobrowolna i niezobowiązująca propozycja</b> skierowana <b>do rodzica lub opiekuna – nie do dziecka</b>. Kawa niczego nie odblokowuje, a aplikacja zawsze pozostaje w pełni darmowa.</p>
         <div id="blikBox" class="blik-box"><button class="btn primary" data-action="showBlik">📱 Pokaż numer</button></div>
