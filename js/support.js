@@ -351,10 +351,11 @@ function openIntroModal() {
               <li><b>Bez ciasteczek, reklam i śledzenia.</b> Imię, klasa i postępy zostają tylko na Twoim urządzeniu.</li>
             </ul>
           </li>
-          <li>🔇 <b>Nie masz dźwięku?</b> W <i>Profil → Brak dźwięku</i> włączysz tryb, w którym gra dostosuje się do tej opcji i ukryje ćwiczenia wymagające słuchania.</li>
+          <li>🔇 <b>Nie masz dźwięku?</b> Włącz <i>tryb cichy</i> – przyciskiem 🔊 u góry albo w Profilu. Aplikacja wyciszy wszystko i ukryje ćwiczenia wymagające słuchania.</li>
           <li>☕ ${SHARE_TEXT} ❤️
             <div id="blikBox" class="blik-box"><button class="btn" data-action="showBlik">📱 Pokaż numer BLIK</button></div>
           </li>
+          <li>👨‍👩‍👧 <b>Dla rodziców i opiekunów.</b> Szczegółowy <b>przewodnik dla rodziców</b> znajdziesz w <i>Profil → Zacznij od nowa</i>. W trakcie korzystania z aplikacji <b>kilka razy</b> może pojawić się <b>niezobowiązująca propozycja dobrowolnego postawienia kawy</b> autorowi. Jest skierowana <b>do rodziców i opiekunów, nie do dzieci</b>, niczego nie odblokowuje i można ją po prostu zamknąć.</li>
         </ul>
         <p class="small muted center-text"><button class="link" data-action="openLegal">Pełny regulamin, licencja i prywatność</button></p>
         <div class="modal-actions"><button class="btn primary big" data-action="acceptTerms">✔ Rozumiem, zaczynamy</button></div>
